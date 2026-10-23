@@ -1,0 +1,37 @@
+# Thư viện DÙNG CHUNG — khoá phiên bản chính xác (ADR-005).
+# KHÔNG chứa torch / torchvision / CUDA: mỗi người TỰ CÀI theo GPU trước khi cài file này
+#   https://pytorch.org/get-started/locally/      (tối thiểu torch >= 2.4; không dùng 2.4.0 trên Windows)
+# Thứ tự:  torch  ->  pip install -r requirements.txt  ->  pip install --no-deps -r requirements-nodeps.txt
+# Colab/Kaggle: torch có sẵn, chỉ cần cài file này.
+
+# --- CV truyền thống & dữ liệu ---
+numpy==2.4.6
+opencv-python==4.14.0.94
+scikit-image==0.26.0
+scipy==1.17.1
+pandas==3.1.0
+pillow==13.0.0
+pyyaml==6.0.3
+imagehash==4.3.2
+tqdm==4.70.1
+matplotlib==3.11.2
+
+# --- ML ---
+scikit-learn==1.9.1
+lightgbm==4.7.0
+joblib==1.6.0
+rapidfuzz==3.14.6
+
+# --- DL (dùng torch người dùng đã cài) ---
+ultralytics==8.4.183
+
+# --- Phụ thuộc thật sự của VietOCR khi suy luận (vietocr cài --no-deps) ---
+einops==0.8.2
+gdown==6.4.2
+lmdb==3.0.0
+
+# --- API ---
+fastapi==0.159.1
+uvicorn[standard]==0.54.0
+python-multipart==0.0.32
+pydantic==2.14.1

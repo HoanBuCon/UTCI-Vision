@@ -1,0 +1,48 @@
+# UTCI-VISION — demo web (ADR-003). Cổng lấy từ .env (make env); không dùng cổng mặc định.
+#   make up        (= docker compose --profile cpu up --build)
+#   make up-gpu    (= docker compose --profile gpu up --build; cần NVIDIA driver + Docker Desktop WSL2)
+# Mở http://localhost:${UTCI_WEB_PORT}
+
+x-api: &api
+  env_file:
+    - path: .env
+      required: false
+  environment:
+    UTCI_API_HOST: 0.0.0.0
+    UTCI_API_PORT: ${UTCI_API_PORT:-18100}
+  expose: ["${UTCI_API_PORT:-18100}"]   # chỉ trong mạng nội bộ; truy cập từ ngoài qua web
+  volumes:
+    - ./models:/app/models:ro       # trọng số fine-tune (models/current/), không đóng vào image
+    - ./outputs:/app/outputs        # video đã xử lý (tự xoá sau 24 giờ)
+  restart: unless-stopped
+
+services:
+  api:
+    <<: *api
+    build: { context: ., dockerfile: docker/api.Dockerfile }
+    profiles: ["cpu"]
+    networks: [utci]
+
+  api-gpu:
+    <<: *api
+    build: { context: ., dockerfile: docker/api.gpu.Dockerfile }
+    profiles: ["gpu"]
+    networks:
+      utci:
+        aliases: [api]              # web luôn gọi http://api:${UTCI_API_PORT}
+    deploy:
+      resources:
+        reservations:
+          devices: [{ driver: nvidia, count: 1, capabilities: [gpu] }]
+
+  web:
+    build: { context: ./web }
+    environment:
+      UTCI_WEB_PORT: ${UTCI_WEB_PORT:-18080}
+      UTCI_API_PORT: ${UTCI_API_PORT:-18100}
+    ports: ["${UTCI_WEB_PORT:-18080}:${UTCI_WEB_PORT:-18080}"]
+    networks: [utci]
+    restart: unless-stopped
+
+networks:
+  utci: {}

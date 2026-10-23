@@ -1,0 +1,1829 @@
+{
+  "project": "UTCI-VISION — Nhận diện biển báo giao thông",
+  "board_id": "BcQ48yqk",
+  "board_url": "https://trello.com/b/BcQ48yqk/faketime-traffic-signs-cant-detect",
+  "repo_url": "https://github.com/HoanBuCon/UTCI-Vision",
+  "start_date": "2026-10-23",
+  "sprint_length_days": 7,
+  "members": [
+    {
+      "id": "TV1",
+      "name": "TV1",
+      "role": "Tech Lead · ML · Đánh giá",
+      "focus": "Kiến trúc, ADR, review; bộ xác minh LightGBM, hậu xử lý OCR (regex số, từ điển chữ); thí nghiệm & ablation",
+      "trello_username": ""
+    },
+    {
+      "id": "TV2",
+      "name": "TV2",
+      "role": "CV truyền thống · Frontend · Hỗ trợ báo cáo",
+      "focus": "Tăng cường ảnh, đặc trưng vùng, tracking, cắt vùng số / dòng chữ / biển phụ; React",
+      "trello_username": ""
+    },
+    {
+      "id": "TV3",
+      "name": "TV3",
+      "role": "Dev chính · DL · Backend · DevOps",
+      "focus": "Fine-tune YOLO11, 3 notebook, pipeline, FastAPI + WebSocket, VietOCR, Docker, Makefile, CI",
+      "trello_username": ""
+    },
+    {
+      "id": "TV4",
+      "name": "TV4",
+      "role": "Báo cáo · Slide · Video",
+      "focus": "Khung & các chương báo cáo, báo cáo mốc sprint, nội dung ý nghĩa biển, từ điển chữ biển phụ",
+      "trello_username": ""
+    },
+    {
+      "id": "TV5",
+      "name": "TV5",
+      "role": "Dữ liệu · Kiểm thử",
+      "focus": "Lọc, chia lại, đóng gói dữ liệu; nhãn đánh giá OCR (giá trị số + chữ); video thử; benchmark; kiểm thử chấp nhận",
+      "trello_username": ""
+    }
+  ],
+  "lists": [
+    "📌 Thông tin dự án",
+    "🧊 Backlog",
+    "Sprint 1 (23/10 - 30/10) - Bài KT 1",
+    "Sprint 2 (30/10 - 06/11)",
+    "Sprint 3 (06/11 - 13/11)",
+    "Sprint 4 (13/11 - 20/11)",
+    "Sprint 5 (20/11 - 27/11)",
+    "Sprint 6 (27/11 - 04/12)",
+    "🏗️ Đang làm",
+    "🔨 Đang sửa",
+    "👀 Review / QA",
+    "✅ Hoàn thành"
+  ],
+  "labels": [
+    {
+      "name": "TV1",
+      "color": "blue"
+    },
+    {
+      "name": "TV2",
+      "color": "green"
+    },
+    {
+      "name": "TV3",
+      "color": "purple"
+    },
+    {
+      "name": "TV4",
+      "color": "orange"
+    },
+    {
+      "name": "TV5",
+      "color": "pink"
+    },
+    {
+      "name": "Team",
+      "color": "black"
+    },
+    {
+      "name": "Data",
+      "color": "lime"
+    },
+    {
+      "name": "CV",
+      "color": "sky"
+    },
+    {
+      "name": "ML",
+      "color": "yellow"
+    },
+    {
+      "name": "DL",
+      "color": "purple_dark"
+    },
+    {
+      "name": "OCR",
+      "color": "lime_dark"
+    },
+    {
+      "name": "Backend",
+      "color": "blue_light"
+    },
+    {
+      "name": "Frontend",
+      "color": "yellow_light"
+    },
+    {
+      "name": "DevOps",
+      "color": "black_light"
+    },
+    {
+      "name": "Eval",
+      "color": "sky_dark"
+    },
+    {
+      "name": "Report",
+      "color": "orange_light"
+    },
+    {
+      "name": "Must",
+      "color": "red"
+    },
+    {
+      "name": "Should",
+      "color": "orange_dark"
+    },
+    {
+      "name": "Could",
+      "color": "green_light"
+    },
+    {
+      "name": "CHANGE-REQ",
+      "color": "red_dark"
+    }
+  ],
+  "info_cards": [
+    {
+      "title": "📚 Tài liệu & repo",
+      "desc": "- Repo: https://github.com/HoanBuCon/UTCI-Vision\n- Phương án: docs/00_PHUONG_AN.md\n- Techstack (phiên bản, cổng, Makefile): docs/01_TECHSTACK.md\n- SRS (living): docs/02_SRS.md\n- Kế hoạch sprint: docs/03_SPRINT_PLAN.md\n- ADR: docs/adr/\n- Data card: docs/data/DATA_CARD.md · Trọng số: docs/models.md\n- Mẫu báo cáo mốc: report/README.md\n- Mã tham khảo: https://github.com/Secret350/Real-time-Traffic-Objects-Detection\n- Dataset: Roboflow merge_Real-time Viet Nam Traffic Dtctn 2 (CC BY 4.0)",
+      "checklist": []
+    },
+    {
+      "title": "✅ Definition of Done (áp dụng mọi thẻ)",
+      "desc": "Một thẻ chỉ được kéo sang Hoàn thành khi thỏa mãn các mục dưới (thẻ thuần báo cáo áp dụng 5–6).",
+      "checklist": [
+        "PR vào develop, TV1 (hoặc người được chỉ định) đã review",
+        "`make ci` xanh: ruff, tsc, pytest, notebook khớp template",
+        "Không hard-code cổng / đường dẫn (cổng ở .env, tham số ở configs/); requirements không chứa torch",
+        "Fine-tune/thí nghiệm có dòng trong experiments/registry.csv (python scripts/import_run.py / evaluate), ghi mã E# trên thẻ",
+        "Cập nhật README/docs/SRS (trạng thái yêu cầu) nếu có thay đổi",
+        "Có hình/số liệu gửi TV4 nếu đưa vào báo cáo; demo được trong Sprint Review"
+      ]
+    },
+    {
+      "title": "🔀 Quy ước Git & làm việc",
+      "desc": "- Repo: https://github.com/HoanBuCon/UTCI-Vision\n- Nhánh: main (bản nộp) ← develop ← feature/<mã-thẻ>-<tên-ngắn>; không push thẳng main/develop\n- Commit: Conventional Commits (feat:, fix:, data:, exp:, docs:, refactor:, test:, chore:)\n- PR nhỏ (< 400 dòng), gắn link thẻ Trello\n- Bắt đầu: make env → make venv → TỰ cài torch theo GPU → make install → make check-env\n- Cổng custom (.env): API 18100 · web 18080 · Vite 15173 · Jupyter 18888 — không dùng cổng mặc định\n- Huấn luyện = FINE-TUNE từ pretrained, chỉ trong 3 notebook (sửa notebooks/train/_template.py rồi python scripts/build_notebooks.py)\n- KHÔNG commit dataset, *.pt, *.joblib, .env\n- Daily async 5 phút: Hôm qua / Hôm nay / Vướng mắc · Thứ Sáu chuyển sprint: Review + Retro sprint cũ → Planning sprint mới · Sync giữa sprint thứ Ba\n- Thay đổi yêu cầu: thẻ CHANGE-REQ (SRS §9)",
+      "checklist": []
+    },
+    {
+      "title": "👥 Phân vai thành viên",
+      "desc": "- TV1 — Tech Lead · ML (bộ xác minh LightGBM, hậu xử lý OCR) · Đánh giá\n- TV2 — CV truyền thống · Frontend React · Hỗ trợ báo cáo\n- TV3 — Dev chính · Fine-tune YOLO11 · Notebook · Pipeline · FastAPI · Docker/Makefile/CI\n- TV4 — Báo cáo Word/LaTeX · Slide · Video · Nội dung biển báo\n- TV5 — Dữ liệu · Nhãn đánh giá OCR · Benchmark · Kiểm thử\n\nMỗi thẻ có đúng một người chịu trách nhiệm chính (nhãn TV#); thẻ Team là hoạt động chung.",
+      "checklist": []
+    },
+    {
+      "title": "📅 Mốc báo cáo theo sprint",
+      "desc": "Cuối mỗi sprint (trước Review sáng thứ Sáu) TV4 tổng hợp báo cáo mốc 1–2 trang theo report/README.md, nộp trước Review.",
+      "checklist": [
+        "S1: dữ liệu audit + fine-tune baseline + benchmark FPS + khung web/Docker",
+        "S2: dataset v1 + web upload ảnh trong Docker",
+        "S3: MVP pipeline đầy đủ trên ảnh + video job",
+        "S4: webcam realtime + OCR tiếng Việt",
+        "S5: model freeze + ablation + bản nháp báo cáo",
+        "S6: bản nộp cuối + bảo vệ"
+      ]
+    }
+  ],
+  "backlog_cards": [
+    {
+      "title": "CNN phân loại lại cho cặp lớp hay nhầm",
+      "owner": "TV3",
+      "labels": [
+        "DL",
+        "Could"
+      ],
+      "points": 5,
+      "desc": "Chỉ làm khi phân tích lỗi S3 cho thấy YOLO nhầm có hệ thống giữa vài cặp lớp; chạy theo track, chỉ cho các lớp đó.",
+      "checklist": [
+        "Xác định cặp lớp nhầm từ confusion matrix",
+        "Fine-tune MobileNetV3 pretrained trên crop",
+        "So sánh trước/sau (E2)"
+      ]
+    },
+    {
+      "title": "Gán nhãn lớp \"biển phụ\" cho YOLO (dự phòng TBD-4)",
+      "owner": "TV5",
+      "labels": [
+        "Data",
+        "OCR",
+        "Could"
+      ],
+      "points": 5,
+      "desc": "Nếu tìm biển phụ bằng CV không đạt. Cần 300–500 box.",
+      "checklist": [
+        "Gán nhãn trên Roboflow/CVAT",
+        "Thêm lớp vào classes.yaml + data v2",
+        "Fine-tune tiếp YOLO từ checkpoint (INIT_WEIGHTS)"
+      ]
+    },
+    {
+      "title": "Fine-tune VietOCR trên crop biển báo (FR-TRAIN-10)",
+      "owner": "TV3",
+      "labels": [
+        "OCR",
+        "DL",
+        "Could"
+      ],
+      "points": 5,
+      "desc": "Chỉ khi E5 cho thấy OCR < 80% exact match.",
+      "checklist": [
+        "Chuẩn bị ≥ 1000 dòng chữ có nhãn",
+        "Fine-tune từ vgg_transformer",
+        "So sánh E5"
+      ]
+    },
+    {
+      "title": "Suy luận cắt lát SAHI cho ảnh độ phân giải cao (FR-PIPE-15)",
+      "owner": "TV1",
+      "labels": [
+        "DL",
+        "Eval",
+        "Could"
+      ],
+      "points": 3,
+      "desc": "Cho ảnh tĩnh ≥ 1920 px.",
+      "checklist": [
+        "Thử SAHI với YOLO đã fine-tune",
+        "So sánh AP small + thời gian"
+      ]
+    },
+    {
+      "title": "Gộp/loại lớp hiếm (TBD-1)",
+      "owner": "TV1",
+      "labels": [
+        "Data",
+        "Should"
+      ],
+      "points": 2,
+      "desc": "Quyết định dựa trên AP theo lớp ở Review S3. Nếu đổi -> CHANGE-REQ, data v2.",
+      "checklist": [
+        "Xem AP các lớp < 50 mẫu",
+        "Đề xuất",
+        "Chốt, cập nhật ADR-002"
+      ]
+    },
+    {
+      "title": "Mẫu thẻ yêu cầu thay đổi (CHANGE-REQ)",
+      "owner": "TV1",
+      "labels": [
+        "Team",
+        "CHANGE-REQ"
+      ],
+      "points": 0,
+      "desc": "Sao chép thẻ này khi muốn đổi yêu cầu.\n\n**Yêu cầu liên quan:** FR-xxx / mới\n**Thay đổi:** ...\n**Lý do:** ...\n**Ảnh hưởng (điểm, rủi ro, thẻ bị ảnh hưởng):** ...\n**Quyết định:** (điền trong Planning/Review)",
+      "checklist": [
+        "Mô tả thay đổi",
+        "Ước lượng ảnh hưởng",
+        "Team quyết định",
+        "Cập nhật SRS + Changelog"
+      ]
+    }
+  ],
+  "sprints": [
+    {
+      "number": 1,
+      "name": "Khởi động & nền tảng",
+      "goal": "Cả 5 người chạy được môi trường (torch tự cài, cổng custom); dữ liệu được audit + duyệt; 3 notebook chạy SMOKE; có fine-tune baseline YOLO11s và benchmark FPS; khung API + web + Docker chạy được; chốt schema JSON.",
+      "deliverables": [
+        "Repo UTCI-Vision: develop/main, CI xanh, Makefile, pre-commit",
+        "Mọi thành viên: make check-env OK (torch theo GPU riêng)",
+        "Báo cáo audit/EDA + excluded.txt bản đầu; classes.yaml đã xác nhận",
+        "3 notebook SMOKE OK trên Local/Colab/Kaggle; fine-tune baseline YOLO11s trên dữ liệu gốc + import-run",
+        "Benchmark FPS YOLO11s (mốc S1); make up mở được web ở cổng 18080 với /health, /classes",
+        "Khung báo cáo + Chương 1 + báo cáo mốc S1"
+      ],
+      "cards": [
+        {
+          "title": "Sprint 1 Planning & Kickoff",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "Đọc tài liệu, thống nhất cách làm việc, chốt phạm vi.",
+          "checklist": [
+            "Đọc 00_PHUONG_AN, 01_TECHSTACK, 02_SRS; ghi câu hỏi",
+            "Thống nhất DoD, quy ước Git, cổng custom",
+            "Chốt TBD-2: Word hay LaTeX",
+            "Gán tên thật TV1..TV5, mời vào board + repo"
+          ]
+        },
+        {
+          "title": "Đưa khung mã nguồn lên repo + CI",
+          "owner": "TV1",
+          "labels": [
+            "DevOps",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "NFR-MNT-01",
+            "NFR-MNT-03",
+            "FR-DEP-06"
+          ],
+          "desc": "Repo https://github.com/HoanBuCon/UTCI-Vision (công khai, đã có LICENSE Apache-2.0 trên main).",
+          "checklist": [
+            "git init → remote add → pull main (giữ LICENSE) → push khung (không kèm dataset/.env)",
+            "Tạo nhánh develop; branch protection main/develop, bắt buộc PR + CI",
+            "GitHub Actions: python + web + compose config xanh",
+            "PR template, CODEOWNERS"
+          ]
+        },
+        {
+          "title": "Workshop phương án + chốt schema JSON API",
+          "owner": "TV1",
+          "labels": [
+            "Team",
+            "Backend",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-API-03"
+          ],
+          "desc": "Thống nhất hợp đồng giữa backend (TV3) và frontend (TV2).",
+          "checklist": [
+            "Trình bày pipeline + kế hoạch thí nghiệm E1–E7",
+            "Rà api/schemas.py ↔ web/src/api/types.ts",
+            "Chốt ADR-002"
+          ]
+        },
+        {
+          "title": "Smoke test notebook trên Kaggle",
+          "owner": "TV1",
+          "labels": [
+            "DL",
+            "DevOps",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [
+            "FR-TRAIN-02"
+          ],
+          "desc": "SMOKE=True, Kaggle Dataset tạm từ dữ liệu gốc.",
+          "checklist": [
+            "Tạo Kaggle Dataset riêng tư",
+            "Run all với SMOKE=True",
+            "Tải zip kết quả, python scripts/import_run.py <thư-mục-run>"
+          ]
+        },
+        {
+          "title": "Hiện thực Detector + validate",
+          "owner": "TV3",
+          "labels": [
+            "DL",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-PIPE-03",
+            "FR-TRAIN-04"
+          ],
+          "desc": "detector.py: phần còn TODO.",
+          "checklist": [
+            "Detector.detect (batch, half khi GPU)",
+            "validate(): mAP + AP theo lớp",
+            "Test với trọng số pretrained COCO"
+          ]
+        },
+        {
+          "title": "3 notebook fine-tune: SMOKE local + hướng dẫn",
+          "owner": "TV3",
+          "labels": [
+            "DL",
+            "DevOps",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-TRAIN-01",
+            "FR-TRAIN-02",
+            "FR-TRAIN-03",
+            "FR-TRAIN-07",
+            "FR-TRAIN-08"
+          ],
+          "desc": "Sửa _template.py -> python scripts/build_notebooks.py.",
+          "checklist": [
+            "SMOKE train_local OK trên RTX 4060",
+            "Hướng dẫn upload dữ liệu Drive/Kaggle",
+            "Kiểm tra python scripts/import_run.py ghi registry"
+          ]
+        },
+        {
+          "title": "Fine-tune baseline YOLO11s trên dữ liệu gốc",
+          "owner": "TV3",
+          "labels": [
+            "DL",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-TRAIN-04"
+          ],
+          "desc": "Từ pretrained COCO, imgsz 640, để có mốc so sánh sớm (tương đương repo tham khảo).",
+          "checklist": [
+            "Chạy notebook (Kaggle/Colab)",
+            "python scripts/import_run.py <thư-mục-run> --promote",
+            "Ghi mAP@50, AP theo lớp; gửi TV1"
+          ]
+        },
+        {
+          "title": "Khung API + web + Docker chạy được (cổng custom)",
+          "owner": "TV3",
+          "labels": [
+            "Backend",
+            "DevOps",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-API-01",
+            "FR-DEP-01",
+            "FR-DEP-05"
+          ],
+          "desc": "make up -> http://localhost:18080 hiển thị HealthBadge + Thư viện biển.",
+          "checklist": [
+            "Build image CPU",
+            "Kiểm tra không cổng nào dùng mặc định",
+            "Ghi chú dung lượng Docker (ổ C:)"
+          ]
+        },
+        {
+          "title": "Cài môi trường + khung frontend dev",
+          "owner": "TV2",
+          "labels": [
+            "Frontend",
+            "DevOps",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "NFR-REP-02"
+          ],
+          "desc": "make env/venv/install; cd web && npm run dev chạy ở 15173 proxy sang API 18100.",
+          "checklist": [
+            "Tự cài torch theo GPU, make check-env",
+            "python -m utci_vision.api --reload + cd web && npm run dev",
+            "Làm quen api/client.ts, types.ts"
+          ]
+        },
+        {
+          "title": "Spike CV: đánh giá chất lượng & tăng cường ảnh",
+          "owner": "TV2",
+          "labels": [
+            "CV",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-PIPE-01",
+            "FR-PIPE-02"
+          ],
+          "desc": "Thử trên 30 ảnh tối/ngược sáng/mờ trong dataset.",
+          "checklist": [
+            "Đo mean V, std L, phương sai Laplacian",
+            "Đề xuất ngưỡng trong configs/pipeline.yaml",
+            "Ảnh trước/sau gửi TV4"
+          ]
+        },
+        {
+          "title": "Audit, EDA & duyệt dữ liệu",
+          "owner": "TV5",
+          "labels": [
+            "Data",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-DATA-01",
+            "FR-DATA-02",
+            "FR-DATA-03"
+          ],
+          "desc": "python scripts/data.py audit --dedup đã chạy được trên dữ liệu thật.",
+          "checklist": [
+            "Biểu đồ phân bố lớp/kích thước/độ phân giải",
+            "Duyệt 118 ảnh không nhãn + mẫu cụm gần trùng",
+            "Contact-sheet theo lớp; ghi reports/data/excluded.txt",
+            "Gửi hình EDA cho TV4"
+          ]
+        },
+        {
+          "title": "Xác nhận classes.yaml (QCVN, has_value, has_text)",
+          "owner": "TV5",
+          "labels": [
+            "Data",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-DATA-06"
+          ],
+          "desc": "Siêu lớp, mã QCVN, lớp nào có số/chữ.",
+          "checklist": [
+            "Đối chiếu QCVN 41:2019",
+            "Sửa superclass/has_value/has_text nếu sai"
+          ]
+        },
+        {
+          "title": "Smoke test notebook trên Colab + benchmark FPS mốc S1",
+          "owner": "TV5",
+          "labels": [
+            "Eval",
+            "DevOps",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-TRAIN-02",
+            "FR-EVAL-07"
+          ],
+          "desc": "TV3 hỗ trợ benchmark.",
+          "checklist": [
+            "Run all train_colab với SMOKE=True",
+            "scripts/evaluate.py benchmark --yolo-only trên video 720p",
+            "Ghi FPS GPU/CPU vào registry"
+          ]
+        },
+        {
+          "title": "Khung báo cáo & Chương 1",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-DOC-02"
+          ],
+          "desc": "Theo template của trường/khoa.",
+          "checklist": [
+            "Chọn template (Word/Overleaf)",
+            "Mục lục theo report/README.md",
+            "Viết Chương 1: bài toán, mục tiêu, phạm vi"
+          ]
+        },
+        {
+          "title": "Báo cáo mốc S1",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [
+            "FR-DOC-01"
+          ],
+          "desc": "",
+          "checklist": [
+            "Thu số liệu từ registry",
+            "Nộp trước Review"
+          ]
+        },
+        {
+          "title": "Sprint 1 Review & Retro",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "Demo baseline + web hello + EDA.",
+          "checklist": [
+            "Demo",
+            "Cập nhật SRS Changelog",
+            "Retro: Giữ / Bỏ / Thử"
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "name": "Dữ liệu v1 & các khối lõi",
+      "goal": "Có processed/v1 sạch (đã chia lại, đóng gói lên Drive/Kaggle); YOLO11 fine-tune trên v1 với cấu hình tốt nhất (E3); tăng cường CV + đặc trưng vùng; pipeline khung + API ảnh; trang Ảnh chạy trong Docker.",
+      "deliverables": [
+        "dataset v1 + utci_v1.zip/sha256 trên Drive và Kaggle; DATA_CARD",
+        "YOLO11 fine-tune trên v1: n/s × 640/960 × freeze 0/10 (E3) — chốt TBD-3",
+        "enhance.py + verifier.region_features có test",
+        "POST /detect/image + trang Ảnh hoạt động qua make up",
+        "Chương 2 (lý thuyết CV + DL) bản nháp; báo cáo mốc S2"
+      ],
+      "cards": [
+        {
+          "title": "Sprint 2 Planning",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "Hiệu chỉnh theo velocity S1.",
+          "checklist": [
+            "Xem velocity",
+            "Chọn thẻ"
+          ]
+        },
+        {
+          "title": "Chia lại dữ liệu → processed/v1 + DATA_CARD",
+          "owner": "TV5",
+          "labels": [
+            "Data",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-DATA-04",
+            "FR-DATA-07"
+          ],
+          "desc": "ADR-002.",
+          "checklist": [
+            "python scripts/data.py split (sau excluded.txt)",
+            "Kiểm tra mọi lớp có ở cả 3 tập, 0 cụm rò rỉ",
+            "Điền DATA_CARD §3–§4"
+          ]
+        },
+        {
+          "title": "Đóng gói & upload dataset (package.py)",
+          "owner": "TV5",
+          "labels": [
+            "Data",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-DATA-05"
+          ],
+          "desc": "Hiện thực data/package.py (zip + VERSION.json + sha256).",
+          "checklist": [
+            "Hiện thực + test",
+            "python scripts/data.py package",
+            "Upload Drive (Colab) + Kaggle Dataset utci-v1"
+          ]
+        },
+        {
+          "title": "Cắt crop lớp có số/chữ để gán nhãn",
+          "owner": "TV5",
+          "labels": [
+            "Data",
+            "OCR",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-DATA-08",
+            "FR-DATA-09"
+          ],
+          "desc": "python scripts/data.py crops — chuẩn bị gán nhãn giá trị số & chữ ở S3 (dùng để đánh giá OCR, E5).",
+          "checklist": [
+            "python scripts/data.py crops",
+            "Xem mẫu từng lớp has_value / has_text",
+            "Lập mẫu CSV nhãn: values.csv, texts.csv"
+          ]
+        },
+        {
+          "title": "Fine-tune YOLO11 trên v1 — E3 cấu hình",
+          "owner": "TV3",
+          "labels": [
+            "DL",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-TRAIN-04",
+            "FR-EVAL-03"
+          ],
+          "desc": "Từ pretrained COCO; so sánh n/s, imgsz 640/960, freeze 0/10.",
+          "checklist": [
+            "Chia lượt chạy giữa Kaggle/Colab của các thành viên",
+            "python scripts/import_run.py <thư-mục-run> --promote cho từng run",
+            "Chốt TBD-3 theo mAP + ngân sách FPS"
+          ]
+        },
+        {
+          "title": "Pipeline khung + POST /detect/image",
+          "owner": "TV3",
+          "labels": [
+            "Backend",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-PIPE-13",
+            "FR-API-03",
+            "FR-API-07"
+          ],
+          "desc": "pipeline.load_components + Recognizer.process (enhance → YOLO); visualize.draw.",
+          "checklist": [
+            "Nạp mô hình một lần; /health báo trạng thái thật",
+            "Giới hạn kích thước/định dạng ảnh",
+            "scripts/infer.py dùng chung pipeline"
+          ]
+        },
+        {
+          "title": "enhance.py: đánh giá chất lượng + tăng cường thích nghi",
+          "owner": "TV2",
+          "labels": [
+            "CV",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-PIPE-01",
+            "FR-PIPE-02"
+          ],
+          "desc": "",
+          "checklist": [
+            "assess, needed_ops, enhance",
+            "Unit test",
+            "Ảnh minh hoạ cho báo cáo"
+          ]
+        },
+        {
+          "title": "verifier.py: đặc trưng vùng",
+          "owner": "TV2",
+          "labels": [
+            "CV",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-PIPE-05"
+          ],
+          "desc": "Tỉ lệ màu, độ tròn, số đỉnh, solidity, Hu, HOG, độ nét.",
+          "checklist": [
+            "Tinh chỉnh ngưỡng HSV trong configs/verifier.yaml",
+            "FEATURE_NAMES",
+            "Unit test với ảnh tổng hợp"
+          ]
+        },
+        {
+          "title": "Trang Ảnh (web)",
+          "owner": "TV2",
+          "labels": [
+            "Frontend",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-WEB-01"
+          ],
+          "desc": "",
+          "checklist": [
+            "Kéo-thả / chọn ảnh",
+            "Vẽ box SVG màu theo siêu lớp",
+            "Danh sách biển: tên, ý nghĩa, độ tin cậy"
+          ]
+        },
+        {
+          "title": "Bộ đánh giá E1 (evaluate.py detect)",
+          "owner": "TV1",
+          "labels": [
+            "Eval",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-EVAL-01",
+            "FR-EVAL-08"
+          ],
+          "desc": "",
+          "checklist": [
+            "Đối chiếu metrics.py với Ultralytics val (chênh < 0.01)",
+            "AP theo lớp & kích thước -> reports/eval/",
+            "Ghi registry"
+          ]
+        },
+        {
+          "title": "Ý nghĩa 32 biển báo (meaning) cho web",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Frontend",
+            "Should"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-DATA-06",
+            "FR-WEB-04"
+          ],
+          "desc": "Điền configs/classes.yaml > meaning.",
+          "checklist": [
+            "1–2 câu mỗi biển theo QCVN",
+            "TV5 rà soát"
+          ]
+        },
+        {
+          "title": "Chương 2: lý thuyết CV + DL (fine-tune, YOLO)",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-DOC-02"
+          ],
+          "desc": "TV2 hỗ trợ phần CV.",
+          "checklist": [
+            "Không gian màu, CLAHE, hình thái học, contour, HOG, Kalman",
+            "CNN, transfer learning / fine-tune, YOLO11",
+            "Metric IoU, mAP, F1"
+          ]
+        },
+        {
+          "title": "Báo cáo mốc S2",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [
+            "FR-DOC-01"
+          ],
+          "desc": "",
+          "checklist": [
+            "Bảng E3",
+            "Nộp trước Review"
+          ]
+        },
+        {
+          "title": "Sprint 2 Review & Retro",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "Demo upload ảnh trên web (Docker).",
+          "checklist": [
+            "Demo",
+            "Chốt TBD-3, TBD-5",
+            "Retro"
+          ]
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "name": "MVP: pipeline đầy đủ trên ảnh + video",
+      "goal": "Ảnh tĩnh đi qua đủ các khâu (enhance → YOLO → xác minh LightGBM → đọc số bằng VietOCR + regex); video xử lý nền với tracking; trang Video + Thư viện; E1 sơ bộ.",
+      "deliverables": [
+        "Bộ xác minh LightGBM fit trên val (E3: LogReg/RF/LightGBM)",
+        "Đọc giá trị số: CV cắt vùng + VietOCR + regex; hiển thị km/h, m, T",
+        "Tracking Kalman + IoU; job video API + trang Video",
+        "E1 sơ bộ + phân tích lỗi; chốt TBD-1, TBD-4"
+      ],
+      "cards": [
+        {
+          "title": "Sprint 3 Planning",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "",
+          "checklist": [
+            "Chốt định nghĩa MVP"
+          ]
+        },
+        {
+          "title": "Bộ xác minh LightGBM (stacking)",
+          "owner": "TV1",
+          "labels": [
+            "ML",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-PIPE-06",
+            "FR-TRAIN-05",
+            "FR-EVAL-03"
+          ],
+          "desc": "verifier.py; fit trong notebook (FIT_VERIFIER=True).",
+          "checklist": [
+            "build_dataset trên val, GroupKFold theo ảnh",
+            "So sánh LogReg/RF/LightGBM + hiệu chỉnh xác suất",
+            "Verifier.verify; ADR-008"
+          ]
+        },
+        {
+          "title": "Đọc giá trị số: regex + hợp lệ hoá",
+          "owner": "TV1",
+          "labels": [
+            "ML",
+            "OCR",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-PIPE-07"
+          ],
+          "desc": "ocr.parse_value: trích số từ chuỗi VietOCR, hợp lệ hoá theo đơn vị của lớp (configs/ocr.yaml > value).",
+          "checklist": [
+            "parse_value (\"50\", \"3.5\", \"3,5\") + test",
+            "Tập giá trị hợp lệ km/h, khoảng m/T",
+            "Accuracy trên crop có nhãn giá trị của TV5"
+          ]
+        },
+        {
+          "title": "E1 sơ bộ + phân tích lỗi",
+          "owner": "TV1",
+          "labels": [
+            "Eval",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-EVAL-01"
+          ],
+          "desc": "",
+          "checklist": [
+            "python scripts/evaluate.py detect --split test",
+            "Confusion matrix, AP lớp hiếm",
+            "Đề xuất cho S4"
+          ]
+        },
+        {
+          "title": "ocr.py: cắt vùng số",
+          "owner": "TV2",
+          "labels": [
+            "CV",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-PIPE-07"
+          ],
+          "desc": "value_region: đĩa trắng trong viền đỏ, phóng to — đầu vào VietOCR.",
+          "checklist": [
+            "Mask đỏ + hình tròn -> vùng trong viền",
+            "Phóng to, tăng tương phản",
+            "So sánh VietOCR có/không cắt vùng trên crop thật"
+          ]
+        },
+        {
+          "title": "tracking.py: Kalman + IoU + bỏ phiếu",
+          "owner": "TV2",
+          "labels": [
+            "CV",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-PIPE-04"
+          ],
+          "desc": "",
+          "checklist": [
+            "Kalman 8 trạng thái",
+            "Hungarian (scipy)",
+            "min_hits, max_age, vote_window",
+            "Test chuỗi frame nhiễu"
+          ]
+        },
+        {
+          "title": "Trang Video (web)",
+          "owner": "TV2",
+          "labels": [
+            "Frontend",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-WEB-02"
+          ],
+          "desc": "",
+          "checklist": [
+            "Upload + tiến độ",
+            "Phát/tải video kết quả",
+            "Bảng biển đã xuất hiện"
+          ]
+        },
+        {
+          "title": "Tích hợp VietOCR (ocr.TextReader)",
+          "owner": "TV3",
+          "labels": [
+            "OCR",
+            "DL",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-PIPE-09"
+          ],
+          "desc": "Đã kiểm chứng cài --no-deps. Cần từ S3 vì VietOCR đọc cả số trên biển.",
+          "checklist": [
+            "TextReader.read batch",
+            "Trọng số local khi offline"
+          ]
+        },
+        {
+          "title": "Tích hợp xác minh + đọc số vào pipeline (ảnh)",
+          "owner": "TV3",
+          "labels": [
+            "Backend",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-PIPE-06",
+            "FR-PIPE-07"
+          ],
+          "desc": "Ảnh tĩnh chạy đồng bộ các tác vụ.",
+          "checklist": [
+            "Recognizer gọi Verifier + đọc số (value_region → TextReader → parse_value)",
+            "Debug output cơ bản"
+          ]
+        },
+        {
+          "title": "Job video (JobManager) + giới hạn upload",
+          "owner": "TV3",
+          "labels": [
+            "Backend",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-API-04",
+            "FR-API-06"
+          ],
+          "desc": "",
+          "checklist": [
+            "POST /jobs/video, GET /jobs/{id}",
+            "Tracking trong video",
+            "Dọn file > 24 giờ"
+          ]
+        },
+        {
+          "title": "Trang Thư viện biển + giao diện responsive",
+          "owner": "TV3",
+          "labels": [
+            "Frontend",
+            "Should"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-WEB-04",
+            "FR-WEB-06"
+          ],
+          "desc": "",
+          "checklist": [
+            "Nhóm theo siêu lớp",
+            "Kiểm tra trên điện thoại"
+          ]
+        },
+        {
+          "title": "Gán nhãn giá trị (≥150) & chữ (≥200 crop)",
+          "owner": "TV5",
+          "labels": [
+            "Data",
+            "OCR",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-DATA-08",
+            "FR-DATA-09"
+          ],
+          "desc": "Từ data-crops + ảnh tự chụp (biển phụ).",
+          "checklist": [
+            "CSV giá trị",
+            "CSV chữ (biển chính + biển phụ)",
+            "Lưu Drive (dùng cho E5)"
+          ]
+        },
+        {
+          "title": "2 video đường phố để demo & đo flicker",
+          "owner": "TV5",
+          "labels": [
+            "Data",
+            "Should"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-DATA-10"
+          ],
+          "desc": "Tự quay hoặc nguồn mở có giấy phép.",
+          "checklist": [
+            "1–3 phút mỗi video",
+            "Ghi nguồn trong DATA_CARD"
+          ]
+        },
+        {
+          "title": "Chương 2 (ML) + Chương 3 Dữ liệu",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-DOC-02"
+          ],
+          "desc": "",
+          "checklist": [
+            "Gradient Boosting, stacking, hiệu chỉnh xác suất",
+            "Chương 3 từ DATA_CARD + EDA"
+          ]
+        },
+        {
+          "title": "Báo cáo mốc S3",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [
+            "FR-DOC-01"
+          ],
+          "desc": "",
+          "checklist": [
+            "E1 sơ bộ",
+            "Nộp trước Review"
+          ]
+        },
+        {
+          "title": "Sprint 3 Review & Retro — Demo MVP",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "",
+          "checklist": [
+            "Demo ảnh + video trên web",
+            "Chốt TBD-1, TBD-4",
+            "Retro"
+          ]
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "name": "Realtime & OCR tiếng Việt",
+      "goal": "Webcam qua WebSocket ≥ 20 FPS (GPU); tác vụ theo track chạy nền; OCR chữ tiếng Việt + biển phụ; trang Webcam; E4 độ bền, E5 đọc số/chữ.",
+      "deliverables": [
+        "WS /stream + trang Webcam với back-pressure",
+        "Tác vụ theo track bất đồng bộ (xác minh, đọc số, OCR)",
+        "VietOCR + hậu xử lý từ điển/regex; tìm biển phụ",
+        "E4, E5 có số liệu; Chương 4 Phương pháp"
+      ],
+      "cards": [
+        {
+          "title": "Sprint 4 Planning",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "",
+          "checklist": [
+            "Chọn thẻ theo phân tích lỗi S3"
+          ]
+        },
+        {
+          "title": "Tác vụ theo track bất đồng bộ trong Recognizer",
+          "owner": "TV3",
+          "labels": [
+            "Backend",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-PIPE-12"
+          ],
+          "desc": "ThreadPool, refresh_every, không chặn luồng frame.",
+          "checklist": [
+            "Lập lịch theo track mới / đến hạn / độ tin cậy giảm",
+            "Đo FPS luồng chính trước/sau (≤ 10%)"
+          ]
+        },
+        {
+          "title": "WebSocket /stream + back-pressure",
+          "owner": "TV3",
+          "labels": [
+            "Backend",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-API-05"
+          ],
+          "desc": "",
+          "checklist": [
+            "Mỗi kết nối một Recognizer(video=True)",
+            "Thu nhỏ frame ≤ 960 px",
+            "Kiểm tra qua nginx ở cổng 18080"
+          ]
+        },
+        {
+          "title": "Trang Webcam (web)",
+          "owner": "TV2",
+          "labels": [
+            "Frontend",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-WEB-03"
+          ],
+          "desc": "",
+          "checklist": [
+            "getUserMedia + canvas",
+            "Gửi JPEG, chờ kết quả rồi gửi tiếp",
+            "FPS + panel biển vừa gặp"
+          ]
+        },
+        {
+          "title": "ocr.py: dòng chữ, biển phụ, frame tốt nhất",
+          "owner": "TV2",
+          "labels": [
+            "CV",
+            "OCR",
+            "Should"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-PIPE-08",
+            "FR-PIPE-09",
+            "FR-PIPE-10"
+          ],
+          "desc": "",
+          "checklist": [
+            "text_lines (deskew, projection)",
+            "find_sub_sign",
+            "frame_score; quyết định TBD-4"
+          ]
+        },
+        {
+          "title": "ocr.py: hậu xử lý chữ (từ điển, nghĩa, bỏ phiếu)",
+          "owner": "TV1",
+          "labels": [
+            "ML",
+            "OCR",
+            "Should"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-PIPE-11"
+          ],
+          "desc": "",
+          "checklist": [
+            "Khớp từ điển (rapidfuzz)",
+            "Regex khung giờ / khoảng cách / loại xe",
+            "Bỏ phiếu theo track"
+          ]
+        },
+        {
+          "title": "E5: đọc số & OCR so với EasyOCR",
+          "owner": "TV1",
+          "labels": [
+            "Eval",
+            "OCR",
+            "Should"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-EVAL-05"
+          ],
+          "desc": "EasyOCR cài riêng, không vào requirements.",
+          "checklist": [
+            "Accuracy giá trị",
+            "CER, exact match chữ",
+            "Ghi registry"
+          ]
+        },
+        {
+          "title": "E4: tập suy giảm & độ bền",
+          "owner": "TV5",
+          "labels": [
+            "Eval",
+            "Data",
+            "Should"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-DATA-11",
+            "FR-EVAL-04"
+          ],
+          "desc": "evaluation/experiments.DEGRADATIONS.",
+          "checklist": [
+            "evaluate detect --degrade × 4",
+            "± tăng cường CV",
+            "Bảng ΔmAP gửi TV4"
+          ]
+        },
+        {
+          "title": "Benchmark qua API / WebSocket",
+          "owner": "TV5",
+          "labels": [
+            "Eval",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-EVAL-07",
+            "NFR-PERF-01"
+          ],
+          "desc": "",
+          "checklist": [
+            "evaluate benchmark --api",
+            "FPS, p95 latency",
+            "Ghi registry"
+          ]
+        },
+        {
+          "title": "Chương 4 Phương pháp + từ điển chữ biển phụ",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "OCR",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-DOC-02"
+          ],
+          "desc": "Từ điển: configs/ocr_lexicon.txt.",
+          "checklist": [
+            "Sơ đồ pipeline",
+            "Mô tả từng khâu CV/DL/ML",
+            "Bổ sung ocr_lexicon.txt"
+          ]
+        },
+        {
+          "title": "Báo cáo mốc S4",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [
+            "FR-DOC-01"
+          ],
+          "desc": "",
+          "checklist": [
+            "Nộp trước Review"
+          ]
+        },
+        {
+          "title": "Sprint 4 Review & Retro",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "Demo webcam + OCR.",
+          "checklist": [
+            "Demo realtime",
+            "Quyết định model freeze S5",
+            "Retro"
+          ]
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "name": "Tối ưu, model freeze & bản nháp báo cáo",
+      "goal": "Đạt mục tiêu hiệu năng; chốt mô hình (fine-tune cuối trên nền tảng chính thức); ablation E2 + E6 đầy đủ; kiểm thử chấp nhận lần 1; bản nháp báo cáo đầy đủ.",
+      "deliverables": [
+        "NFR-PERF đạt (hoặc ghi nhận lý do); profile GPU + healthcheck",
+        "Trọng số chốt + docs/models.md",
+        "Bảng E1–E7 cuối cùng",
+        "Kiểm thử chấp nhận A1–A7 lần 1; bản nháp Chương 1–6"
+      ],
+      "cards": [
+        {
+          "title": "Sprint 5 Planning",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "Hạn model freeze: thứ Ba (giữa sprint).",
+          "checklist": [
+            "Chốt nền tảng số liệu chính thức (TBD-5)"
+          ]
+        },
+        {
+          "title": "Tối ưu FPS + export ONNX (Could)",
+          "owner": "TV3",
+          "labels": [
+            "DL",
+            "Backend",
+            "Should"
+          ],
+          "points": 5,
+          "srs": [
+            "NFR-PERF-01",
+            "NFR-PERF-02",
+            "FR-TRAIN-09"
+          ],
+          "desc": "",
+          "checklist": [
+            "FP16, refresh_every, kích thước frame",
+            "(Could) ONNX cho CPU",
+            "Đo lại benchmark"
+          ]
+        },
+        {
+          "title": "Docker GPU profile + healthcheck + máy sạch",
+          "owner": "TV3",
+          "labels": [
+            "DevOps",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-DEP-02",
+            "FR-DEP-04",
+            "NFR-REP-03"
+          ],
+          "desc": "",
+          "checklist": [
+            "make up-gpu trên RTX 4060",
+            "Healthcheck xanh",
+            "make up trên một máy chưa cài gì (≤ 15 phút)"
+          ]
+        },
+        {
+          "title": "Model freeze: fine-tune cuối + docs/models.md",
+          "owner": "TV3",
+          "labels": [
+            "DL",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-TRAIN-04"
+          ],
+          "desc": "Fine-tune tiếp từ checkpoint tốt nhất nếu cần (INIT_WEIGHTS).",
+          "checklist": [
+            "Chốt yolo11.pt, verifier.joblib",
+            "Upload Drive / Release",
+            "Cập nhật docs/models.md"
+          ]
+        },
+        {
+          "title": "Trang Giải thích + debug output",
+          "owner": "TV2",
+          "labels": [
+            "Frontend",
+            "CV",
+            "Should"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-WEB-05",
+            "FR-PIPE-14"
+          ],
+          "desc": "",
+          "checklist": [
+            "Pipeline trả ảnh trung gian khi debug",
+            "Hiển thị theo thứ tự khâu",
+            "Feature importance của bộ xác minh"
+          ]
+        },
+        {
+          "title": "E6: flicker rate ± tracking",
+          "owner": "TV2",
+          "labels": [
+            "Eval",
+            "CV",
+            "Should"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-EVAL-06"
+          ],
+          "desc": "Trên 2 video của TV5.",
+          "checklist": [
+            "Đo flicker",
+            "Ghi registry"
+          ]
+        },
+        {
+          "title": "E2 ablation + tổng hợp E1–E7",
+          "owner": "TV1",
+          "labels": [
+            "Eval",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-EVAL-02"
+          ],
+          "desc": "evaluate detect --ablation.",
+          "checklist": [
+            "yolo_only → +enhance → +verifier → full",
+            "Bảng + biểu đồ cho báo cáo",
+            "Đối chiếu NFR"
+          ]
+        },
+        {
+          "title": "Review kỹ thuật bản nháp báo cáo",
+          "owner": "TV1",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-DOC-02"
+          ],
+          "desc": "",
+          "checklist": [
+            "Lý thuyết & số liệu đúng",
+            "Comment cho TV4"
+          ]
+        },
+        {
+          "title": "Kiểm thử chấp nhận A1–A7 lần 1",
+          "owner": "TV5",
+          "labels": [
+            "Eval",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [],
+          "desc": "SRS Phụ lục A.",
+          "checklist": [
+            "Chạy A1–A7",
+            "Ghi lỗi thành thẻ S6"
+          ]
+        },
+        {
+          "title": "Bổ sung unit test (≥ 30)",
+          "owner": "TV5",
+          "labels": [
+            "DevOps",
+            "Should"
+          ],
+          "points": 2,
+          "srs": [
+            "NFR-MNT-02"
+          ],
+          "desc": "",
+          "checklist": [
+            "Test schema API",
+            "Test tracking, ocr (hậu xử lý)"
+          ]
+        },
+        {
+          "title": "Chương 5 Thực nghiệm + Chương 6 Ứng dụng",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-DOC-02"
+          ],
+          "desc": "TV2 viết phần CV.",
+          "checklist": [
+            "Môi trường (3 nền tảng fine-tune)",
+            "E1–E7 + phân tích",
+            "Ảnh chụp web"
+          ]
+        },
+        {
+          "title": "Báo cáo mốc S5",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [
+            "FR-DOC-01"
+          ],
+          "desc": "",
+          "checklist": [
+            "Nộp trước Review"
+          ]
+        },
+        {
+          "title": "Sprint 5 Review & Retro",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "Đọc chéo bản nháp.",
+          "checklist": [
+            "Demo bản gần cuối",
+            "Đọc chéo chương",
+            "Retro"
+          ]
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "name": "Ổn định, báo cáo cuối & bảo vệ",
+      "goal": "Bản nộp cuối: code tag v1.0 tái lập được (make up), báo cáo PDF, slide, video demo; diễn tập thuyết trình.",
+      "deliverables": [
+        "Tag v1.0 + GitHub Release (trọng số) trên UTCI-Vision",
+        "Báo cáo cuối kỳ (PDF + nguồn)",
+        "Slide + video demo 3–5 phút",
+        "Diễn tập ≥ 2 lần"
+      ],
+      "cards": [
+        {
+          "title": "Sprint 6 Planning",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "Chỉ sửa lỗi, không thêm tính năng.",
+          "checklist": [
+            "Code freeze: thứ Ba (giữa sprint)"
+          ]
+        },
+        {
+          "title": "Sửa lỗi, code freeze, tag v1.0",
+          "owner": "TV3",
+          "labels": [
+            "DevOps",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [],
+          "desc": "",
+          "checklist": [
+            "Sửa lỗi từ kiểm thử",
+            "develop → main, tag v1.0",
+            "Release kèm trọng số"
+          ]
+        },
+        {
+          "title": "README tái lập + kiểm tra máy sạch",
+          "owner": "TV3",
+          "labels": [
+            "DevOps",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-DOC-04",
+            "NFR-REP-02"
+          ],
+          "desc": "",
+          "checklist": [
+            "make env/venv/install/up theo README",
+            "≤ 30 phút trên máy mới"
+          ]
+        },
+        {
+          "title": "Hỗ trợ hoàn thiện báo cáo",
+          "owner": "TV2",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-DOC-02"
+          ],
+          "desc": "",
+          "checklist": [
+            "Đánh số hình/bảng",
+            "Tài liệu tham khảo",
+            "Soát chính tả"
+          ]
+        },
+        {
+          "title": "Quay & dựng video demo 3–5 phút",
+          "owner": "TV2",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [
+            "FR-DOC-03"
+          ],
+          "desc": "Cùng TV3.",
+          "checklist": [
+            "Kịch bản: ảnh, video, webcam, giải thích",
+            "Upload, link trong README"
+          ]
+        },
+        {
+          "title": "Hoàn thiện báo cáo cuối kỳ",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 5,
+          "srs": [
+            "FR-DOC-02"
+          ],
+          "desc": "",
+          "checklist": [
+            "Chương 7 Kết luận",
+            "Phụ lục phân công + kế hoạch",
+            "Xuất PDF theo quy định"
+          ]
+        },
+        {
+          "title": "Slide thuyết trình",
+          "owner": "TV4",
+          "labels": [
+            "Report",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [
+            "FR-DOC-03"
+          ],
+          "desc": "15–20 slide.",
+          "checklist": [
+            "Dàn ý theo báo cáo",
+            "TV1 review"
+          ]
+        },
+        {
+          "title": "Review cuối & chuẩn bị phản biện",
+          "owner": "TV1",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 3,
+          "srs": [],
+          "desc": "",
+          "checklist": [
+            "Review code, báo cáo, slide",
+            "20 câu hỏi phản biện dự kiến",
+            "Phân công trả lời"
+          ]
+        },
+        {
+          "title": "Kiểm thử hồi quy cuối + checklist nộp bài",
+          "owner": "TV5",
+          "labels": [
+            "Eval",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [],
+          "desc": "",
+          "checklist": [
+            "A1–A7 trên v1.0",
+            "Đủ file nộp",
+            "Ghi nguồn dataset & repo tham khảo"
+          ]
+        },
+        {
+          "title": "Diễn tập thuyết trình (2 lần)",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 2,
+          "srs": [],
+          "desc": "",
+          "checklist": [
+            "Lần 1: bấm giờ",
+            "Lần 2: demo trực tiếp + phản biện thử"
+          ]
+        },
+        {
+          "title": "Review cuối dự án & Retro",
+          "owner": "ALL",
+          "labels": [
+            "Team",
+            "Must"
+          ],
+          "points": 1,
+          "srs": [],
+          "desc": "",
+          "checklist": [
+            "Nộp bài",
+            "Retro toàn dự án"
+          ]
+        }
+      ]
+    }
+  ]
+}

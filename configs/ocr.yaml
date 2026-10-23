@@ -1,0 +1,29 @@
+# OCR tiếng Việt [CV+DL+ML] — VietOCR đọc cả SỐ trên biển và CHỮ trên biển / biển phụ (FR-PIPE-07..11)
+reader:
+  engine: vietocr            # vietocr | easyocr (chỉ để so sánh E5)
+  config_name: vgg_transformer
+  weights: null              # null = tải trọng số pretrained; hoặc đường dẫn bản sao trên Drive/models
+  device: auto
+best_frame:
+  score: area_x_sharpness    # chọn frame tốt nhất trong track
+value:                       # số trên biển has_value (km/h, m, T)
+  min_crop_height: 40        # nhỏ hơn thì chờ frame gần hơn
+  inner_disc_ratio: 0.78     # [CV] cắt đĩa trong viền đỏ trước khi đưa VietOCR
+  upscale: 3
+  valid_values:              # [regex] hợp lệ hoá kết quả theo đơn vị của lớp
+    "km/h": [5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+    "m": {min: 1.5, max: 6.0}
+    "T": {min: 1, max: 60}
+text:                        # chữ trên biển chính has_text
+  min_crop_height: 60
+  upscale: 3
+  clahe: {clip_limit: 2.0, tile_grid: 4}
+  deskew: true
+sub_sign:                    # biển phụ: tấm chữ nhật sáng ngay dưới biển chính
+  enabled: true
+  search_below_ratio: 1.2    # vùng tìm cao = 1.2 × chiều cao biển chính
+  min_aspect: 1.2
+  min_fill_white: 0.45
+postprocess:
+  lexicon: configs/ocr_lexicon.txt   # TODO(TV4): danh sách chữ hay gặp trên biển/biển phụ
+  min_similarity: 80                 # rapidfuzz score (0..100)

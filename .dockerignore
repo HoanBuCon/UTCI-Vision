@@ -1,0 +1,17 @@
+.venv
+.git
+dataset
+models
+outputs
+experiments
+reports
+runs_out
+notebooks
+report
+planning
+docs
+web/node_modules
+web/dist
+**/__pycache__
+**/*.pt
+**/*.joblib

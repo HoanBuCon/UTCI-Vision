@@ -1,0 +1,29 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.1
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+        exclude: ^docker-compose\.yml$
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
+        args: [--maxkb=5000]
+  - repo: local
+    hooks:
+      - id: notebooks-in-sync
+        name: notebook huấn luyện khớp template
+        entry: python scripts/build_notebooks.py --check
+        language: system
+        pass_filenames: false
+        files: ^notebooks/train/
+      - id: no-torch-in-requirements
+        name: requirements không chứa torch/CUDA (ADR-005)
+        entry: python -c "import re,sys; bad=[l for f in sys.argv[1:] for l in open(f,encoding='utf-8') if re.match(r'(torch|torchvision|torchaudio|nvidia-|triton)\b', l.strip().lower())]; sys.exit(1 if bad else 0)"
+        language: system
+        files: ^requirements.*\.txt$
