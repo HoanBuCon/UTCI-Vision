@@ -92,7 +92,7 @@ Mở http://localhost:18080 (theo `UTCI_WEB_PORT`). Trọng số đặt ở `mod
 
 ## Nguồn & giấy phép
 
-- Mã nguồn dự án: Apache-2.0 (`LICENSE` trong repo). Lưu ý Ultralytics là AGPL-3.0 — nếu phát hành sản phẩm/dịch vụ dùng YOLO11 phải tuân thủ AGPL; với đồ án học thuật chỉ cần ghi nguồn.
+- Mã nguồn dự án: Apache-2.0 — Copyright 2026 **LiemDaiHiep** (`LICENSE`, `NOTICE`). Lưu ý Ultralytics là AGPL-3.0 — nếu phát hành sản phẩm/dịch vụ dùng YOLO11 phải tuân thủ AGPL; với đồ án học thuật chỉ cần ghi nguồn.
 - Dataset: *merge_Real-time Viet Nam Traffic Dtctn 2* — Roboflow Universe, **CC BY 4.0**. [Dataset link](https://universe.roboflow.com/nguyns-workspace-17a6o/merge_real-time-viet-nam-traffic-dtctn-2-a7emf)
 - [Ultralytics YOLO11](https://github.com/ultralytics/ultralytics) — AGPL-3.0 · [VietOCR](https://github.com/pbcquoc/vietocr).
 - Tham khảo: [Secret350/Real-time-Traffic-Objects-Detection](https://github.com/Secret350/Real-time-Traffic-Objects-Detection).
