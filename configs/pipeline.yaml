@@ -1,0 +1,47 @@
+# Pipeline nhận diện thống nhất (ADR-001). Mỗi khâu có cờ `enabled` để làm ablation (E2) và hạ tải.
+device: auto                 # auto | cpu | 0 (GPU id)
+
+quality:                     # [CV] đánh giá chất lượng frame (tính trên ảnh thu nhỏ)
+  enabled: true
+  downscale_width: 320
+  dark_mean_v: 0.30          # độ sáng trung bình kênh V (0..1) dưới ngưỡng -> ảnh tối
+  low_contrast_std_l: 0.12   # độ lệch chuẩn kênh L (0..1) dưới ngưỡng -> tương phản thấp
+  noisy_laplacian: 2500      # phương sai Laplacian trên ngưỡng -> nhiễu cao
+
+enhance:                     # [CV] chỉ áp dụng khi quality yêu cầu
+  enabled: true
+  gamma: {target_mean: 0.5, min: 0.4, max: 3.0}
+  clahe: {clip_limit: 2.0, tile_grid: 8}
+  denoise: {d: 5, sigma_color: 50, sigma_space: 50}
+
+detector:                    # [DL] YOLO11 — chạy mỗi frame
+  weights: models/current/yolo11.pt   # bản fine-tune đã --promote
+  imgsz: 960
+  conf: 0.25                 # ngưỡng hiển thị khi KHÔNG có bộ xác minh
+  proposal_conf: 0.10        # ngưỡng thấp khi có bộ xác minh (ưu tiên recall)
+  iou: 0.5
+  half: true                 # FP16 khi chạy GPU
+
+tracking:                    # [CV] Kalman + ghép IoU — chạy mỗi frame
+  enabled: true
+  iou_threshold: 0.3
+  max_age: 15                # số frame giữ track khi mất dấu
+  min_hits: 3                # track được "xác nhận" sau N frame
+  vote_window: 10
+
+track_tasks:                 # tác vụ theo track, chạy nền (FR-PIPE-12)
+  workers: 2
+  refresh_every: 10          # chạy lại sau N frame hoặc khi độ tin cậy giảm
+  verify: true
+  ocr: true
+
+verifier:                    # [CV+ML] xem configs/verifier.yaml
+  enabled: true
+  weights: models/current/verifier.joblib
+  threshold: 0.5
+
+ocr:                         # [CV+DL+ML] VietOCR đọc số + chữ, xem configs/ocr.yaml
+  enabled: true
+
+debug:
+  return_intermediate: false # true: trả ảnh tăng cường, mask, crop, vùng chữ (chế độ Giải thích)

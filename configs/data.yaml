@@ -1,0 +1,28 @@
+# Công cụ dữ liệu chạy local: python scripts/data.py {audit,split,crops,package}. Đường dẫn tính từ thư mục gốc dự án.
+raw_dir: dataset/merged_dataset_traffic_signs   # dữ liệu Roboflow gốc (train/valid/test)
+raw_splits: [train, valid, test]
+processed_dir: dataset/processed/v1             # sau lọc + chia lại (định dạng YOLO)
+version: v1
+reports_dir: reports/data                       # báo cáo audit/EDA
+seed: 42
+
+audit:
+  tiny_box_area: 0.0005        # box < 0.05% diện tích ảnh được đánh dấu "rất nhỏ"
+
+dedup:
+  hash: phash                  # phash | dhash | ahash
+  hash_size: 8
+  max_hamming: 6               # khoảng cách <= ngưỡng coi là gần trùng
+
+split:
+  ratios: {train: 0.70, val: 0.15, test: 0.15}
+
+package:                       # đóng gói để upload Google Drive / Kaggle Dataset (FR-DATA-05)
+  out_dir: dataset/packages
+  name: utci_v1                # -> utci_v1.zip + utci_v1.sha256 + manifest.csv
+
+crops:                         # cắt crop theo lớp để gán nhãn giá trị số / chữ (FR-DATA-08/09)
+  out_dir: dataset/processed/crops_v1
+  classes: [0, 3, 14, 19, 23, 24, 25, 27]   # lớp has_value / has_text
+  pad_ratio: 0.10
+  min_side_px: 24

@@ -1,0 +1,9 @@
+# Backend FastAPI (FR-API). Host/cổng KHÔNG đặt ở đây — lấy từ .env (UTCI_API_HOST, UTCI_API_PORT, ...).
+limits:
+  image_max_mb: 10
+  video_max_mb: 200
+  video_max_seconds: 180
+outputs_dir: outputs
+outputs_ttl_hours: 24
+stream:
+  max_width: 960             # frame lớn hơn sẽ bị thu nhỏ trước khi xử lý

@@ -1,0 +1,7 @@
+UTCI-Vision — Hệ thống nhận diện biển báo giao thông Việt Nam
+Copyright 2026 LiemDaiHiep
+
+Sản phẩm này sử dụng các thành phần bên thứ ba:
+- Ultralytics YOLO11 (AGPL-3.0) — https://github.com/ultralytics/ultralytics
+- VietOCR (Apache-2.0) — https://github.com/pbcquoc/vietocr
+- Dataset "merge_Real-time Viet Nam Traffic Dtctn 2" (CC BY 4.0) — Roboflow Universe

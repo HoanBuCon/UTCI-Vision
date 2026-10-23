@@ -1,0 +1,5 @@
+# Cài bằng:  pip install --no-deps -r requirements-nodeps.txt
+# VietOCR 0.3.13 khoá cứng imgaug==0.4.0, pillow==10.2.0, albumentations==1.4.2... (không hợp numpy 2).
+# Đã kiểm chứng 2026-10-22: chạy suy luận với torch 2.14.1 + numpy 2 khi cài không kèm phụ thuộc;
+# phụ thuộc cần cho suy luận (einops, gdown, lmdb, pillow, scikit-image...) đã có trong requirements.txt.
+vietocr==0.3.13
