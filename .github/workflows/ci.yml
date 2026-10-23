@@ -1,0 +1,38 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: Torch CPU (CI tự chọn — thành viên tự cài theo GPU, ADR-005)
+        run: pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+      - run: pip install -r requirements.txt -r requirements-dev.txt && pip install --no-deps -r requirements-nodeps.txt && pip install --no-deps -e .
+      - name: requirements không chứa torch/CUDA
+        run: "! grep -iE '^(torch|torchvision|torchaudio|nvidia-|triton)' requirements*.txt"
+      - run: ruff check src scripts tests notebooks/train/_template.py
+      - run: ruff format --check src scripts tests
+      - run: python scripts/build_notebooks.py --check
+      - run: pytest -q
+
+  web:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: web/package-lock.json }
+      - run: npm ci
+      - run: npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose --profile cpu config -q && docker compose --profile gpu config -q

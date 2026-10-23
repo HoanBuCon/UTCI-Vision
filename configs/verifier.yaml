@@ -1,0 +1,20 @@
+# Bộ xác minh [CV+ML] — LightGBM stacking trên dự đoán của YOLO ở tập val (FR-TRAIN-05, FR-PIPE-06)
+build:
+  split: val
+  proposal_conf: 0.10        # chạy YOLO với ngưỡng thấp để có cả dương tính giả
+  match_iou: 0.5             # khớp GT cùng lớp với IoU >= ngưỡng -> nhãn 1
+  crop_pad_ratio: 0.10
+features:                    # đặc trưng vùng CV (utci_vision.verifier.region_features)
+  crop_size: 48
+  color_ranges:              # HSV OpenCV: H 0-179, S/V 0-255 — TV2 tinh chỉnh
+    red:    [[[0, 70, 50], [10, 255, 255]], [[160, 70, 50], [179, 255, 255]]]
+    blue:   [[[95, 80, 40], [130, 255, 255]]]
+    yellow: [[[15, 80, 80], [35, 255, 255]]]
+    white:  [[[0, 0, 170], [179, 40, 255]]]
+  hog: {size: 32, orientations: 9, pixels_per_cell: [8, 8], cells_per_block: [2, 2], pca_components: 16}
+  approx_eps: 0.04
+model:
+  type: lightgbm             # lightgbm | logreg | rf  (E3)
+  lightgbm: {n_estimators: 400, learning_rate: 0.05, num_leaves: 31, class_weight: balanced}
+  calibration: isotonic      # isotonic | sigmoid | none
+  cv_folds: 5

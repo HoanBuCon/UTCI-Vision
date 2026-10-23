@@ -1,0 +1,7 @@
+# Thống nhất xuống dòng LF cho mọi máy (Windows/Linux/Docker), khớp .editorconfig
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pt binary
+*.docx binary

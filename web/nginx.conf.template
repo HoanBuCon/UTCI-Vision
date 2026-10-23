@@ -1,0 +1,27 @@
+# Image nginx tự thay ${UTCI_WEB_PORT}, ${UTCI_API_PORT} khi khởi động (envsubst từ /etc/nginx/templates/).
+server {
+    listen ${UTCI_WEB_PORT};
+    server_name _;
+    client_max_body_size 210m;   # video ≤ 200 MB (configs/api.yaml)
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location /api/v1/stream {    # WebSocket webcam
+        proxy_pass http://api:${UTCI_API_PORT};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 3600s;
+    }
+
+    location /api/ {
+        proxy_pass http://api:${UTCI_API_PORT};
+        proxy_set_header Host $host;
+        proxy_read_timeout 300s;
+    }
+
+    location / {                 # SPA
+        try_files $uri $uri/ /index.html;
+    }
+}

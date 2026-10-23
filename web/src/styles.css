@@ -1,0 +1,89 @@
+/* Giao diện tối giản — TV2 hoàn thiện. Màu siêu lớp khớp src/utci_vision/visualize.py. */
+:root {
+  --bg: #f7f7f8;
+  --fg: #1d1d1f;
+  --muted: #6b6b70;
+  --card: #ffffff;
+  --border: #e3e3e6;
+  --prohibitory: #dc2828;
+  --warning: #f5b800;
+  --mandatory: #0a64d8;
+  --info: #0a8fc8;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+}
+
+.topbar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.topbar a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.topbar a.active {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+main {
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+.badge-ok { border-color: #2e9e5b; color: #2e9e5b; }
+.badge-warn { border-color: #c98a00; color: #c98a00; }
+.badge-err { border-color: #dc2828; color: #dc2828; }
+
+.todo {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.library {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.library li {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.tag { font-size: 12px; margin-left: 6px; }
+.tag-prohibitory { color: var(--prohibitory); }
+.tag-warning { color: #b88a00; }
+.tag-mandatory { color: var(--mandatory); }
+.tag-info { color: var(--info); }

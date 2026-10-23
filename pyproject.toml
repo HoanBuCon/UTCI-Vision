@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# Phụ thuộc được quản lý bằng requirements*.txt (khoá phiên bản, không chứa torch — ADR-005).
+# Cài package: pip install -e . --no-deps
+[project]
+name = "utci-vision"
+version = "0.1.0"
+description = "Hệ thống web nhận diện biển báo giao thông Việt Nam: YOLO11 + CV truyền thống + ML + OCR tiếng Việt"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = ["dataset", "experiments", "notebooks/train/*.ipynb", "web"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "N", "SIM"]
+ignore = ["E501", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+"notebooks/train/_template.py" = ["E402", "F811", "I001"]

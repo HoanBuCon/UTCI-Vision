@@ -1,0 +1,34 @@
+# FINE-TUNE YOLO11 (ADR-004) — khởi tạo từ trọng số pretrained, KHÔNG train lại từ đầu.
+# Dùng bởi utci_vision.detector.finetune trong 3 notebook; notebook ghi đè IMGSZ, EPOCHS, BATCH, FREEZE, WORKERS, DEVICE.
+model: yolo11s.pt            # pretrained COCO (Ultralytics tự tải). yolo11n.pt cho CPU/E3.
+                             # Fine-tune tiếp từ checkpoint của nhóm: đặt INIT_WEIGHTS trong notebook.
+train:
+  epochs: 80                 # fine-tune hội tụ nhanh hơn train từ đầu
+  imgsz: 960
+  batch: 8
+  freeze: 0                  # số lớp đầu đóng băng: 0 = fine-tune toàn bộ, 10 = đóng băng backbone (E3)
+  optimizer: AdamW
+  lr0: 0.001                 # learning rate nhỏ để không phá đặc trưng pretrained
+  lrf: 0.01
+  cos_lr: true
+  warmup_epochs: 3
+  patience: 25
+  amp: true
+  workers: 4                 # Windows + Jupyter: 0
+  seed: 42
+  fliplr: 0.0                # KHÔNG lật ngang: biển rẽ trái/phải sẽ đổi nghĩa
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  mosaic: 1.0
+  close_mosaic: 15
+  mixup: 0.1
+  copy_paste: 0.1
+  scale: 0.5
+  weight_decay: 0.0005
+  save_period: 10            # checkpoint định kỳ (resume trên Colab)
+smoke:                       # SMOKE=True trong notebook
+  epochs: 1
+  imgsz: 320
+  batch: 4
+  fraction: 0.01
