@@ -56,3 +56,35 @@ def test_dataset_checksums(tmp_path):
 def test_notebooks_in_sync_with_template():
     result = subprocess.run([sys.executable, str(ROOT / "scripts" / "build_notebooks.py"), "--check"], cwd=ROOT)
     assert result.returncode == 0, "Chạy python scripts/build_notebooks.py"
+
+
+def test_smoke_params_override_notebook_overrides():
+    from utci_vision.config import load_config
+    from utci_vision.detector import train_params
+
+    cfg = load_config("yolo")
+    nb = {"epochs": 80, "imgsz": 960, "batch": 8, "workers": 0}
+    smoke = train_params(cfg, nb, smoke=True)
+    assert smoke["epochs"] == 1 and smoke["fraction"] == cfg["smoke"]["fraction"] and smoke["workers"] == 0
+    assert train_params(cfg, nb)["epochs"] == 80
+
+
+def test_package_roundtrip_verifies(tmp_path):
+    from utci_vision.data.package import package
+    from utci_vision.training import extract_dataset, verify_checksum, verify_extracted
+
+    src = tmp_path / "v1"
+    for s in ("train", "val", "test"):
+        (src / s / "images").mkdir(parents=True)
+        (src / s / "images" / f"{s}.jpg").write_bytes(b"jpg")
+        (src / s / "labels").mkdir()
+        (src / s / "labels" / f"{s}.txt").write_text("0 0.5 0.5 0.1 0.1\n")
+        (src / s / "labels.cache").write_bytes(b"x")
+    (src / "data.yaml").write_text("path: /abs/elsewhere\ntrain: train/images\n")
+    (src / "manifest.csv").write_text("path,split\n")
+    zip_path, sha = package(src, tmp_path / "out", "utci_v1", "v1")
+    verify_checksum(zip_path, sha)
+    ds = extract_dataset(zip_path, tmp_path / "x")
+    verify_extracted(ds)
+    assert "path: ." in (ds / "data.yaml").read_text() and not list(ds.rglob("*.cache"))
+    assert len(list(ds.rglob("*.jpg"))) == 3

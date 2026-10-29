@@ -1,0 +1,33 @@
+id,class,train,valid,test,total,median_side_px
+0,Ben xe buyt,170,95,3,268,42.4
+1,Bien cam phuong tien,1119,221,36,1376,31.5
+2,Bien chi dan huong di,302,91,36,429,26.8
+3,Bien gop lan duong theo phuong tien,544,231,35,810,50.2
+4,Cam di nguoc chieu,657,286,52,995,16.6
+5,Cam di thang va re phai,77,0,0,77,58.0
+6,Cam do xe,705,334,54,1093,30.5
+7,Cam dung va do xe,1381,191,43,1615,28.0
+8,Cam quay dau,90,55,0,145,37.0
+9,Cam re phai,205,36,5,246,44.9
+10,Cam re trai,306,17,12,335,36.4
+11,Cam re trai va phai,4,87,0,91,46.5
+12,Cam re trai va quay dau xe,229,1,2,232,30.0
+13,Cho ngoat nguy hiem,115,246,7,368,38.6
+14,Cho quay xe,57,15,4,76,20.8
+15,Chu y chuong ngai vat,95,2,1,98,30.5
+16,Di cham,314,129,11,454,42.0
+17,Duong bi thu hep,63,10,6,79,30.1
+18,Duong giao nhau,102,2,0,104,42.1
+19,Duong mot chieu,212,64,7,283,29.3
+20,Duong nguoi di bo cat ngang,375,33,12,420,34.5
+21,Giao nhau voi duong khong uu tien,480,57,20,557,32.4
+22,Giao nhau voi duong sat co rao chan,6,42,0,48,58.5
+23,Gioi han chieu cao,172,32,13,217,20.3
+24,Gioi han toc do,1208,449,48,1705,29.0
+25,Gioi han trong luong,20,5,6,31,31.9
+26,Go giam toc phia truoc,170,10,8,188,28.5
+27,Kiem tra,56,0,0,56,27.1
+28,Noi giao nhau chay theo vong xuyen,79,7,7,93,29.9
+29,Phai di vong sang ben phai,512,238,38,788,19.4
+30,Tre em,79,17,7,103,31.0
+31,Vach sang duong cho nguoi di bo,72,17,9,98,19.5

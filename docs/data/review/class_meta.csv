@@ -1,0 +1,33 @@
+id,name,superclass,qcvn_code,qcvn_name,shape_color,has_value,value_type,has_text,note
+0,Ben xe buyt,informative (Biển chỉ dẫn - I),I.434a,Bến xe buýt,chữ nhật xanh,False,,True,Có chữ 'BẾN XE BUÝT'/'BUS STOP'
+1,Bien cam phuong tien,prohibitory (Biển cấm - P),"P.103a–c, P.104, P.105, P.106a–b, P.107, P.111a–d…",Nhóm biển cấm từng loại phương tiện,tròn viền đỏ,False,,False,"Lớp gộp nhiều biển (cấm ô tô, xe tải, mô tô…)"
+2,Bien chi dan huong di,informative (Biển chỉ dẫn - I),I.414a–d (+ R.301a–h),Chỉ hướng đường (+ hướng đi phải theo),chữ nhật xanh / tròn xanh,False,,True,Bảng chỉ dẫn có chữ địa danh; lớp đang trộn cả biển hiệu lệnh tròn R.301 (xem contact_sheet_issues)
+3,Bien gop lan duong theo phuong tien,mandatory (Biển hiệu lệnh - R),R.415 (+ R.412),Biển gộp làn đường theo phương tiện,chữ nhật xanh,True,speed_kmh (có bảng kèm tốc độ từng làn),False,Một số bảng có biển tốc độ tối đa theo làn
+4,Cam di nguoc chieu,prohibitory (Biển cấm - P),P.102,Cấm đi ngược chiều,tròn đỏ,False,,False,
+5,Cam di thang va re phai,prohibitory (Biển cấm - P),P.139,Cấm đi thẳng và rẽ phải,tròn viền đỏ,False,,False,
+6,Cam do xe,prohibitory (Biển cấm - P),P.131a–c,Cấm đỗ xe,tròn xanh viền đỏ,False,,False,P.131b/c có thêm vạch ngày chẵn/lẻ
+7,Cam dung va do xe,prohibitory (Biển cấm - P),P.130,Cấm dừng xe và đỗ xe,tròn xanh viền đỏ,False,,False,
+8,Cam quay dau,prohibitory (Biển cấm - P),P.124a–b,Cấm quay đầu xe,tròn viền đỏ,False,,False,
+9,Cam re phai,prohibitory (Biển cấm - P),P.123b,Cấm rẽ phải,tròn viền đỏ,False,,False,
+10,Cam re trai,prohibitory (Biển cấm - P),P.123a,Cấm rẽ trái,tròn viền đỏ,False,,False,
+11,Cam re trai va phai,prohibitory (Biển cấm - P),P.137,Cấm rẽ trái và rẽ phải,tròn viền đỏ,False,,False,
+12,Cam re trai va quay dau xe,prohibitory (Biển cấm - P),P.124c–d,Cấm rẽ trái và quay đầu xe,tròn viền đỏ,False,,False,
+13,Cho ngoat nguy hiem,warning (Biển nguy hiểm/cảnh báo - W),W.201a–b,Chỗ ngoặt nguy hiểm,tam giác vàng,False,,False,
+14,Cho quay xe,informative (Biển chỉ dẫn - I),I.409,Chỗ quay xe,vuông xanh,False,,False,Phân biệt với I.410 'Khu vực quay xe'
+15,Chu y chuong ngai vat,warning (Biển nguy hiểm/cảnh báo - W),W.246a–c,Chú ý chướng ngại vật,tam giác vàng,False,,False,
+16,Di cham,warning (Biển nguy hiểm/cảnh báo - W),W.245a,Đi chậm,tam giác vàng,False,,True,Có chữ 'ĐI CHẬM' (W.245b bản tiếng Anh 'SLOW')
+17,Duong bi thu hep,warning (Biển nguy hiểm/cảnh báo - W),W.203a–c,Đường bị hẹp,tam giác vàng,False,,False,
+18,Duong giao nhau,warning (Biển nguy hiểm/cảnh báo - W),W.205a–e,Đường giao nhau,tam giác vàng,False,,False,Tam giác ngược W.208 không thuộc lớp này
+19,Duong mot chieu,informative (Biển chỉ dẫn - I),I.407a,Đường một chiều,vuông xanh,False,,False,
+20,Duong nguoi di bo cat ngang,warning (Biển nguy hiểm/cảnh báo - W),W.224,Đường người đi bộ cắt ngang,tam giác vàng,False,,False,
+21,Giao nhau voi duong khong uu tien,warning (Biển nguy hiểm/cảnh báo - W),W.207a–l,Giao nhau với đường không ưu tiên,tam giác vàng,False,,False,
+22,Giao nhau voi duong sat co rao chan,warning (Biển nguy hiểm/cảnh báo - W),W.210,Giao nhau với đường sắt có rào chắn,tam giác vàng,False,,False,"Biển chữ X (W.211a/b, không rào chắn) không thuộc lớp này"
+23,Gioi han chieu cao,prohibitory (Biển cấm - P),P.117,Hạn chế chiều cao,tròn viền đỏ,True,"height_m (vd 2,0m; 4,5m)",False,"Số thập phân dùng dấu phẩy; bảng xanh 'Chiều cao an toàn' là biển chỉ dẫn, không phải P.117"
+24,Gioi han toc do,prohibitory (Biển cấm - P),P.127 (+ P.127a–c),Tốc độ tối đa cho phép,tròn viền đỏ,True,speed_kmh (thường 30–120),False,Đầu vào chính của OCR
+25,Gioi han trong luong,prohibitory (Biển cấm - P),P.115 (+ P.116),Hạn chế trọng tải toàn bộ xe (+ tải trọng trục),tròn viền đỏ,True,"weight_t (vd 10T; 3,5T)",False,Dễ nhầm với biển tốc độ; P.116 có hình trục xe
+26,Go giam toc phia truoc,warning (Biển nguy hiểm/cảnh báo - W),W.221b,Đường có gồ giảm tốc,tam giác vàng,False,,False,
+27,Kiem tra,prohibitory (Biển cấm - P),P.129,Kiểm tra,tròn viền đỏ,False,,True,Có chữ 'KIỂM TRA'
+28,Noi giao nhau chay theo vong xuyen,mandatory (Biển hiệu lệnh - R),R.303,Nơi giao nhau chạy theo vòng xuyến,tròn xanh,False,,False,Biển cảnh báo tam giác W.206 không thuộc lớp này
+29,Phai di vong sang ben phai,mandatory (Biển hiệu lệnh - R),R.302a,Hướng phải đi vòng chướng ngại vật (sang phải),tròn xanh,False,,False,
+30,Tre em,warning (Biển nguy hiểm/cảnh báo - W),W.225,Trẻ em,tam giác vàng,False,,False,
+31,Vach sang duong cho nguoi di bo,informative (Biển chỉ dẫn - I),I.423b,Đường người đi bộ sang ngang,vuông xanh,False,,False,Khác W.224 (tam giác cảnh báo)

@@ -48,10 +48,10 @@ def cmd_split(cfg: dict, args: argparse.Namespace) -> None:
     images = pd.read_csv(reports / "images.csv")
     if "dup_cluster" not in images:
         raise SystemExit("Thiếu cột dup_cluster — chạy `python scripts/data.py audit --dedup` trước.")
-    excluded = reports / "excluded.txt"  # TV5 ghi ảnh cần loại, mỗi dòng một tên ảnh
-    if excluded.exists():
-        names = {ln.strip() for ln in excluded.read_text(encoding="utf-8").splitlines() if ln.strip()}
-        images = images[~images["image"].isin(names)].reset_index(drop=True)
+    excluded = split.read_exclusions([resolve(p) for p in cfg["split"].get("exclude_lists", [])])
+    before = len(images)
+    images = images[~images["image"].isin(excluded)].reset_index(drop=True)
+    print(f"Loại {before - len(images)} ảnh theo {len(cfg['split'].get('exclude_lists', []))} danh sách")
     images["class_counts"] = split.stratification_vectors(images, pd.read_csv(reports / "boxes.csv"), len(classes))
     dims = len(images["class_counts"].iloc[0])
     images["new_split"] = split.grouped_stratified_split(images, dims, cfg["split"]["ratios"], seed=cfg["seed"])

@@ -1,0 +1,119 @@
+idx,split,file,decision,note
+001,train,train/images/0604_jpg.rf.8e5ea16fb45da4be939f2d66f0443e69.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tròn viền đỏ trên cầu vượt
+002,train,train/images/10035_png.rf.fac8c1561cb78f25b7fbb3f35fafad32.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+003,train,train/images/1003_png.rf.2e89fc6b9856d727ffba8db200fced5d.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+004,train,train/images/10061_png.rf.66a160ccdd5e6fe4aafcad402f339a25.jpg,bg,"có biển nhỏ đỏ-trắng bên phải, không rõ loại; đã xác nhận: không thuộc 32 lớp"
+005,train,train/images/1010_png.rf.9b528c721003324f63d615ad27c57630.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cảnh báo nhỏ ở xa
+006,train,train/images/10160_png.rf.5cb43138046abe62c662220e0bd0daf2.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+007,train,train/images/10182_png.rf.5f0a06a1c067e37b12a38ed6540d3e16.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác nhỏ bên phải
+008,train,train/images/10219_png.rf.946a05c99a4f8f82d6574df072346b08.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+009,train,train/images/10242_png.rf.b7e45355cdb879d1529206f3c6cc9719.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển chỉ dẫn xanh (có thể Ben xe buyt)
+010,train,train/images/10319_png.rf.c2a5420e109efc4b8e7124037a2a220f.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+011,train,train/images/10357_png.rf.cde06fa750326e2814fb3b5c9e9ebd07.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+012,train,train/images/10492_png.rf.9c552d59dd4ab3bdecea6e728992950f.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+013,train,train/images/1051_png.rf.d77698e55aa0eaf75be54490bf5aae7d.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng
+014,train,train/images/10529_png.rf.99ad2cea9b7728f62217dcf47e0b1ab1.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+015,train,train/images/10533_png.rf.ecc39d2441b857911e1a6efa4b880a40.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+016,train,train/images/10584_png.rf.3ebc53d953fb32f41edf8b8b167e1225.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+017,train,train/images/10599_png.rf.14d5dc785ee3cf777be70e2beac40029.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cảnh báo nhỏ ở xa
+018,train,train/images/10669_png.rf.fe3b173eb06403c919bb36c6228f747c.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+019,train,train/images/10674_png.rf.11c2d003b474835e0eb8a5e388da99e8.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+020,train,train/images/10775_png.rf.65bc554af0868f5c10edb32a08fe18eb.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+021,train,train/images/10857_png.rf.38a297315c68f82477f44600c3695e33.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+022,train,train/images/10885_png.rf.3d103c97909b19e92e92b12770a298f9.jpg,bg,chỉ thấy mặt sau biển
+023,train,train/images/1089_png.rf.c664ed7c8370e12f9b4c9f36e506ed71.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+024,train,train/images/10941_png.rf.224dbea35605cb3851d451e6556eca87.jpg,bg,chỉ thấy mặt sau biển
+025,train,train/images/11043_png.rf.57dec039c3a44e1c66d320cece761032.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+026,train,train/images/11096_png.rf.1629954cf3143c653199dd411c59b6aa.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tròn đỏ nhỏ ở xa
+027,train,train/images/1118_png.rf.4c5efeb2433ad098a08221f3a352bab1.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+028,train,train/images/1121_jpg.rf.747a9a9fb391366e68f262e3d637ce87.jpg,bg,"biển 'giám sát camera', không thuộc 32 lớp"
+029,train,train/images/11230_png.rf.a6de426fabc9e3a35b703d4b953aa53f.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+030,train,train/images/11371_png.rf.8287e86e02127e936ebc06afff25a066.jpg,bg,"biển chỉ dẫn xanh có chữ, không thuộc 32 lớp"
+031,train,train/images/11378_png.rf.13a79ee46668482356b90877c6632fb9.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+032,train,train/images/1137_png.rf.e582ef9b5623ceccff69ba2f1d879008.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+033,train,train/images/11417_png.rf.eaf872b2635230030163a822bde594c9.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng giữa ảnh
+034,train,train/images/11462_png.rf.2018af47508e4c139905087116ab5a11.jpg,bg,"biển xanh gạch chéo, không thuộc 32 lớp"
+035,train,train/images/11465_png.rf.26073daaf082f004486b4e3c11c3fd39.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+036,train,train/images/11505_png.rf.2031c2a3cd4d38f8e7b5f439371f6aad.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+037,train,train/images/11668_png.rf.5848c011440faa431655728060782ab4.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+038,train,train/images/11789_png.rf.e9f84dcc5bc4e73e18cd6688f1ff9591.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+039,train,train/images/11849_png.rf.43815ae4ed0ff5c3cdb59f07058b8ed9.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng nhỏ
+040,train,train/images/11931_png.rf.7f18acb1cf72e211c5a0d0904cad841e.jpg,bg,chỉ thấy mặt sau biển
+041,train,train/images/11955_png.rf.1f397be87a3daed1923cbe1d6753dda5.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+042,train,train/images/11992_png.rf.7493104c78868f457e9ee37546d258f7.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng bên phải
+043,train,train/images/12338_png.rf.db0976c4f0018d2ff8e63fc2cae1c640.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng trên cột
+044,train,train/images/1297_jpg.rf.862f11236067d4585aeea3e8a837f6c5.jpg,bg,"biển 'giám sát camera', không thuộc 32 lớp"
+045,train,train/images/1298_jpg.rf.c6aed65b860320428e0fe3eccef53982.jpg,bg,"biển 'giám sát camera', không thuộc 32 lớp"
+046,train,train/images/1319_jpg.rf.68c14c1ac22042595d3ee8e5b9169482.jpg,exclude,"ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn"
+047,train,train/images/1320_jpg.rf.c08703e48404eb8573448411ada3cbe9.jpg,exclude,"ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn"
+048,train,train/images/1321_jpg.rf.86339db4d726bc862bba035f67f6dddd.jpg,exclude,"ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn"
+049,train,train/images/1322_jpg.rf.57258755b5f497b8608d38b40c740a87.jpg,exclude,"ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn"
+050,train,train/images/1323_jpg.rf.50aaa904d2756059979ae86f04783c50.jpg,exclude,"ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn"
+051,train,train/images/1324_jpg.rf.254e6a7fccd1d280bf3cb5c0f5b36138.jpg,exclude,"ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn"
+052,train,train/images/1325_jpg.rf.b97be436a8fdb859536af7c4acac8033.jpg,exclude,"ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn"
+053,train,train/images/1326_jpg.rf.587ebb74e69687aa5bb3a5d68ada45d2.jpg,exclude,"ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn"
+054,train,train/images/1327_jpg.rf.c6f8e5a168e9d902739df0779c0c0aa2.jpg,exclude,"ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn"
+055,train,train/images/1328_jpg.rf.5b305a244e47bae0454ce01f8dde0dcf.jpg,exclude,"ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn"
+056,train,train/images/3558_png.rf.3b2ed4ddb2b186faa17329ce90e13288.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tròn đỏ bên phải
+057,train,train/images/3827_png.rf.94b220e159b1cd6e76383b3e1170f6b1.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tròn đỏ bên phải
+058,train,train/images/3922_png.rf.56edcb598199fd69335cb0732a4bab36.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tròn đỏ
+059,train,train/images/3932_png.rf.b0405e50b788d68a541afd22f894143b.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng
+060,train,train/images/4560_png.rf.45d965afece853857bba2a90d7752b51.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác (Cho ngoat nguy hiem?)
+061,train,train/images/4639_png.rf.c4138b5fba20ab58299b031ed7ae78be.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cấm (tròn đỏ) góc trên trái
+062,train,train/images/4680_png.rf.7601260ccac6d15ea0ecbe937c051729.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tròn đỏ ở xa
+063,train,train/images/5001_png.rf.4094130272c044612cb6d2a951ed3e22.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+064,train,train/images/510_png.rf.d200325f36367a89911fd2b0c29e6898.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác Cho ngoat nguy hiem
+065,train,train/images/5226_png.rf.e6246b572ccfd098bb7f84f9b41299b7.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam do/dung xe
+066,train,train/images/5468_png.rf.a64d9da52a81d6a8ceea347c21894268.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cấm tròn đỏ
+067,train,train/images/5477_png.rf.09218ef3fc84e261afbdbb9a5b4df546.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam do/dung xe
+068,train,train/images/5677_png.rf.15a8f1d05f339b0b964ec3673d8966cd.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam do/dung xe
+069,train,train/images/581_png.rf.acabf74b3597e7945733e15edfcfc04f.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cho ngoat nguy hiem
+070,train,train/images/5823_png.rf.e842f1b4fdef4bfb8cea033fabb04c21.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cấm rẽ/đỗ
+071,train,train/images/5921_png.rf.7c74c33289e542d08b5fda6d6fba9be1.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam dung va do xe
+072,train,train/images/7028_png.rf.62348e885895dfceb9a31960117ab3fd.jpg,bg,"biển tròn trắng gạch chéo (hết hạn chế), không thuộc 32 lớp; đã xác nhận: không thuộc 32 lớp"
+073,train,train/images/7281_png.rf.ce017a9417aee493abef224b902b0e87.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng
+074,train,train/images/8891_png.rf.9cd330bc8a18d224225e0ebdb5b117fc.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tròn đỏ
+075,train,train/images/9568_png.rf.ad0ec4ddf346b1c1ab108854e273ac14.jpg,bg,"biển tròn trắng gạch chéo (hết hạn chế), không thuộc 32 lớp; đã xác nhận: không thuộc 32 lớp"
+076,train,train/images/9647_png.rf.2204742424daa9eedeffd732f88e8ace.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng
+077,valid,valid/images/10439_png.rf.c8af7f4a7d92aa16663ffb4b6e7247d1.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+078,valid,valid/images/10962_png.rf.9cea6a52d254e8ce5ef19dfb3f198535.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng nhỏ
+079,valid,valid/images/11024_png.rf.83395f4eb70f660929de2725eb7fda00.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+080,valid,valid/images/1104_png.rf.f3737ffba9a91f149c0fb0b1a95f5709.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+081,valid,valid/images/11053_png.rf.b474417804b0e6e7ee11075a0d44a8c8.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cảnh báo nhỏ ở xa
+082,valid,valid/images/11173_png.rf.8a076f5786283a66b5a4d6c37fe890a7.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng
+083,valid,valid/images/11180_png.rf.b3926d99edc6893b9c03f0f221e056d1.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+084,valid,valid/images/11410_png.rf.2cfe9f35812a45be3556bb6aa0f2e1ca.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển vàng nhỏ ở xa
+085,valid,valid/images/11507_png.rf.b8bc3d920be313ec608ab5becd31c025.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+086,valid,valid/images/1152_png.rf.502d5a384fed91769b3a317d4d4d7780.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+087,valid,valid/images/11760_png.rf.9952d0c1276e6f56ce5e33ac3e96b5b2.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+088,valid,valid/images/11774_png.rf.f6946f7fdbefd3282f7e054ac114ee4b.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+089,valid,valid/images/11801_png.rf.ee1947cf148acb0922ff618489730bcc.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+090,valid,valid/images/3139_png.rf.0ea68142d8f6fa2ad01e462a50cd45d0.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tròn đỏ (có thể Gioi han toc do)
+091,valid,valid/images/3184_jpg.rf.91ee4bc9b2f26f372220a3b1c341d2cb.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cấm tròn đỏ nhỏ dưới cầu vượt; 7 khung hình gần trùng
+092,valid,valid/images/3185_jpg.rf.74887428a3408b5f2406f5b3392b6bf3.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cấm tròn đỏ nhỏ dưới cầu vượt; 7 khung hình gần trùng
+093,valid,valid/images/3186_jpg.rf.595daa8b43716a22aaab3a19f4eab0aa.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cấm tròn đỏ nhỏ dưới cầu vượt; 7 khung hình gần trùng
+094,valid,valid/images/3187_jpg.rf.d9df10fc7b71cdfb75bf3cdb3fe11929.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cấm tròn đỏ nhỏ dưới cầu vượt; 7 khung hình gần trùng
+095,valid,valid/images/3188_jpg.rf.fd5bec3983b124e3e0d381a3a71202f9.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cấm tròn đỏ nhỏ dưới cầu vượt; 7 khung hình gần trùng
+096,valid,valid/images/3189_jpg.rf.d9054f919911e0134d2874b6081ccf7e.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cấm tròn đỏ nhỏ dưới cầu vượt; 7 khung hình gần trùng
+097,valid,valid/images/3190_jpg.rf.3e63d12a9422e70711832fb73f41bd9e.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cấm tròn đỏ nhỏ dưới cầu vượt; 7 khung hình gần trùng
+098,valid,valid/images/3614_png.rf.0300d1dac4e3dd362f8cc7b416d4ebf4.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng
+099,valid,valid/images/5136_png.rf.0dbe741022a901d4f38ff9e25e7ff31b.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển cấm (tròn đỏ)
+100,valid,valid/images/5410_png.rf.811d752461c0c8a0cdbf2260d95ed45d.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam dung va do xe
+101,valid,valid/images/5418_png.rf.0c5ccb052c95ae939ea03a80c05b2780.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+102,valid,valid/images/5566_png.rf.5a06f214a2b27a8c909d6c647d837a39.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam do/dung xe
+103,valid,valid/images/5880_png.rf.8da78d77baf9e0a5fdae97df3c02c8ea.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam dung va do xe
+104,valid,valid/images/5885_png.rf.3325faf1f78847adf0c09523ab413e5c.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam dung va do xe
+105,valid,valid/images/5982_png.rf.cdcefb5b55d20871560b3d1d6b034e8f.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam do/dung xe
+106,valid,valid/images/6441_png.rf.d85c5db80f802509a68faeaedc07f293.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+107,valid,valid/images/8407_png.rf.4ff4d64fccd098f4ed6ab29d091035c1.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tròn đỏ
+108,valid,valid/images/8764_png.rf.5fbb392ee0814211100de4005542068f.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng
+109,test,test/images/10236_png.rf.0555410dd31a8dafef0eb8c52de14000.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+110,test,test/images/10265_png.rf.ddf336211a3edf7215261effaefd2992.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+111,test,test/images/10582_png.rf.2d6cf0a2d0cd4e611b5a20acba188ece.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng nhỏ
+112,test,test/images/11092_png.rf.ff035e541f5e1518e7c7f7fa438bea22.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+113,test,test/images/1141_png.rf.67845bf302babacb3dac6e6e64fe185d.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+114,test,test/images/267_png.rf.45a0fa39f277b606bd8162558bc4055b.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển tam giác vàng
+115,test,test/images/4587_png.rf.2e0a2df36ae8ba59feed1cb18bc6436f.jpg,bg,"ảnh nền, không có biển thuộc 32 lớp"
+116,test,test/images/5115_png.rf.ce4130596856b7fb948e229cb58b07ae.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam dung va do xe
+117,test,test/images/5384_png.rf.00307d58c9017c863589d584088d89d2.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam dung va do xe
+118,test,test/images/5594_png.rf.8162e0587664ee453af9aa94b7e0342e.jpg,relabel,có biển thuộc 32 lớp nhưng chưa gán nhãn: biển Cam dung va do xe

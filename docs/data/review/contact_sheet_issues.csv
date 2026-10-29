@@ -1,0 +1,24 @@
+lop,anh (nhan duoi contact sheet),van de,muc do
+00 Ben xe buyt,va 5323_png,"Crop là người/vật thể khác, không phải biển",nhãn sai
+00 Ben xe buyt,va 7524_png,Crop là thân xe/bảng hiệu vàng,nhãn sai
+02 Bien chi dan huong di,"tr 0373_jpg, tr 0376_jpg",Biển tròn xanh 'hướng đi phải theo' gộp chung với bảng chỉ dẫn chữ nhật,lớp không nhất quán
+03 Bien gop lan duong theo phuong tien,tr 1193_jpg,"Biển phụ trắng 'trừ xe phục vụ', không phải biển gộp làn",nhãn sai
+05 Cam di thang va re phai,tr 1547–1621_jpg,"~75/77 bbox từ cùng một đoạn video, chỉ có ở train",thiếu đa dạng
+07 Cam dung va do xe,"tr 0770_jpg (đã kiểm tra ảnh gốc), tr 0809, 0965, 1000, 1007, 1047, 1228, 1257, 1400",Đĩa xám đậm = MẶT SAU của biển tròn bị gán lớp 7,nhãn sai (nghiêm trọng)
+09 Cam re phai,"va 11733_png, tr 2539/2544/2558_jpg",Mũi tên có vẻ rẽ trái → có thể là lớp 10 Cam re trai,cần xem lại
+12 Cam re trai va quay dau xe,tr 11963_png,Crop tròn hồng không rõ biển,cần xem lại
+12 Cam re trai va quay dau xe,tr 0074–0413_jpg,Gần như toàn bộ từ 1 đoạn video,thiếu đa dạng
+15 Chu y chuong ngai vat,tr 10843_png,"Biển 'công trường/người làm việc', không phải chướng ngại vật",nhãn sai
+18 Duong giao nhau,"tr 12163_png (đã kiểm tra), va 12271_png",Tam giác NGƯỢC = biển nhường đường/giao với đường ưu tiên,nhãn sai
+19 Duong mot chieu,tr 2447_jpg,Crop là tam giác vàng (biển cảnh báo),nhãn sai
+19 Duong mot chieu,va 3166_jpg,Biển tròn xanh 'đi thẳng' (biển hiệu lệnh),cần xem lại
+20 Duong nguoi di bo cat ngang,tr 5635_png,Biển tròn xanh 'đường dành cho người đi bộ',nhãn sai
+20 Duong nguoi di bo cat ngang,tr 3823_png,Ký hiệu giống lớp 21 Giao nhau voi duong khong uu tien,cần xem lại
+22 Giao nhau voi duong sat co rao chan,"tr 5780_png, tr 584_png, va 7004_png",Biển chữ thập X = giao với đường sắt KHÔNG có rào chắn,nhãn sai
+22 Giao nhau voi duong sat co rao chan,va 3085–3125_jpg,Toàn bộ valid từ 1 đoạn video,thiếu đa dạng
+23 Gioi han chieu cao,"tr 11522, tr 7106, tr 7389, va 10033_png",Bảng xanh chữ 'Chiều cao an toàn' gộp với biển tròn giới hạn,lớp không nhất quán
+25 Gioi han trong luong,tr 10180_png,"Số '5' không có chữ T, dễ là biển tốc độ",cần xem lại
+27 Kiem tra,tr 0751–0809_jpg,"Toàn bộ 56 bbox từ 1 đoạn video, chỉ có ở train",thiếu đa dạng
+28 Noi giao nhau chay theo vong xuyen,tr 10515_png,Tam giác cam (biển cảnh báo vòng xuyến) gộp với biển tròn xanh,lớp không nhất quán
+29 Phai di vong sang ben phai,tr 2408_jpg,"Bảng chữ xanh, không phải biển mũi tên",nhãn sai
+Nhiều lớp,vd tr 12163_png,"Bbox cực nhỏ (~5–10 px) ở xa vẫn được gán lớp cụ thể, mắt thường không nhận ra",nhiễu nhãn
