@@ -24,14 +24,8 @@
 
    Kết quả: `dataset/packages/utci_v1.zip` (~611 MB, 5.386 ảnh) và `dataset/packages/utci_v1.sha256`.
 
-2. **Nhánh code**: notebook tự `git clone` repo. Code S1 (Detector, bản sửa SMOKE, `package`) nằm ở
-   `feature/S1-catchup` cho tới khi PR được merge vào `develop`. Trước khi merge, đặt trong ô **Cấu hình**:
-
-   ```python
-   BRANCH = "feature/S1-catchup"
-   ```
-
-   Sau khi merge thì để `BRANCH = "develop"` như mặc định.
+2. **Nhánh code**: notebook tự `git clone` nhánh `BRANCH` (mặc định `develop` — đã có code S1 từ PR #4: Detector,
+   bản sửa SMOKE, `package`). Chỉ đổi `BRANCH` khi cần thử code của một nhánh `feature/*` chưa merge.
 
 3. **Tệp notebook**: `notebooks/train/train_kaggle.ipynb` và `notebooks/train/train_colab.ipynb` (đừng sửa trực tiếp
    trong repo — sửa ô Cấu hình ngay trên Kaggle/Colab).
@@ -68,7 +62,7 @@ Sửa ô **Cấu hình**:
 ```python
 AUTHOR = "TV5"
 SMOKE = True
-BRANCH = "feature/S1-catchup"   # hoặc "develop" sau khi merge
+BRANCH = "develop"
 ```
 
 *Run all* (Ctrl + F9 không có trên Kaggle → nút **Run All**). Kiểm tra từng ô:
@@ -100,7 +94,7 @@ SMOKE = False
 FINETUNE_YOLO = True
 FIT_VERIFIER = False
 RESUME = None
-BRANCH = "feature/S1-catchup"
+BRANCH = "develop"
 ```
 
 Chạy **nền** để có thể đóng trình duyệt:
@@ -144,7 +138,7 @@ Có thể upload qua drive.google.com (kéo thả) hoặc Google Drive for Deskt
 
 1. [colab.research.google.com](https://colab.research.google.com) → *File → Upload notebook* → `train_colab.ipynb`.
 2. *Runtime → Change runtime type* → **T4 GPU** → *Save*.
-3. Sửa ô **Cấu hình**: `AUTHOR = "TV1"`, `SMOKE = True`, `BRANCH = "feature/S1-catchup"`.
+3. Sửa ô **Cấu hình**: `AUTHOR = "TV1"`, `SMOKE = True` (giữ `BRANCH = "develop"`).
 4. *Runtime → Run all*. Ô đầu sẽ hỏi quyền **Google Drive** → cho phép bằng tài khoản chứa `UTCI_VISION/`.
 5. Nếu ô cài thư viện báo *"You must restart the runtime"* (Colab có sẵn bản numpy/opencv khác):
    *Runtime → Restart session* → *Run all* lại (repo đã clone sẽ được bỏ qua).
@@ -199,5 +193,4 @@ Cấu hình giống mục 1.4. Lưu ý Colab miễn phí ngắt khi tab không h
 - [ ] B. Smoke Colab OK — run_id: ………
 - [ ] C. Baseline xong — run_id: ……… · mAP50 (val): ……… · số epoch: ………
 - [ ] D. Đã `import_run --promote`; mAP50 test: ………; FPS: ………
-- [ ] PR `feature/S1-catchup` → `develop` đã được Mentor review + merge
 - [ ] Cập nhật thẻ Trello tương ứng
