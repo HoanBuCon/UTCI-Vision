@@ -12,6 +12,8 @@ Kết quả `<run_id>/` → `python scripts/import_run.py <thư-mục> --promote
 
 ## Chạy thử (smoke) trên Colab / Kaggle
 
+Hướng dẫn từng bước (Kaggle, Colab, import kết quả): [docs/huong_dan_colab_kaggle.md](../docs/huong_dan_colab_kaggle.md).
+
 Chuẩn bị (máy local, 1 lần mỗi phiên bản dữ liệu): `python scripts/data.py package` → `dataset/packages/utci_v1.zip` + `utci_v1.sha256`.
 
 | | Colab | Kaggle |
