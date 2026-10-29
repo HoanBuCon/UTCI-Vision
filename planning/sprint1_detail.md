@@ -50,6 +50,9 @@ và benchmark FPS; khung API + web + Docker chạy được; chốt schema JSON;
 3. **Định nghĩa lớp lẫn lộn**: lớp 2 (bảng chỉ dẫn + biển tròn xanh R.301), lớp 23 (biển tròn + bảng xanh), lớp 28 (tam giác + tròn xanh).
 4. **Thiếu đa dạng**: lớp 5, 12, 27 gần như từ một đoạn video duy nhất.
 5. 53,6% box < 32 px → giữ `imgsz` 960.
+6. **Chốt tập nhãn 27 lớp (29/10, ADR-009)**: đếm cụm cảnh độc lập theo lớp — 6 lớp (5, 11, 12, 22, 25, 27) chỉ có
+   25–54 cụm → gộp vào "Biển báo khác". Id lớp gốc 32 → id mô hình 27 qua `classes.yaml > raw_ids`; dựng lại
+   `processed/v1` + `utci_v1.zip` trước khi chạy baseline (lớp 2, 23, 28 ở mục 3 là id **gốc**).
 
 ### 3.3 Việc cần xử lý để đưa vào repo
 | # | Việc | Người | Khi nào |

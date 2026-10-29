@@ -12,7 +12,7 @@
 | Lớp | Công nghệ | Dùng cho |
 |---|---|---|
 | Ngôn ngữ | **Python 3.11** (tối thiểu; 3.12 trên Colab/Kaggle) · **TypeScript** | Pipeline + backend · frontend |
-| DL — detector | **Ultralytics YOLO11** (`yolo11s` pretrained COCO) trên **PyTorch** (tự cài) | **Fine-tune** phát hiện + phân loại 32 lớp |
+| DL — detector | **Ultralytics YOLO11** (`yolo11s` pretrained COCO) trên **PyTorch** (tự cài) | **Fine-tune** phát hiện + phân loại 27 lớp |
 | DL — OCR | **VietOCR** (`vgg_transformer`, pretrained) | Đọc số trên biển và chữ tiếng Việt có dấu (dùng sẵn; fine-tune là Could) |
 | CV truyền thống | **OpenCV 4.x**, **scikit-image** | Đánh giá chất lượng & tăng cường, đặc trưng màu/hình dạng/Hu/HOG, cắt vùng số / dòng chữ / biển phụ, Kalman |
 | ML | **LightGBM**, **scikit-learn** (PCA, hiệu chỉnh xác suất; LogReg/RF để so sánh) | Bộ xác minh — fit trên đặc trưng |
@@ -36,6 +36,7 @@
 |---|---|---|
 | 001 | YOLO11 làm lõi; CV/ML/OCR theo track, bất đồng bộ | Mỗi kỹ thuật có vai trò thật; chỉ YOLO trên đường găng realtime |
 | 002 | Chia lại dữ liệu theo cụm gần trùng | 6/32 lớp không có trong test gốc; 37% ảnh gần trùng |
+| 009 | Gộp 6 lớp hiếm vào "Biển báo khác" (32 → 27 lớp) | 6 lớp chỉ có 25–54 cụm cảnh độc lập |
 | 003 | React + FastAPI + Docker Compose | Demo web chạy được mọi máy; webcam qua WebSocket |
 | 004 | **Fine-tune** YOLO11 từ pretrained, không train từ đầu | Dữ liệu ~5,4k ảnh — quá ít để train từ đầu; tiết kiệm GPU |
 | 005 | Không khoá torch/CUDA | GPU mỗi người khác nhau |

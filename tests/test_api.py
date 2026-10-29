@@ -22,7 +22,8 @@ def test_health_reports_every_stage(client):
 
 def test_classes(client):
     classes = client.get("/api/v1/classes").json()
-    assert len(classes) == 32 and classes[24]["value_unit"] == "km/h"
+    assert len(classes) == 27 and classes[20]["value_unit"] == "km/h"
+    assert classes[-1]["superclass"] == "other" and "raw_ids" not in classes[-1]
 
 
 def test_skeleton_endpoints_return_501(client):

@@ -10,7 +10,7 @@
 Yêu cầu bổ sung: chạy realtime trên web, đọc được chữ tiếng Việt trên biển và biển phụ.
 
 ## Quyết định
-- **YOLO11** phát hiện + phân loại 32 lớp, chạy mỗi frame.
+- **YOLO11** phát hiện + phân loại 27 lớp (ADR-009), chạy mỗi frame.
 - **CV mỗi frame (rẻ):** đánh giá chất lượng → tăng cường chỉ khi cần; tracking Kalman + IoU, bỏ phiếu nhãn theo track.
 - **Theo track, bất đồng bộ (đắt hơn, chạy ít lần):**
   - CV đặc trưng màu/hình dạng → **LightGBM** xác minh + hiệu chỉnh độ tin cậy.

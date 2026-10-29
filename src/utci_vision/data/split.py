@@ -96,19 +96,25 @@ def stratification_vectors(images: pd.DataFrame, boxes: pd.DataFrame, num_classe
     )
 
 
-def materialize(images: pd.DataFrame, split_col: str, out_dir: Path, names: list[str]) -> Path:
-    """Copy ảnh + nhãn vào <out_dir>/<split>/{images,labels}, ghi data.yaml (đường dẫn tương đối) và manifest.csv."""
-    from .labels import label_path_for
+def materialize(
+    images: pd.DataFrame, split_col: str, out_dir: Path, names: list[str], class_map: dict[int, int]
+) -> Path:
+    """Copy ảnh, ghi nhãn đã đổi id theo `class_map` vào <out_dir>/<split>/{images,labels}; ghi data.yaml + manifest.csv.
 
+    Xoá <out_dir> cũ trước (tránh nhãn/labels.cache của lần dựng trước còn sót lại).
+    """
+    from .labels import label_path_for, remap_labels
+
+    if out_dir.exists():
+        if not (out_dir / "data.yaml").exists():
+            raise FileExistsError(f"{out_dir} không phải bản dựng trước (thiếu data.yaml) — không xoá")
+        shutil.rmtree(out_dir)
     for _, row in images.iterrows():
         src = Path(row["path"])
-        for sub, src_file, name in (("images", src, src.name), ("labels", label_path_for(src), src.stem + ".txt")):
-            dst = out_dir / row[split_col] / sub / name
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            if src_file.exists():
-                shutil.copy2(src_file, dst)
-            else:
-                dst.write_text("", encoding="utf-8")
+        split_dir = out_dir / row[split_col]
+        (split_dir / "images").mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, split_dir / "images" / src.name)
+        remap_labels(label_path_for(src), split_dir / "labels" / f"{src.stem}.txt", class_map)
     data_yaml = {
         "path": ".",
         "train": "train/images",

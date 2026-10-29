@@ -5,18 +5,33 @@ from __future__ import annotations
 import pytest
 import yaml
 
-from utci_vision.config import load_classes, load_config
+from utci_vision.config import load_classes, load_config, raw_class_map
 from utci_vision.env import ROOT, Ports, check_environment, environment_summary
 
 
-def test_classes_match_dataset_yaml():
+def test_classes_map_raw_dataset_yaml():
     classes = load_classes()
-    assert len(classes) == 32
+    mapping = raw_class_map(classes)
+    assert len(classes) == 27 and len(mapping) == 32
+    other = classes[-1]
+    assert other.superclass == "other" and other.raw_ids == (5, 11, 12, 22, 25, 27)
     data_yaml = ROOT / "dataset" / "merged_dataset_traffic_signs" / "data.yaml"
-    if data_yaml.exists():
-        assert [c.name for c in classes] == yaml.safe_load(data_yaml.read_text(encoding="utf-8"))["names"]
-    assert {c.superclass for c in classes} == {"prohibitory", "warning", "mandatory", "info"}
-    assert {c.value_unit for c in classes if c.has_value} == {"km/h", "m", "T"}
+    if data_yaml.exists():  # lớp không gộp giữ nguyên tên gốc
+        raw_names = yaml.safe_load(data_yaml.read_text(encoding="utf-8"))["names"]
+        assert all(c.name == raw_names[c.raw_ids[0]] for c in classes if len(c.raw_ids) == 1)
+    assert {c.superclass for c in classes} == {"prohibitory", "warning", "mandatory", "info", "other"}
+    assert {c.value_unit for c in classes if c.has_value} == {"km/h", "m"}
+
+
+def test_raw_class_map_rejects_gaps_and_duplicates():
+    from utci_vision.config import ClassInfo
+
+    ok = (ClassInfo(0, "a", "a", "info", raw_ids=(0, 2)), ClassInfo(1, "b", "b", "info", raw_ids=(1,)))
+    assert raw_class_map(ok) == {0: 0, 2: 0, 1: 1}
+    with pytest.raises(AssertionError):
+        raw_class_map((ClassInfo(0, "a", "a", "info", raw_ids=(0, 2)),))
+    with pytest.raises(AssertionError):
+        raw_class_map((ClassInfo(0, "a", "a", "info", raw_ids=(0,)), ClassInfo(1, "b", "b", "info", raw_ids=(0,))))
 
 
 @pytest.mark.parametrize("name", ["data", "yolo", "pipeline", "verifier", "ocr", "api"])

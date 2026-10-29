@@ -14,12 +14,12 @@ Kết quả `python scripts/data.py audit --dedup` trên dataset gốc (5 453 �
 1. Gộp 3 tập gốc → loại ảnh trong `reports/data/excluded.txt` (TV5 duyệt) → chia lại 70/15/15
    bằng iterative stratification theo **lớp + độ phân giải**, đơn vị chia là **cụm gần trùng**.
 2. Seed cố định 42; kết quả là `dataset/processed/v1` + `manifest.csv` + `split_report.csv`.
-3. Lớp < 50 mẫu (Giới hạn trọng lượng 31, Giao nhau với đường sắt 48): **giữ lại** ở v1, báo cáo riêng;
-   xem xét gộp/loại sau khi có AP theo lớp ở Sprint 3 (TBD-1).
+3. ~~Lớp < 50 mẫu: giữ lại ở v1, xem xét gộp/loại ở Sprint 3 (TBD-1).~~ → **Thay bởi ADR-009** (29/10/2026):
+   gộp 6 lớp < 60 cụm cảnh vào "Biển báo khác" ngay ở v1.
 4. Mọi phép đo trong báo cáo dùng `processed/v1`. Baseline Sprint 1 trên dữ liệu gốc chỉ để tham chiếu.
 5. Vai trò từng tập trong pipeline thống nhất (ADR-001): **train** → YOLO11; **val** → chọn tham số + huấn luyện
    bộ xác minh LightGBM trên dự đoán của YOLO (stacking — YOLO chưa thấy val); **test** → chỉ đánh giá toàn hệ thống.
 
 ## Hệ quả
-- (+) Đánh giá được cả 32 lớp; không rò rỉ giữa các tập.
+- (+) Đánh giá được mọi lớp (27 lớp sau ADR-009); không rò rỉ giữa các tập.
 - (−) Số liệu không so sánh trực tiếp được với repo tham khảo (khác split) — ghi rõ trong báo cáo.
