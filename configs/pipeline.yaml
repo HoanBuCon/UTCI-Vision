@@ -4,9 +4,9 @@ device: auto                 # auto | cpu | 0 (GPU id)
 quality:                     # [CV] đánh giá chất lượng frame (tính trên ảnh thu nhỏ)
   enabled: true
   downscale_width: 320
-  dark_mean_v: 0.30          # độ sáng trung bình kênh V (0..1) dưới ngưỡng -> ảnh tối
-  low_contrast_std_l: 0.12   # độ lệch chuẩn kênh L (0..1) dưới ngưỡng -> tương phản thấp
-  noisy_laplacian: 2500      # phương sai Laplacian trên ngưỡng -> nhiễu cao
+  dark_mean_v: 0.30          # độ sáng TB kênh V (0..1) dưới ngưỡng -> ảnh tối (spike S1: 1,7% ảnh; P5=0.35 còn sáng bình thường)
+  low_contrast_std_l: 0.13   # độ lệch chuẩn kênh L (0..1) dưới ngưỡng -> tương phản thấp (spike S1: 1,3% ảnh)
+  noisy_laplacian: 4000      # phương sai Laplacian trên ngưỡng -> nhiễu (spike S1: 0,6%; cao chủ yếu do tán lá, lọc làm mờ chi tiết)
 
 enhance:                     # [CV] chỉ áp dụng khi quality yêu cầu
   enabled: true
