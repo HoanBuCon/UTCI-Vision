@@ -81,7 +81,7 @@ def main() -> int:
             if not out.exists() or out.read_text(encoding="utf-8") != content:
                 stale.append(out.name)
         else:
-            out.write_text(content, encoding="utf-8")
+            out.write_text(content, encoding="utf-8", newline="\n")  # LF như .gitattributes, kể cả trên Windows
             print(f"Đã ghi {out.relative_to(ROOT)}")
     if stale:
         print(f"Notebook lệch template: {stale} — chạy python scripts/build_notebooks.py", file=sys.stderr)
