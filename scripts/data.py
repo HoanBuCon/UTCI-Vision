@@ -14,18 +14,20 @@ from pathlib import Path
 
 import pandas as pd
 
-from utci_vision.config import load_classes, load_config, resolve
+from utci_vision.config import load_classes, load_config, load_yaml, raw_class_map, resolve
 from utci_vision.data import audit, crops, dedup, package, split
 
 
 def cmd_audit(cfg: dict, args: argparse.Namespace) -> None:
-    classes = load_classes()
+    """Audit chạy trên dữ liệu gốc nên dùng id/tên lớp gốc (data.yaml của Roboflow), chưa gộp lớp."""
+    raw_names = load_yaml(resolve(cfg["raw_dir"]) / "data.yaml")["names"]
+    assert len(raw_names) == len(raw_class_map()), "classes.yaml > raw_ids không khớp số lớp của dataset gốc"
     out = resolve(cfg["reports_dir"])
     out.mkdir(parents=True, exist_ok=True)
     images, boxes, issues = audit.audit_dataset(
-        resolve(cfg["raw_dir"]), cfg["raw_splits"], len(classes), cfg["audit"]["tiny_box_area"]
+        resolve(cfg["raw_dir"]), cfg["raw_splits"], len(raw_names), cfg["audit"]["tiny_box_area"]
     )
-    dist = audit.class_distribution(boxes, [c.name_vi for c in classes])
+    dist = audit.class_distribution(boxes, raw_names)
     if args.dedup:
         d = cfg["dedup"]
         hashes = dedup.compute_hashes([Path(p) for p in images["path"]], d["hash"], d["hash_size"])
@@ -52,14 +54,25 @@ def cmd_split(cfg: dict, args: argparse.Namespace) -> None:
     before = len(images)
     images = images[~images["image"].isin(excluded)].reset_index(drop=True)
     print(f"Loại {before - len(images)} ảnh theo {len(cfg['split'].get('exclude_lists', []))} danh sách")
-    images["class_counts"] = split.stratification_vectors(images, pd.read_csv(reports / "boxes.csv"), len(classes))
+    class_map = raw_class_map(classes)  # boxes.csv mang id gốc -> chia theo lớp của mô hình (sau gộp)
+    boxes = pd.read_csv(reports / "boxes.csv").assign(class_id=lambda b: b["class_id"].map(class_map))
+    images["class_counts"] = split.stratification_vectors(images, boxes, len(classes))
+    images["raw_classes"] = images["classes"]
+    images["classes"] = (
+        images["raw_classes"]
+        .fillna("")
+        .astype(str)
+        .map(lambda ids: " ".join(str(i) for i in sorted({class_map[int(r)] for r in ids.split()})))
+    )
     dims = len(images["class_counts"].iloc[0])
     images["new_split"] = split.grouped_stratified_split(images, dims, cfg["split"]["ratios"], seed=cfg["seed"])
     report = split.split_report(images, "new_split", "class_counts")
     report.index = [c.name_vi for c in classes] + [f"[nguồn] {r}" for r in sorted(images["resolution"].unique())]
     print(report.to_string(), images["new_split"].value_counts(), sep="\n")
     if not args.dry_run:
-        out = split.materialize(images, "new_split", resolve(cfg["processed_dir"]), [c.name for c in classes])
+        out = split.materialize(
+            images, "new_split", resolve(cfg["processed_dir"]), [c.name for c in classes], class_map
+        )
         report.to_csv(out / "split_report.csv", encoding="utf-8-sig")
         print(f"-> {out}")
 

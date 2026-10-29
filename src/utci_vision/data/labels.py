@@ -53,6 +53,11 @@ def write_labels(path: str | Path, boxes: list[YoloBox]) -> None:
     path.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
 
 
+def remap_labels(src: str | Path, dst: str | Path, mapping: dict[int, int]) -> None:
+    """Ghi file nhãn với id lớp đổi theo `mapping` (id gốc -> id mô hình); file nguồn thiếu -> file rỗng (ảnh nền)."""
+    write_labels(dst, [YoloBox(mapping[b.class_id], b.cx, b.cy, b.w, b.h) for b in read_labels(src)])
+
+
 def xyxy_to_yolo(class_id: int, box: tuple[float, float, float, float], img_w: int, img_h: int) -> YoloBox:
     x1, y1, x2, y2 = box
     return YoloBox(class_id, (x1 + x2) / 2 / img_w, (y1 + y2) / 2 / img_h, (x2 - x1) / img_w, (y2 - y1) / img_h)

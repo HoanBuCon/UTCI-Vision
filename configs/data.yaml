@@ -26,6 +26,6 @@ package:                       # đóng gói để upload Google Drive / Kaggle 
 
 crops:                         # cắt crop theo lớp để gán nhãn giá trị số / chữ (FR-DATA-08/09)
   out_dir: dataset/processed/crops_v1
-  classes: [0, 3, 14, 19, 23, 24, 25, 27]   # lớp has_value / has_text
+  classes: [0, 2, 13, 19, 20]   # id lớp mô hình có has_value / has_text trong classes.yaml
   pad_ratio: 0.10
   min_side_px: 24

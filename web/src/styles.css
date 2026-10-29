@@ -87,3 +87,4 @@ main {
 .tag-warning { color: #b88a00; }
 .tag-mandatory { color: var(--mandatory); }
 .tag-info { color: var(--info); }
+.tag-other { color: #777; }

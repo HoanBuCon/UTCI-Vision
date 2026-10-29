@@ -10,7 +10,7 @@ import pytest
 from utci_vision.data.crops import build_crops
 from utci_vision.data.dedup import cluster_near_duplicates
 from utci_vision.data.labels import YoloBox, parse_label_line, read_labels, write_labels, xyxy_to_yolo
-from utci_vision.data.split import grouped_stratified_split, read_exclusions
+from utci_vision.data.split import grouped_stratified_split, materialize, read_exclusions
 
 
 def test_label_roundtrip(tmp_path):
@@ -72,3 +72,28 @@ def test_exclusion_lists_in_repo_point_to_real_names():
 
     names = read_exclusions([resolve(p) for p in load_config("data")["split"]["exclude_lists"]])
     assert len(names) == 67 and all(n.endswith(".jpg") for n in names)
+
+
+def test_materialize_remaps_class_ids_and_clears_stale_build(tmp_path):
+    raw = tmp_path / "raw" / "train"
+    (raw / "images").mkdir(parents=True)
+    for name in ("a", "b"):
+        cv2.imwrite(str(raw / "images" / f"{name}.jpg"), np.zeros((10, 10, 3), np.uint8))
+    write_labels(raw / "labels" / "a.txt", [YoloBox(5, 0.5, 0.5, 0.2, 0.2), YoloBox(1, 0.2, 0.2, 0.1, 0.1)])
+    out = tmp_path / "v1"
+    (out / "train" / "labels").mkdir(parents=True)
+    (out / "data.yaml").write_text("nc: 32\n")
+    (out / "train" / "labels.cache").write_bytes(b"old")
+    images = pd.DataFrame(
+        {"path": [str(raw / "images" / "a.jpg"), str(raw / "images" / "b.jpg")], "s": ["train", "val"]}
+    )
+    materialize(images, "s", out, ["x", "y", "other"], {1: 0, 5: 2})
+    assert [b.class_id for b in read_labels(out / "train" / "labels" / "a.txt")] == [2, 0]
+    assert (out / "val" / "labels" / "b.txt").read_text() == ""  # ảnh nền
+    assert not (out / "train" / "labels.cache").exists() and "nc: 3" in (out / "data.yaml").read_text()
+
+
+def test_materialize_refuses_to_delete_unknown_dir(tmp_path):
+    (tmp_path / "keep.txt").write_text("x")
+    with pytest.raises(FileExistsError):
+        materialize(pd.DataFrame({"path": [], "s": []}), "s", tmp_path, ["x"], {})
