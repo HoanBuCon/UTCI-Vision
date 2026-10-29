@@ -133,7 +133,9 @@ MyDrive/
     └── runs/            # notebook tự tạo, chứa kết quả
 ```
 
-Có thể upload qua drive.google.com (kéo thả) hoặc Google Drive for Desktop.
+Có thể upload qua drive.google.com (kéo thả) hoặc Google Drive for Desktop. **Dự phòng:** nếu chưa có hai file trên Drive,
+ô *Dữ liệu* của notebook hiện nút **Choose Files** — chọn cả `utci_v1.zip` lẫn `utci_v1.sha256` từ máy; notebook lưu
+chúng vào `MyDrive/UTCI_VISION/data/` nên lần sau không phải chọn lại (upload qua trình duyệt chậm hơn Drive).
 
 ### 2.2 Việc B — Smoke (TV1)
 

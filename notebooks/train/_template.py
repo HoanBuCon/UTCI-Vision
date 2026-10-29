@@ -15,7 +15,8 @@
 # Kết quả: thư mục `<run_id>/` (trọng số + `run_record.json`) → ở local: `python scripts/import_run.py <thư-mục> --promote`.
 
 # %% [markdown, colab]
-# **Colab:** Runtime → Change runtime type → GPU. Đặt `utci_v1.zip` + `utci_v1.sha256` ở `MyDrive/UTCI_VISION/data/`.
+# **Colab:** Runtime → Change runtime type → GPU. Đặt `utci_v1.zip` + `utci_v1.sha256` ở `MyDrive/UTCI_VISION/data/`
+# (chưa có thì ô Dữ liệu hiện nút chọn file từ máy và tự lưu lên Drive).
 # Kết quả ghi thẳng vào `MyDrive/UTCI_VISION/runs/` nên không mất khi phiên bị ngắt; đặt `RESUME` để chạy tiếp.
 
 # %% [markdown, kaggle]
@@ -116,7 +117,20 @@ DATA_YAML = write_data_yaml(DATASET_DIR)
 # ===== Dữ liệu: kiểm tra checksum zip -> giải nén =====
 from utci_vision.training import extract_dataset, verify_checksum, write_data_yaml
 
-DATASET_SHA = verify_checksum(DATA_ZIP, DATA_ZIP.with_suffix(".sha256"))
+DATA_SHA = DATA_ZIP.with_suffix(".sha256")
+if not (DATA_ZIP.exists() and DATA_SHA.exists()):
+    # Dự phòng: chưa có trên Drive -> chọn file từ máy (chậm với ~600 MB), lưu lên Drive để lần sau không phải tải lại
+    from google.colab import files
+
+    print(f"Không thấy {DATA_ZIP.name} / {DATA_SHA.name} trong {DATA_ZIP.parent} — chọn CẢ HAI file từ máy:")
+    DATA_ZIP.parent.mkdir(parents=True, exist_ok=True)
+    for name, content in files.upload().items():  # trình duyệt có thể đổi tên ("utci_v1 (1).zip") -> lưu theo đuôi
+        target = {".zip": DATA_ZIP, ".sha256": DATA_SHA}.get(Path(name).suffix)
+        if target is not None:
+            target.write_bytes(content)
+    assert DATA_ZIP.exists() and DATA_SHA.exists(), f"Cần cả {DATA_ZIP.name} và {DATA_SHA.name}"
+
+DATASET_SHA = verify_checksum(DATA_ZIP, DATA_SHA)
 DATASET_DIR = extract_dataset(DATA_ZIP, DATA_ROOT)
 DATA_YAML = write_data_yaml(DATASET_DIR)
 
