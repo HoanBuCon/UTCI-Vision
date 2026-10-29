@@ -226,7 +226,9 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 
 ## 5. Giao diện bên ngoài
 
-### 5.1 REST / WebSocket (tiền tố `/api/v1`, bản nháp — chốt schema ở Sprint 1)
+### 5.1 REST / WebSocket (tiền tố `/api/v1`) — schema đã chốt 29/10/2026 (S1)
+
+Nguồn chuẩn: `src/utci_vision/api/schemas.py` (backend) ↔ `web/src/api/types.ts` (frontend); `tests/test_api_contract.py` kiểm tra hai bên luôn khớp tên trường. Đổi schema = CHANGE-REQ (§9).
 
 | Phương thức | Đường dẫn | Mô tả |
 |---|---|---|
