@@ -1,0 +1,4 @@
+group,anh,bien,dung,ti_le_bien_nho,recall,recall_ge16px,precision
+giong_train(<=10),243,667,652,0.1244,0.9775,0.9777,0.9422
+trung_binh(11-14),271,746,653,0.2118,0.8753,0.9558,0.8765
+khac_train(>=15),265,604,486,0.1987,0.8046,0.8926,0.7488

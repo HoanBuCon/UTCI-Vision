@@ -28,6 +28,7 @@ Frame ─► [CV] đánh giá chất lượng → tăng cường khi cần
 | [docs/03_SPRINT_PLAN.md](docs/03_SPRINT_PLAN.md) | Kế hoạch 6 sprint (sinh từ `planning/sprint_plan.json`) |
 | [docs/quy_uoc.md](docs/quy_uoc.md) | Quy ước Git: nhánh, commit, Pull Request |
 | [docs/adr/](docs/adr/) · [docs/data/DATA_CARD.md](docs/data/DATA_CARD.md) · [docs/models.md](docs/models.md) | Quyết định kiến trúc · dữ liệu · trọng số |
+| [docs/danh_gia/](docs/danh_gia/) | Đánh giá kết quả huấn luyện (S1: [baseline YOLO11s-960](docs/danh_gia/S1_baseline_yolo11s_960.md)) |
 
 ## Bắt đầu
 
