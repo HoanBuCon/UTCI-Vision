@@ -16,6 +16,9 @@ dedup:
 
 split:
   ratios: {train: 0.70, val: 0.15, test: 0.15}
+  exclude_lists:               # danh sách ảnh bị loại (dòng: <đường dẫn>[TAB<lý do>], bỏ qua dòng #) — TV5 duyệt S1
+    - docs/data/review/excluded.txt       # 10 ảnh xoay 90° + 2 ảnh valid trùng train
+    - docs/data/review/relabel_todo.txt   # 55 ảnh thiếu nhãn: loại tạm ở v1, gán nhãn bổ sung ở S2 -> v2
 
 package:                       # đóng gói để upload Google Drive / Kaggle Dataset (FR-DATA-05)
   out_dir: dataset/packages

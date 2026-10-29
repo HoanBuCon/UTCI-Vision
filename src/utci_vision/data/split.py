@@ -69,6 +69,17 @@ def split_report(images: pd.DataFrame, split_col: str, classes_col: str) -> pd.D
     return pd.DataFrame(rows)
 
 
+def read_exclusions(paths: list[Path]) -> set[str]:
+    """Tên file ảnh cần loại từ các danh sách `<đường dẫn>[TAB<lý do>]`; bỏ dòng trống và dòng bắt đầu bằng #."""
+    names: set[str] = set()
+    for path in paths:
+        for line in path.read_text(encoding="utf-8-sig").splitlines():
+            line = line.strip()
+            if line and not line.startswith("#"):
+                names.add(Path(line.split("\t")[0].strip()).name)
+    return names
+
+
 def stratification_vectors(images: pd.DataFrame, boxes: pd.DataFrame, num_classes: int) -> pd.Series:
     """Vector [số box theo lớp | one-hot độ phân giải] cho từng ảnh — cân bằng cả lớp lẫn nguồn ảnh."""
     counts = boxes.groupby(["image", "class_id"]).size().unstack(fill_value=0)

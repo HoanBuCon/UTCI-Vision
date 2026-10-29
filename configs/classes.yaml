@@ -1,10 +1,10 @@
 # 32 lớp biển báo — thứ tự id PHẢI khớp data.yaml của dataset.
 # superclass: prohibitory (Cấm, viền đỏ tròn) | warning (Nguy hiểm, tam giác vàng viền đỏ)
 #             mandatory (Hiệu lệnh, tròn nền xanh) | info (Chỉ dẫn, chữ nhật nền xanh)
-# qcvn      : mã biển theo QCVN 41:2019/BGTVT            — TODO(TV5) điền & xác nhận
+# qcvn      : mã biển theo QCVN 41:2019/BGTVT            — TV5 đã điền & xác nhận (25/10/2026)
 # meaning   : ý nghĩa hiển thị trên web (1–2 câu)          — TODO(TV4) viết nội dung
 # has_value : biển có số cần đọc (CV cắt vùng số + VietOCR + regex), value_unit là đơn vị
-# has_text  : biển chính thường có chữ cần OCR (VietOCR)   — đề xuất, TV5 xác nhận trên ảnh mẫu
+# has_text  : biển chính thường có chữ cần OCR (VietOCR)   — TV5 đã xác nhận trên contact-sheet
 # Biển phụ được tìm cho MỌI lớp (cấu hình ở configs/ocr.yaml > sub_sign).
 superclasses:
   prohibitory: {name_vi: "Biển cấm", color: red, shape: circle}
@@ -13,35 +13,35 @@ superclasses:
   info: {name_vi: "Biển chỉ dẫn", color: blue, shape: rectangle}
 
 classes:
-  - {id: 0, name: "Ben xe buyt", name_vi: "Bến xe buýt", superclass: info, qcvn: "", has_value: false, value_unit: null, has_text: true, meaning: ""}
-  - {id: 1, name: "Bien cam phuong tien", name_vi: "Biển cấm phương tiện", superclass: prohibitory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 2, name: "Bien chi dan huong di", name_vi: "Biển chỉ dẫn hướng đi", superclass: mandatory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 3, name: "Bien gop lan duong theo phuong tien", name_vi: "Biển gộp làn đường theo phương tiện", superclass: info, qcvn: "", has_value: false, value_unit: null, has_text: true, meaning: ""}
-  - {id: 4, name: "Cam di nguoc chieu", name_vi: "Cấm đi ngược chiều", superclass: prohibitory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 5, name: "Cam di thang va re phai", name_vi: "Cấm đi thẳng và rẽ phải", superclass: prohibitory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 6, name: "Cam do xe", name_vi: "Cấm đỗ xe", superclass: prohibitory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 7, name: "Cam dung va do xe", name_vi: "Cấm dừng và đỗ xe", superclass: prohibitory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 8, name: "Cam quay dau", name_vi: "Cấm quay đầu", superclass: prohibitory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 9, name: "Cam re phai", name_vi: "Cấm rẽ phải", superclass: prohibitory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 10, name: "Cam re trai", name_vi: "Cấm rẽ trái", superclass: prohibitory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 11, name: "Cam re trai va phai", name_vi: "Cấm rẽ trái và phải", superclass: prohibitory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 12, name: "Cam re trai va quay dau xe", name_vi: "Cấm rẽ trái và quay đầu xe", superclass: prohibitory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 13, name: "Cho ngoat nguy hiem", name_vi: "Chỗ ngoặt nguy hiểm", superclass: warning, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 14, name: "Cho quay xe", name_vi: "Chỗ quay xe", superclass: info, qcvn: "", has_value: false, value_unit: null, has_text: true, meaning: ""}
-  - {id: 15, name: "Chu y chuong ngai vat", name_vi: "Chú ý chướng ngại vật", superclass: warning, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 16, name: "Di cham", name_vi: "Đi chậm", superclass: warning, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 17, name: "Duong bi thu hep", name_vi: "Đường bị thu hẹp", superclass: warning, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 18, name: "Duong giao nhau", name_vi: "Đường giao nhau", superclass: warning, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 19, name: "Duong mot chieu", name_vi: "Đường một chiều", superclass: info, qcvn: "", has_value: false, value_unit: null, has_text: true, meaning: ""}
-  - {id: 20, name: "Duong nguoi di bo cat ngang", name_vi: "Đường người đi bộ cắt ngang", superclass: warning, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 21, name: "Giao nhau voi duong khong uu tien", name_vi: "Giao nhau với đường không ưu tiên", superclass: warning, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 22, name: "Giao nhau voi duong sat co rao chan", name_vi: "Giao nhau với đường sắt có rào chắn", superclass: warning, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 23, name: "Gioi han chieu cao", name_vi: "Giới hạn chiều cao", superclass: prohibitory, qcvn: "", has_value: true, value_unit: "m", has_text: false, meaning: ""}
-  - {id: 24, name: "Gioi han toc do", name_vi: "Giới hạn tốc độ", superclass: prohibitory, qcvn: "", has_value: true, value_unit: "km/h", has_text: false, meaning: ""}
-  - {id: 25, name: "Gioi han trong luong", name_vi: "Giới hạn trọng lượng", superclass: prohibitory, qcvn: "", has_value: true, value_unit: "T", has_text: false, meaning: ""}
-  - {id: 26, name: "Go giam toc phia truoc", name_vi: "Gồ giảm tốc phía trước", superclass: warning, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 27, name: "Kiem tra", name_vi: "Kiểm tra", superclass: prohibitory, qcvn: "", has_value: false, value_unit: null, has_text: true, meaning: ""}
-  - {id: 28, name: "Noi giao nhau chay theo vong xuyen", name_vi: "Nơi giao nhau chạy theo vòng xuyến", superclass: mandatory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 29, name: "Phai di vong sang ben phai", name_vi: "Phải đi vòng sang bên phải", superclass: mandatory, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 30, name: "Tre em", name_vi: "Trẻ em", superclass: warning, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
-  - {id: 31, name: "Vach sang duong cho nguoi di bo", name_vi: "Vạch sang đường cho người đi bộ", superclass: info, qcvn: "", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 0, name: "Ben xe buyt", name_vi: "Bến xe buýt", superclass: info, qcvn: "I.434a", has_value: false, value_unit: null, has_text: true, meaning: ""}
+  - {id: 1, name: "Bien cam phuong tien", name_vi: "Biển cấm phương tiện", superclass: prohibitory, qcvn: "P.103–P.111 (nhóm)", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 2, name: "Bien chi dan huong di", name_vi: "Biển chỉ dẫn hướng đi", superclass: info, qcvn: "I.414a–d", has_value: false, value_unit: null, has_text: true, meaning: ""}
+  - {id: 3, name: "Bien gop lan duong theo phuong tien", name_vi: "Biển gộp làn đường theo phương tiện", superclass: mandatory, qcvn: "R.415", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 4, name: "Cam di nguoc chieu", name_vi: "Cấm đi ngược chiều", superclass: prohibitory, qcvn: "P.102", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 5, name: "Cam di thang va re phai", name_vi: "Cấm đi thẳng và rẽ phải", superclass: prohibitory, qcvn: "P.139", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 6, name: "Cam do xe", name_vi: "Cấm đỗ xe", superclass: prohibitory, qcvn: "P.131a–c", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 7, name: "Cam dung va do xe", name_vi: "Cấm dừng và đỗ xe", superclass: prohibitory, qcvn: "P.130", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 8, name: "Cam quay dau", name_vi: "Cấm quay đầu", superclass: prohibitory, qcvn: "P.124a–b", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 9, name: "Cam re phai", name_vi: "Cấm rẽ phải", superclass: prohibitory, qcvn: "P.123b", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 10, name: "Cam re trai", name_vi: "Cấm rẽ trái", superclass: prohibitory, qcvn: "P.123a", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 11, name: "Cam re trai va phai", name_vi: "Cấm rẽ trái và phải", superclass: prohibitory, qcvn: "P.137", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 12, name: "Cam re trai va quay dau xe", name_vi: "Cấm rẽ trái và quay đầu xe", superclass: prohibitory, qcvn: "P.124c–d", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 13, name: "Cho ngoat nguy hiem", name_vi: "Chỗ ngoặt nguy hiểm", superclass: warning, qcvn: "W.201a–b", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 14, name: "Cho quay xe", name_vi: "Chỗ quay xe", superclass: info, qcvn: "I.409", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 15, name: "Chu y chuong ngai vat", name_vi: "Chú ý chướng ngại vật", superclass: warning, qcvn: "W.246a–c", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 16, name: "Di cham", name_vi: "Đi chậm", superclass: warning, qcvn: "W.245a", has_value: false, value_unit: null, has_text: true, meaning: ""}
+  - {id: 17, name: "Duong bi thu hep", name_vi: "Đường bị thu hẹp", superclass: warning, qcvn: "W.203a–c", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 18, name: "Duong giao nhau", name_vi: "Đường giao nhau", superclass: warning, qcvn: "W.205a–e", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 19, name: "Duong mot chieu", name_vi: "Đường một chiều", superclass: info, qcvn: "I.407a", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 20, name: "Duong nguoi di bo cat ngang", name_vi: "Đường người đi bộ cắt ngang", superclass: warning, qcvn: "W.224", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 21, name: "Giao nhau voi duong khong uu tien", name_vi: "Giao nhau với đường không ưu tiên", superclass: warning, qcvn: "W.207a–l", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 22, name: "Giao nhau voi duong sat co rao chan", name_vi: "Giao nhau với đường sắt có rào chắn", superclass: warning, qcvn: "W.210", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 23, name: "Gioi han chieu cao", name_vi: "Giới hạn chiều cao", superclass: prohibitory, qcvn: "P.117", has_value: true, value_unit: "m", has_text: false, meaning: ""}
+  - {id: 24, name: "Gioi han toc do", name_vi: "Giới hạn tốc độ", superclass: prohibitory, qcvn: "P.127", has_value: true, value_unit: "km/h", has_text: false, meaning: ""}
+  - {id: 25, name: "Gioi han trong luong", name_vi: "Giới hạn trọng lượng", superclass: prohibitory, qcvn: "P.115 (+P.116)", has_value: true, value_unit: "T", has_text: false, meaning: ""}
+  - {id: 26, name: "Go giam toc phia truoc", name_vi: "Gồ giảm tốc phía trước", superclass: warning, qcvn: "W.221b", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 27, name: "Kiem tra", name_vi: "Kiểm tra", superclass: prohibitory, qcvn: "P.129", has_value: false, value_unit: null, has_text: true, meaning: ""}
+  - {id: 28, name: "Noi giao nhau chay theo vong xuyen", name_vi: "Nơi giao nhau chạy theo vòng xuyến", superclass: mandatory, qcvn: "R.303", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 29, name: "Phai di vong sang ben phai", name_vi: "Phải đi vòng sang bên phải", superclass: mandatory, qcvn: "R.302a", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 30, name: "Tre em", name_vi: "Trẻ em", superclass: warning, qcvn: "W.225", has_value: false, value_unit: null, has_text: false, meaning: ""}
+  - {id: 31, name: "Vach sang duong cho nguoi di bo", name_vi: "Vạch sang đường cho người đi bộ", superclass: info, qcvn: "I.423b", has_value: false, value_unit: null, has_text: false, meaning: ""}

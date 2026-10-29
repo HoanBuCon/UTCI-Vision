@@ -1,0 +1,13 @@
+# Ảnh bị loại khỏi huấn luyện/đánh giá. Định dạng: <đường dẫn tương đối>\t<lý do>
+train/images/1319_jpg.rf.68c14c1ac22042595d3ee8e5b9169482.jpg	unlabeled: ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn
+train/images/1320_jpg.rf.c08703e48404eb8573448411ada3cbe9.jpg	unlabeled: ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn
+train/images/1321_jpg.rf.86339db4d726bc862bba035f67f6dddd.jpg	unlabeled: ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn
+train/images/1322_jpg.rf.57258755b5f497b8608d38b40c740a87.jpg	unlabeled: ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn
+train/images/1323_jpg.rf.50aaa904d2756059979ae86f04783c50.jpg	unlabeled: ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn
+train/images/1324_jpg.rf.254e6a7fccd1d280bf3cb5c0f5b36138.jpg	unlabeled: ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn
+train/images/1325_jpg.rf.b97be436a8fdb859536af7c4acac8033.jpg	unlabeled: ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn
+train/images/1326_jpg.rf.587ebb74e69687aa5bb3a5d68ada45d2.jpg	unlabeled: ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn
+train/images/1327_jpg.rf.c6f8e5a168e9d902739df0779c0c0aa2.jpg	unlabeled: ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn
+train/images/1328_jpg.rf.5b305a244e47bae0454ce01f8dde0dcf.jpg	unlabeled: ảnh dọc bị xoay 90 độ, 10 khung gần trùng; có biển chưa gán nhãn
+valid/images/6966_png.rf.5c5505655e570aea949a68fe23696e89.jpg	near-duplicate C0002: cùng cảnh, bản valid gần như trùng bản train -> rò rỉ
+valid/images/6971_png_png_png.rf.fdba2fed90673430b71ba9b65c758cbb.jpg	near-duplicate C0004: cùng cảnh, bản valid gần như trùng bản train -> rò rỉ

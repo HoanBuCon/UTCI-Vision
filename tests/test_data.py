@@ -10,7 +10,7 @@ import pytest
 from utci_vision.data.crops import build_crops
 from utci_vision.data.dedup import cluster_near_duplicates
 from utci_vision.data.labels import YoloBox, parse_label_line, read_labels, write_labels, xyxy_to_yolo
-from utci_vision.data.split import grouped_stratified_split
+from utci_vision.data.split import grouped_stratified_split, read_exclusions
 
 
 def test_label_roundtrip(tmp_path):
@@ -59,3 +59,16 @@ def test_crops_only_selected_classes(tmp_path):
     write_labels(tmp_path / "labels" / "a.txt", [YoloBox(24, 0.5, 0.5, 0.3, 0.4), YoloBox(1, 0.2, 0.2, 0.2, 0.3)])
     stats = build_crops(tmp_path, tmp_path / "out", classes=[24], pad_ratio=0.1, min_side=10)
     assert stats["crops"] == 1 and (tmp_path / "out" / "24").exists() and not (tmp_path / "out" / "1").exists()
+
+
+def test_read_exclusions_parses_tab_reason_and_comments(tmp_path):
+    f = tmp_path / "excluded.txt"
+    f.write_text("# ghi chú\ntrain/images/a.jpg\tlý do\n\nvalid/images/b.jpg\n", encoding="utf-8")
+    assert read_exclusions([f]) == {"a.jpg", "b.jpg"}
+
+
+def test_exclusion_lists_in_repo_point_to_real_names():
+    from utci_vision.config import load_config, resolve
+
+    names = read_exclusions([resolve(p) for p in load_config("data")["split"]["exclude_lists"]])
+    assert len(names) == 67 and all(n.endswith(".jpg") for n in names)
