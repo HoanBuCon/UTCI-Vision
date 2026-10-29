@@ -23,15 +23,15 @@
 
 ## 1. Mục tiêu & phạm vi
 
-Web app nhận diện **32 loại biển báo giao thông Việt Nam** từ **ảnh, video và webcam realtime**. Với mỗi biển: vị trí, tên tiếng Việt, ý nghĩa, giá trị số (km/h, m, tấn) và **chữ tiếng Việt trên biển / biển phụ** khi đọc được.
+Web app nhận diện **27 lớp biển báo giao thông Việt Nam** (26 loại + "Biển báo khác", ADR-009) từ **ảnh, video và webcam realtime**. Với mỗi biển: vị trí, tên tiếng Việt, ý nghĩa, giá trị số (km/h, m) và **chữ tiếng Việt trên biển / biển phụ** khi đọc được.
 
-Ngoài phạm vi: lớp biển ngoài 32 lớp, đèn tín hiệu, vạch kẻ đường, ứng dụng mobile/nhúng, hệ thống ADAS thật.
+Ngoài phạm vi: tên riêng cho các biển thuộc lớp "Biển báo khác" và biển ngoài dataset, đèn tín hiệu, vạch kẻ đường, ứng dụng mobile/nhúng, hệ thống ADAS thật.
 
 ## 2. Kiến trúc pipeline
 
 ```
 Frame ─► [CV] Đánh giá chất lượng ─► (chỉ khi tối/kém) gamma + CLAHE (+ khử nhiễu)
-      ─► [DL] YOLO11: phát hiện + phân loại 32 lớp                    ← mỗi frame
+      ─► [DL] YOLO11: phát hiện + phân loại 27 lớp                    ← mỗi frame
       ─► [CV] Tracking: Kalman + ghép IoU, bỏ phiếu nhãn theo track    ← mỗi frame, < 1 ms
       ─► Theo track — chạy nền, kết quả gắn vào track khi xong:
             [CV+ML] Đặc trưng màu/hình dạng → LightGBM xác minh + hiệu chỉnh độ tin cậy
@@ -45,7 +45,7 @@ Với ảnh tĩnh: cùng pipeline, "track" chỉ có một frame và các tác v
 
 | Kỹ thuật | Thành phần | Vai trò |
 |---|---|---|
-| **DL** | YOLO11s fine-tune từ pretrained COCO | Phát hiện + phân loại 32 lớp (lõi) |
+| **DL** | YOLO11s fine-tune từ pretrained COCO | Phát hiện + phân loại 27 lớp (lõi) |
 | **DL** | VietOCR (pretrained, transformer) | Nhận dạng dòng chữ tiếng Việt có dấu |
 | **CV** | Đánh giá chất lượng (độ sáng V, độ lệch chuẩn L, phương sai Laplacian) + tăng cường thích nghi | Tăng recall khi ảnh tối/ngược sáng mà không cần train lại |
 | **CV** | Đặc trưng vùng: tỉ lệ màu đỏ/xanh/vàng/trắng, độ tròn, số đỉnh xấp xỉ, solidity, Hu moments, HOG-PCA, độ nét | Đầu vào cho bộ xác minh ML (mã hoá tri thức QCVN về màu/hình dạng) |
@@ -98,7 +98,7 @@ Kết quả kiểm tra dataset thật (5 453 ảnh, 13 478 box, 32 lớp — Rob
 
 | Vấn đề | Số liệu | Xử lý |
 |---|---|---|
-| Mất cân bằng lớp | 31 → 1 705 box (~55×) | Báo cáo AP theo lớp; copy-paste augmentation; TBD-1 gộp/loại lớp hiếm |
+| Mất cân bằng lớp | 31 → 1 705 box (~55×) | Báo cáo AP theo lớp; copy-paste augmentation; gộp 6 lớp < 60 cụm cảnh vào "Biển báo khác" (ADR-009) |
 | Biển rất nhỏ | trung vị ≈ 25 px; 30% box < 0,05% diện tích ảnh | YOLO `imgsz` 960; OCR chờ frame gần |
 | Lệch phân bố giữa các tập | 6/32 lớp không có trong test gốc; test 100% một độ phân giải | Chia lại 70/15/15 phân tầng theo lớp + nguồn |
 | Ảnh gần trùng | 530 cụm, 2 033 ảnh (37%); 4 cụm vắt qua nhiều tập | Chia theo cụm (pHash, Hamming ≤ 6) |

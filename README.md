@@ -5,12 +5,12 @@
 Repo: **https://github.com/HoanBuCon/UTCI-Vision**  
 Trello: **https://trello.com/b/BcQ48yqk/faketime-traffic-signs-cant-detect**
 
-Đồ án môn **Thị giác máy tính**. Web app nhận diện **32 loại biển báo** từ ảnh, video và webcam realtime,
+Đồ án môn **Thị giác máy tính**. Web app nhận diện **27 lớp biển báo** (26 loại + "Biển báo khác") từ ảnh, video và webcam realtime,
 đọc **giá trị số** (km/h, m, T) và **chữ tiếng Việt** trên biển / biển phụ. Demo chạy bằng **Docker**.
 
 ```
 Frame ─► [CV] đánh giá chất lượng → tăng cường khi cần
-      ─► [DL] YOLO11 (fine-tune) phát hiện + phân loại 32 lớp     ← mỗi frame
+      ─► [DL] YOLO11 (fine-tune) phát hiện + phân loại 27 lớp     ← mỗi frame
       ─► [CV] tracking Kalman + IoU, bỏ phiếu nhãn                ← mỗi frame
       ─► theo track, chạy nền:
             [CV+ML] đặc trưng màu/hình dạng → LightGBM xác minh

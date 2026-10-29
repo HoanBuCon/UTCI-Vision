@@ -104,7 +104,8 @@ Chạy **nền** để có thể đóng trình duyệt:
 3. Khi trạng thái **Complete**: mở version → tab **Output** → tải `runs/<run_id>.zip`
    (bên trong: `yolo11.pt`, `run_record.json`, `yolo/` gồm `results.csv`, biểu đồ, `weights/`).
 
-Mốc tham chiếu: epoch 1 trên máy local đạt mAP50 ≈ 0,40; early stopping `patience: 25` có thể dừng trước 80 epoch.
+Dữ liệu 27 lớp (ADR-009) — `data.yaml` trong zip phải có `nc: 27`. Mốc tham chiếu: epoch 1 trên máy local (bản 32 lớp)
+đạt mAP50 ≈ 0,40; early stopping `patience: 25` có thể dừng trước 80 epoch.
 
 Nếu version **lỗi giữa chừng**: mở log (tab *Logs*) — lỗi hay gặp:
 

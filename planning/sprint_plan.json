@@ -243,18 +243,18 @@
       ]
     },
     {
-      "title": "Gộp/loại lớp hiếm (TBD-1)",
+      "title": "Gộp/loại lớp hiếm (TBD-1) — đã chốt S1",
       "owner": "TV1",
       "labels": [
         "Data",
         "Should"
       ],
       "points": 2,
-      "desc": "Quyết định dựa trên AP theo lớp ở Review S3. Nếu đổi -> CHANGE-REQ, data v2.",
+      "desc": "Đã chốt 29/10/2026 (ADR-009): gộp 6 lớp < 60 cụm cảnh (5, 11, 12, 22, 25, 27) vào \"Biển báo khác\" -> 27 lớp. Còn lại: theo dõi AP lớp gộp; tách lớp khi đủ dữ liệu (v2+).",
       "checklist": [
-        "Xem AP các lớp < 50 mẫu",
-        "Đề xuất",
-        "Chốt, cập nhật ADR-002"
+        "Thống kê cụm cảnh theo lớp",
+        "Đề xuất + chốt (ADR-009)",
+        "Theo dõi AP / confusion matrix lớp gộp ở baseline"
       ]
     },
     {
@@ -792,7 +792,7 @@
           ]
         },
         {
-          "title": "Ý nghĩa 32 biển báo (meaning) cho web",
+          "title": "Ý nghĩa 27 lớp biển báo (meaning) cho web",
           "owner": "TV4",
           "labels": [
             "Report",

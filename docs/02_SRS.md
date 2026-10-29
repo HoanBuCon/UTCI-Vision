@@ -27,14 +27,15 @@ và **Học máy** (LightGBM xác minh và hiệu chỉnh độ tin cậy) là c
 
 ### 1.2 Phạm vi
 **Trong phạm vi (v1.0, sau 6 sprint):**
-- Phát hiện + phân loại **32 lớp** biển báo (dataset Roboflow đã lọc → `processed/v1`).
+- Phát hiện + phân loại **27 lớp** biển báo: 26 lớp của dataset Roboflow + lớp gộp "Biển báo khác" chứa 6 lớp hiếm
+  (< 60 cụm cảnh độc lập — ADR-009); dữ liệu đã lọc → `processed/v1`.
 - Đọc giá trị số trên biển (km/h, m, T) và **chữ tiếng Việt** trên biển chính và **biển phụ** khi đủ lớn.
 - Web app: ảnh, video (xử lý nền), webcam realtime, thư viện biển báo, chế độ giải thích.
 - REST/WebSocket API; đóng gói **Docker Compose** (CPU mặc định, profile GPU).
 - 3 notebook fine-tune (Local, Google Colab, Kaggle); công cụ dữ liệu, đánh giá, benchmark chạy local; Makefile + cổng custom qua `.env`.
 - Báo cáo môn học, báo cáo mốc từng sprint, slide, video demo.
 
-**Ngoài phạm vi (Won't):** lớp biển ngoài 32 lớp; đèn tín hiệu, vạch kẻ đường; ứng dụng mobile/nhúng; ADAS thật; nhiều người dùng đồng thời quy mô lớn, đăng nhập/tài khoản; so sánh các đời YOLO khác.
+**Ngoài phạm vi (Won't):** biển ngoài dataset và tên riêng cho các biển trong lớp "Biển báo khác"; đèn tín hiệu, vạch kẻ đường; ứng dụng mobile/nhúng; ADAS thật; nhiều người dùng đồng thời quy mô lớn, đăng nhập/tài khoản; so sánh các đời YOLO khác.
 
 ### 1.3 Thuật ngữ
 
@@ -131,7 +132,7 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 |---|---|---|---|---|
 | FR-PIPE-01 | Đánh giá chất lượng frame (độ sáng, tương phản, độ mờ) | M | S2 | Approved |
 | FR-PIPE-02 | Tăng cường thích nghi: gamma tự động, CLAHE, khử nhiễu — chỉ áp dụng khi đánh giá chất lượng yêu cầu | M | S2 | Approved |
-| FR-PIPE-03 | YOLO11 phát hiện + phân loại 32 lớp | M | S1–S2 | Approved |
+| FR-PIPE-03 | YOLO11 phát hiện + phân loại 27 lớp | M | S1–S2 | Approved |
 | FR-PIPE-04 | Tracking (Kalman + ghép IoU), xác nhận track sau ≥ N frame, bỏ phiếu nhãn có trọng số | M | S2 | Approved |
 | FR-PIPE-05 | Trích đặc trưng vùng CV (tỉ lệ màu, độ tròn, số đỉnh, solidity, Hu moments, HOG-PCA, độ nét) | M | S2–S3 | Approved |
 | FR-PIPE-06 | Bộ xác minh LightGBM: loại dương tính giả, thay độ tin cậy bằng xác suất đã hiệu chỉnh | M | S3 | Approved |
@@ -150,7 +151,7 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 | ID | Yêu cầu | Ưu tiên | Sprint | Trạng thái |
 |---|---|---|---|---|
 | FR-API-01 | `GET /api/v1/health`: trạng thái, phiên bản, mô hình đã nạp, thiết bị (CPU/GPU) | M | S1 | Approved |
-| FR-API-02 | `GET /api/v1/classes`: 32 lớp kèm tên, siêu lớp, ý nghĩa, ảnh minh hoạ | M | S2 | Approved |
+| FR-API-02 | `GET /api/v1/classes`: 27 lớp kèm tên, siêu lớp, ý nghĩa, ảnh minh hoạ | M | S2 | Approved |
 | FR-API-03 | `POST /api/v1/detect/image`: nhận ảnh, trả JSON detection (+ ảnh đã vẽ nếu yêu cầu, + debug) | M | S2 | Approved |
 | FR-API-04 | `POST /api/v1/jobs/video` tạo job xử lý nền; `GET /api/v1/jobs/{id}` trả tiến độ, kết quả, link video đã vẽ, thống kê biển xuất hiện | M | S3 | Approved |
 | FR-API-05 | `WS /api/v1/stream`: nhận frame JPEG, trả JSON detection; back-pressure (một frame đang xử lý / client) | M | S4 | Approved |
@@ -164,7 +165,7 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 | FR-WEB-01 | Trang **Ảnh**: tải/kéo-thả ảnh, hiển thị box + nhãn tiếng Việt, danh sách biển (tên, ý nghĩa, độ tin cậy, giá trị, chữ) | M | S2 | Approved |
 | FR-WEB-02 | Trang **Video**: tải video, thanh tiến độ, xem/tải video kết quả, bảng biển đã xuất hiện | M | S3 | Approved |
 | FR-WEB-03 | Trang **Webcam**: stream camera qua WebSocket, vẽ kết quả lên canvas, hiện FPS; panel "biển vừa gặp" | M | S4 | Approved |
-| FR-WEB-04 | Trang **Thư viện biển báo**: 32 lớp theo siêu lớp, ý nghĩa, ví dụ | S | S3 | Approved |
+| FR-WEB-04 | Trang **Thư viện biển báo**: 27 lớp theo siêu lớp, ý nghĩa, ví dụ | S | S3 | Approved |
 | FR-WEB-05 | Chế độ **Giải thích**: hiển thị kết quả trung gian từng khâu cho một ảnh | S | S4 | Approved |
 | FR-WEB-06 | Giao diện tiếng Việt, dùng được trên màn hình laptop và điện thoại | M | S3 | Approved |
 
@@ -233,7 +234,7 @@ Nguồn chuẩn: `src/utci_vision/api/schemas.py` (backend) ↔ `web/src/api/typ
 | Phương thức | Đường dẫn | Mô tả |
 |---|---|---|
 | GET | `/health` | `{status, version, device, models: {detector, verifier, ocr}}` |
-| GET | `/classes` | Danh sách 32 lớp |
+| GET | `/classes` | Danh sách 27 lớp |
 | POST | `/detect/image?annotate=true&debug=false` | multipart `file` → `DetectResponse` |
 | POST | `/jobs/video` | multipart `file` → `{job_id}` |
 | GET | `/jobs/{job_id}` | `{status, progress, result_video_url, summary}` |
@@ -288,7 +289,7 @@ python -m utci_vision.api --reload                 # dev; web: cd web && npm run
 
 | # | Vấn đề | Hạn chốt | Người quyết |
 |---|---|---|---|
-| TBD-1 | Gộp/loại lớp < 50 mẫu? | Review S3 | TV1 + TV5 |
+| ~~TBD-1~~ | Gộp/loại lớp hiếm → **đã chốt 29/10/2026**: gộp 6 lớp vào "Biển báo khác" (ADR-009) | S1 | TV1 + TV5 |
 | TBD-2 | Báo cáo bằng Word hay LaTeX? | Planning S1 | TV4 |
 | TBD-3 | `yolo11n` hay `yolo11s`, `imgsz` 640 hay 960 (theo E3 + ngân sách FPS) | Review S2 | TV3 |
 | TBD-4 | Tìm biển phụ bằng CV đủ tốt hay phải gán nhãn lớp "biển phụ" cho YOLO? | Review S3 | TV1 + TV2 |

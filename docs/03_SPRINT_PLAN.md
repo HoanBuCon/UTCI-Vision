@@ -55,12 +55,12 @@ Thang điểm Fibonacci (1, 2, 3, 5, 8): 1 điểm ≈ nửa ngày làm việc t
 |---|---|
 | 📌 Thông tin dự án | Link tài liệu, Definition of Done, quy ước Git, phân vai |
 | 🧊 Backlog | Ý tưởng / yêu cầu Could-have / CHANGE-REQ chưa xếp sprint |
-| Sprint 1 | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
-| Sprint 2 | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
-| Sprint 3 | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
-| Sprint 4 | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
-| Sprint 5 | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
-| Sprint 6 | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
+| Sprint 1 (23/10 - 30/10) - Bài KT 1 | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
+| Sprint 2 (30/10 - 06/11) | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
+| Sprint 3 (06/11 - 13/11) | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
+| Sprint 4 (13/11 - 20/11) | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
+| Sprint 5 (20/11 - 27/11) | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
+| Sprint 6 (27/11 - 04/12) | Thẻ đã lên kế hoạch cho sprint này; kéo sang Đang làm khi bắt đầu |
 | 🏗️ Đang làm | Thẻ đang thực hiện (mỗi người tối đa 2 thẻ cùng lúc) |
 | 🔨 Đang sửa | Thẻ bị trả về từ Review / QA, đang sửa |
 | 👀 Review / QA | Đã mở PR, chờ review hoặc kiểm thử |
@@ -255,7 +255,7 @@ Demo baseline + web hello + EDA.
 | 8 | verifier.py: đặc trưng vùng | TV2 | 3 | Must | FR-PIPE-05 |
 | 9 | Trang Ảnh (web) | TV2 | 3 | Must | FR-WEB-01 |
 | 10 | Bộ đánh giá E1 (evaluate.py detect) | TV1 | 5 | Must | FR-EVAL-01, FR-EVAL-08 |
-| 11 | Ý nghĩa 32 biển báo (meaning) cho web | TV4 | 2 | Should | FR-DATA-06, FR-WEB-04 |
+| 11 | Ý nghĩa 27 lớp biển báo (meaning) cho web | TV4 | 2 | Should | FR-DATA-06, FR-WEB-04 |
 | 12 | Chương 2: lý thuyết CV + DL (fine-tune, YOLO) | TV4 | 5 | Must | FR-DOC-02 |
 | 13 | Báo cáo mốc S2 | TV4 | 1 | Must | FR-DOC-01 |
 | 14 | Sprint 2 Review & Retro | ALL | 1 | Must | - |
@@ -335,7 +335,7 @@ Tỉ lệ màu, độ tròn, số đỉnh, solidity, Hu, HOG, độ nét.
 - [ ] AP theo lớp & kích thước -> reports/eval/
 - [ ] Ghi registry
 
-#### 2.11 [TV4] Ý nghĩa 32 biển báo (meaning) cho web
+#### 2.11 [TV4] Ý nghĩa 27 lớp biển báo (meaning) cho web
 
 Điền configs/classes.yaml > meaning.
 
@@ -816,7 +816,7 @@ Cùng TV3.
 | Gán nhãn lớp "biển phụ" cho YOLO (dự phòng TBD-4) | TV5 | 5 | Nếu tìm biển phụ bằng CV không đạt. Cần 300–500 box. |
 | Fine-tune VietOCR trên crop biển báo (FR-TRAIN-10) | TV3 | 5 | Chỉ khi E5 cho thấy OCR < 80% exact match. |
 | Suy luận cắt lát SAHI cho ảnh độ phân giải cao (FR-PIPE-15) | TV1 | 3 | Cho ảnh tĩnh ≥ 1920 px. |
-| Gộp/loại lớp hiếm (TBD-1) | TV1 | 2 | Quyết định dựa trên AP theo lớp ở Review S3. Nếu đổi -> CHANGE-REQ, data v2. |
+| Gộp/loại lớp hiếm (TBD-1) — đã chốt S1 | TV1 | 2 | Đã chốt 29/10/2026 (ADR-009): gộp 6 lớp < 60 cụm cảnh (5, 11, 12, 22, 25, 27) vào "Biển báo khác" -> 27 lớp. Còn lại: theo dõi AP lớp gộp; tách lớp khi đủ dữ liệu (v2+). |
 | Mẫu thẻ yêu cầu thay đổi (CHANGE-REQ) | TV1 | 0 | Sao chép thẻ này khi muốn đổi yêu cầu. |
 
 ## Nghi thức Scrum rút gọn (sprint 1 tuần)

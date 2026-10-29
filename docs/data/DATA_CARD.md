@@ -9,7 +9,7 @@
 | URL | https://universe.roboflow.com/nguyns-workspace-17a6o/merge_real-time-viet-nam-traffic-dtctn-2-a7emf |
 | Giấy phép | CC BY 4.0 — phải ghi nguồn trong báo cáo |
 | Gốc dữ liệu | Gộp Kaggle VN Traffic Sign + Zalo AI Challenge 2020 (theo repo tham khảo) |
-| Định dạng | YOLO (class cx cy w h, chuẩn hoá) · 32 lớp |
+| Định dạng | YOLO (class cx cy w h, chuẩn hoá) · 32 lớp gốc → 27 lớp mô hình sau gộp (ADR-009) |
 
 ## 2. Thống kê dữ liệu gốc (`python scripts/data.py audit --dedup`)
 | | train | valid | test |
