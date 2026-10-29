@@ -12,6 +12,8 @@ COPY pyproject.toml README.md ./
 COPY src ./src
 COPY configs ./configs
 RUN pip install --no-deps .
+# Cài non-editable -> chỉ cho utci_vision gốc dự án (configs/, models/)
+ENV UTCI_ROOT=/app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s \
     CMD python -c "import os, urllib.request; urllib.request.urlopen(f'http://localhost:{os.environ[\"UTCI_API_PORT\"]}/api/v1/health')"

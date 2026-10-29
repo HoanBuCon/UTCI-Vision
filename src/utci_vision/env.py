@@ -10,7 +10,8 @@ from dataclasses import dataclass
 from importlib import metadata
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+# Gốc dự án (configs/, models/). Cài non-editable (Docker) thì __file__ nằm trong site-packages -> đặt UTCI_ROOT.
+ROOT = Path(os.environ.get("UTCI_ROOT") or Path(__file__).resolve().parents[2])
 MIN_TORCH = (2, 4)
 GPU_PACKAGE_PREFIXES = ("torch", "torchvision", "torchaudio", "nvidia-", "triton")
 
