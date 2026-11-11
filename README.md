@@ -26,6 +26,7 @@ Frame ─► [CV] đánh giá chất lượng → tăng cường khi cần
 | [docs/01_TECHSTACK.md](docs/01_TECHSTACK.md) | Công nghệ, phiên bản, cổng, Makefile, cấu trúc mã nguồn |
 | [docs/02_SRS.md](docs/02_SRS.md) | Đặc tả yêu cầu (living SRS) |
 | [docs/03_SPRINT_PLAN.md](docs/03_SPRINT_PLAN.md) | Kế hoạch 6 sprint (sinh từ `planning/sprint_plan.json`) |
+| [docs/04_BAO_CAO_DE_XUAT.md](docs/04_BAO_CAO_DE_XUAT.md) · [docs/research/](docs/research/README.md) | Báo cáo đề xuất kỹ thuật (2 phương pháp, dữ liệu, thí nghiệm) · nghiên cứu liên quan |
 | [docs/quy_uoc.md](docs/quy_uoc.md) | Quy ước Git: nhánh, commit, Pull Request |
 | [docs/adr/](docs/adr/) · [docs/data/DATA_CARD.md](docs/data/DATA_CARD.md) · [docs/models.md](docs/models.md) | Quyết định kiến trúc · dữ liệu · trọng số |
 | [docs/danh_gia/](docs/danh_gia/) | Đánh giá kết quả huấn luyện (S1: [baseline YOLO11s-960](docs/danh_gia/S1_baseline_yolo11s_960.md)) |
