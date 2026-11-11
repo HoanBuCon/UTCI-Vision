@@ -43,3 +43,23 @@ def test_degradations_keep_shape():
     for fn in DEGRADATIONS.values():
         out = fn(img)
         assert out.shape == img.shape and out.dtype == np.uint8
+
+
+def test_region_features_separate_red_circle_from_blue_square():
+    import cv2
+
+    from utci_vision.config import load_config
+    from utci_vision.verifier import FEATURE_NAMES, region_features
+
+    cfg = load_config("verifier")
+    img = np.full((200, 400, 3), 128, np.uint8)
+    cv2.circle(img, (100, 100), 40, (0, 0, 220), 8)  # vòng đỏ (BGR) nền trắng như biển cấm
+    cv2.circle(img, (100, 100), 34, (255, 255, 255), -1)
+    cv2.rectangle(img, (260, 60), (340, 140), (200, 80, 0), -1)  # ô xanh như biển chỉ dẫn
+    f_red, hog_red = region_features(img, (60, 60, 140, 140), cfg)
+    f_blue, _ = region_features(img, (260, 60, 340, 140), cfg)
+    i = {n: k for k, n in enumerate(FEATURE_NAMES)}
+    assert len(f_red) == len(FEATURE_NAMES) and hog_red.ndim == 1 and hog_red.size > 0
+    assert f_red[i["red_ring"]] > f_red[i["red_core"]] and f_red[i["red_all"]] > f_blue[i["red_all"]]
+    assert f_blue[i["blue_all"]] > 0.3 and f_red[i["circularity"]] > f_blue[i["circularity"]]
+    assert f_blue[i["n_vertices"]] == 4
