@@ -138,10 +138,10 @@ Khâu phát hiện (`Detector.detect`, imgsz 960, FP16, batch 1, ảnh đã nạ
 ## 10. Tái lập
 
 ```bash
-python scripts/analyze_run.py <run_dir>/yolo11.pt --out reports/eval/20261029-1030_yolo11s_960
+python scripts/analyze_run.py            # mặc định models/current/yolo11.pt (= run này) -> reports/eval/20261029-1030_yolo11s_960
 ```
 
 Cần `dataset/processed/v1` đúng bản 27 lớp (SHA zip ở mục 1). Script in toàn bộ bảng ở mục 3–6 và ghi CSV vào `--out`;
 CSV trong [`S1_baseline_yolo11s_960/`](S1_baseline_yolo11s_960/) là bản làm tròn 4 chữ số của lần chạy ngày 29/10/2026
 (RTX 4060 Laptop, torch 2.14.1 + CUDA 12.6). Tốc độ đo bằng
-`python scripts/evaluate.py --author TV5 benchmark --yolo-only --source dataset/processed/v1/test --weights <run_dir>/yolo11.pt --device 0`.
+`python scripts/evaluate.py --author TV5 benchmark --yolo-only --source dataset/processed/v1/test --device 0` (mặc định cũng đọc `models/current/yolo11.pt`).

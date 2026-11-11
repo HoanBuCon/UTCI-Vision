@@ -1,7 +1,7 @@
 # Thử nghiệm khả thi: bộ xác minh đặc trưng thủ công (T0 + T1)
 
 - **Ngày:** 11/11/2026 · **Trọng số:** YOLO11s-960 `20261029-1030_yolo11s_960` (baseline S1) · **Dữ liệu:** `processed/v1` (không chỉnh sửa)
-- **Tái lập:** `python scripts/verifier_feasibility.py <yolo11.pt>` (đặc trưng: `utci_vision.verifier.region_features`)
+- **Tái lập:** `python scripts/verifier_feasibility.py` (mặc định trọng số `models/current/yolo11.pt`) (đặc trưng: `utci_vision.verifier.region_features`)
 - **Câu hỏi:** đề xuất "phương pháp truyền thống = bộ xác minh HOG + màu + hình dạng + Hu → LightGBM" (04_BAO_CAO_DE_XUAT §6.3)
   có tăng được precision của YOLO không, và có đạt mục tiêu G2 (precision ≥ 0,90, recall giảm ≤ 0,03) không?
 

@@ -22,6 +22,27 @@ def iou(a: Box, b: Box) -> float:
     return inter / union if union > 0 else 0.0
 
 
+def iou_matrix(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """IoU (len(a), len(b)) giữa hai mảng hộp xyxy."""
+    x1 = np.maximum(a[:, None, 0], b[None, :, 0])
+    y1 = np.maximum(a[:, None, 1], b[None, :, 1])
+    x2 = np.minimum(a[:, None, 2], b[None, :, 2])
+    y2 = np.minimum(a[:, None, 3], b[None, :, 3])
+    inter = np.clip(x2 - x1, 0, None) * np.clip(y2 - y1, 0, None)
+    area_a = (a[:, 2] - a[:, 0]) * (a[:, 3] - a[:, 1])
+    area_b = (b[:, 2] - b[:, 0]) * (b[:, 3] - b[:, 1])
+    return inter / (area_a[:, None] + area_b[None, :] - inter + 1e-9)
+
+
+def wilson_interval(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
+    """CI cho tỉ lệ k/n (Wilson) — dùng cho accuracy/recall theo lớp hoặc theo nhóm kích thước."""
+    if n == 0:
+        return float("nan"), float("nan")
+    p, d = k / n, 1 + z * z / n
+    c, h = p + z * z / (2 * n), z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
+    return (c - h) / d, (c + h) / d
+
+
 def average_precision(recall: np.ndarray, precision: np.ndarray) -> float:
     """AP kiểu COCO: precision làm đơn điệu giảm, lấy mẫu tại 101 mức recall 0, 0.01, ..., 1."""
     if len(recall) == 0:
