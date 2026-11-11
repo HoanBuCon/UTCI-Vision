@@ -63,3 +63,16 @@ def test_region_features_separate_red_circle_from_blue_square():
     assert f_red[i["red_ring"]] > f_red[i["red_core"]] and f_red[i["red_all"]] > f_blue[i["red_all"]]
     assert f_blue[i["blue_all"]] > 0.3 and f_red[i["circularity"]] > f_blue[i["circularity"]]
     assert f_blue[i["n_vertices"]] == 4
+
+
+def test_iou_matrix_and_wilson_interval():
+    from utci_vision.evaluation.metrics import iou_matrix, wilson_interval
+
+    a = np.array([[0, 0, 10, 10], [20, 20, 30, 30]], float)
+    b = np.array([[0, 0, 10, 10], [5, 0, 15, 10]], float)
+    m = iou_matrix(a, b)
+    assert (
+        m.shape == (2, 2) and m[0, 0] == pytest.approx(1.0) and m[0, 1] == pytest.approx(50 / 150) and m[1].max() == 0
+    )
+    lo, hi = wilson_interval(90, 100)
+    assert lo < 0.9 < hi and lo > 0 and hi < 1 and np.isnan(wilson_interval(0, 0)[0])
