@@ -41,3 +41,6 @@ docs/export/
 Thumbs.db
 .vscode/
 .idea/
+
+# Bài báo tham khảo (PDF) — chỉ lưu local, danh mục ở docs/research/README.md
+docs/research/papers/
