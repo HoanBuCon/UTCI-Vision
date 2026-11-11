@@ -2,11 +2,11 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Phiên bản | 1.2.0 (Approved baseline) |
-| Ngày | 2026-10-22 |
+| Phiên bản | 1.3.0 (Approved baseline + cập nhật giữa S3) |
+| Ngày | 2026-11-11 |
 | Chủ sở hữu tài liệu | TV1 (Tech Lead) — mọi thành viên đều được đề xuất thay đổi |
 | Trạng thái | Living document — cập nhật cuối mỗi Sprint Review |
-| Liên quan | 00_PHUONG_AN.md, 01_TECHSTACK.md, 03_SPRINT_PLAN.md, docs/adr/, docs/data/DATA_CARD.md |
+| Liên quan | 00_PHUONG_AN.md, 01_TECHSTACK.md, 03_SPRINT_PLAN.md, 04_BAO_CAO_DE_XUAT.md, docs/adr/, docs/data/DATA_CARD.md, docs/danh_gia/, docs/research/ |
 | Repo | https://github.com/HoanBuCon/UTCI-Vision |
 
 ## 0. Cách đọc & cập nhật
@@ -21,9 +21,15 @@
 ## 1. Giới thiệu
 
 ### 1.1 Mục đích
-Đặc tả yêu cầu cho **UTCI-VISION** — hệ thống web nhận diện biển báo giao thông đường bộ Việt Nam từ ảnh, video và webcam,
-trong đó **Học sâu** (YOLO11, VietOCR), **Thị giác máy tính truyền thống** (tăng cường ảnh, đặc trưng màu/hình dạng, tracking, cắt vùng số/vùng chữ)
-và **Học máy** (LightGBM xác minh và hiệu chỉnh độ tin cậy) là các khâu của **cùng một pipeline**. Sản phẩm phục vụ môn *Thị giác máy tính*.
+Đặc tả yêu cầu cho **Hệ thống nhận diện biển báo giao thông** (tên gọi: **UTCI-Vision**) — hệ thống web nhận diện biển báo
+giao thông đường bộ Việt Nam từ ảnh, video và webcam, phục vụ học phần *Thị giác máy tính*.
+
+Theo yêu cầu học phần, hệ thống dùng **hai phương pháp**, là các khâu của **cùng một pipeline** và được đánh giá riêng:
+1. **Học sâu** — YOLO11 (phát hiện + phân loại), VietOCR (đọc số / chữ).
+2. **Thị giác máy tính truyền thống & trích xuất đặc trưng thủ công** — tăng cường ảnh thích nghi; trích xuất đặc trưng HOG,
+   màu HSV, hình học contour, Hu moments cho bộ xác minh (phân loại bằng LightGBM); theo vết Kalman + IoU; cắt vùng số / chữ.
+
+Thiết kế chi tiết và căn cứ nghiên cứu: `04_BAO_CAO_DE_XUAT.md`.
 
 ### 1.2 Phạm vi
 **Trong phạm vi (v1.0, sau 6 sprint):**
@@ -53,7 +59,8 @@ và **Học máy** (LightGBM xác minh và hiệu chỉnh độ tin cậy) là c
 | Flicker rate | Tỉ lệ frame mà nhãn hiển thị của cùng một track bị đổi |
 
 ### 1.4 Tài liệu tham khảo
-00_PHUONG_AN.md, 01_TECHSTACK.md, ADR-001…006, QCVN 41:2019/BGTVT, repo tham khảo Secret350/Real-time-Traffic-Objects-Detection.
+00_PHUONG_AN.md, 01_TECHSTACK.md, 04_BAO_CAO_DE_XUAT.md, ADR-001…009, QCVN 41:2019/BGTVT, repo tham khảo Secret350/Real-time-Traffic-Objects-Detection;
+nghiên cứu liên quan (HOG, GTSDB, SAHI, SORT, LightGBM, biển báo Việt Nam…): `docs/research/README.md`.
 
 ## 2. Mô tả tổng quan
 
@@ -81,7 +88,8 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 
 ### 2.4 Ràng buộc
 - C-01: 6 tuần (6 sprint × 1 tuần, 23/10 → 04/12/2026; sprint chuyển vào thứ Sáu), 5 thành viên.
-- C-02: Hệ thống phải ứng dụng cả DL, ML và CV, mỗi kỹ thuật có vai trò thật trong pipeline.
+- C-02: Hệ thống phải dùng **hai phương pháp theo yêu cầu học phần — CV truyền thống / trích xuất đặc trưng truyền thống và học sâu** —
+  mỗi phương pháp có vai trò thật trong pipeline và **có kết quả đánh giá riêng** (E2, E8); học máy (LightGBM, SVM) là bộ phân loại trên đặc trưng thủ công.
 - C-03: Demo là web chạy bằng Docker.
 - C-04: Huấn luyện chỉ qua 3 notebook (Local/Colab/Kaggle) và là **fine-tune** từ trọng số pretrained, không train lại từ đầu; việc khác chạy bằng mã nguồn local.
 - C-07: Không tiến trình nào dùng cổng mặc định (8000, 8080, 80, 5173, 8888); mọi cổng cấu hình qua `.env`.
@@ -89,7 +97,7 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 - C-06: Không commit dataset, trọng số, video vào git; ghi nguồn dataset (CC BY 4.0) và các thư viện/mô hình bên thứ ba (AGPL-3.0 của Ultralytics, VietOCR).
 
 ### 2.5 Giả định & phụ thuộc
-- A-01: Nhãn dataset đúng ở mức chấp nhận được sau khi TV5 lọc.
+- A-01: Nhãn dataset đúng ở mức chấp nhận được sau khi TV5 lọc (v1); 23 lỗi nhãn có hệ thống đã ghi nhận được sửa ở v2 (FR-DATA-12).
 - A-02: Mỗi tuần có ít nhất ~10 giờ GPU (cá nhân/Colab/Kaggle) cho nhóm.
 - A-03: Trọng số pretrained của VietOCR tải được (hoặc nhóm lưu bản sao trên Drive).
 
@@ -99,30 +107,32 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 
 | ID | Yêu cầu | Ưu tiên | Sprint | Trạng thái |
 |---|---|---|---|---|
-| FR-DATA-01 | Kiểm tra toàn vẹn dataset (ảnh hỏng, nhãn sai định dạng, toạ độ/class ngoài phạm vi, ảnh không nhãn) và xuất báo cáo | M | S1 | Done (công cụ) |
-| FR-DATA-02 | Thống kê EDA: phân bố lớp, kích thước box, độ phân giải, số box/ảnh theo tập | M | S1 | In Progress |
-| FR-DATA-03 | Phát hiện ảnh gần trùng (perceptual hash) và gom cụm | M | S1 | Done (công cụ) |
-| FR-DATA-04 | Chia lại 70/15/15 phân tầng theo lớp + nguồn, đơn vị là cụm gần trùng | M | S2 | Approved |
-| FR-DATA-05 | Đóng gói dataset (zip + checksum + manifest) để upload Google Drive / Kaggle Dataset | M | S2 | Approved |
-| FR-DATA-06 | `configs/classes.yaml`: tên có dấu, mã QCVN, siêu lớp, màu/hình dạng, ý nghĩa, cờ `has_text`/`has_value` | M | S1–S2 | Approved |
+| FR-DATA-01 | Kiểm tra toàn vẹn dataset (ảnh hỏng, nhãn sai định dạng, toạ độ/class ngoài phạm vi, ảnh không nhãn) và xuất báo cáo | M | S1 | Done |
+| FR-DATA-02 | Thống kê EDA: phân bố lớp, kích thước box, độ phân giải, số box/ảnh theo tập | M | S1 | Done |
+| FR-DATA-03 | Phát hiện ảnh gần trùng (perceptual hash) và gom cụm | M | S1 | Done |
+| FR-DATA-04 | Chia lại 70/15/15 phân tầng theo lớp + nguồn, đơn vị là cụm gần trùng; ánh xạ id lớp gốc → 27 lớp (`classes.yaml > raw_ids`) | M | S2 | Done |
+| FR-DATA-05 | Đóng gói dataset (zip + checksum + manifest) để upload Google Drive / Kaggle Dataset | M | S2 | Done |
+| FR-DATA-06 | `configs/classes.yaml`: tên có dấu, mã QCVN, siêu lớp, màu/hình dạng, ý nghĩa, cờ `has_text`/`has_value` | M | S1–S2 | In Progress (thiếu `meaning`) |
 | FR-DATA-07 | Data card: nguồn, giấy phép, quy trình lọc, thống kê trước/sau | M | S2 | Approved |
 | FR-DATA-08 | Tập đánh giá đọc số: ≥ 150 crop thật có nhãn giá trị (km/h, m, T) | M | S3 | Changed |
 | FR-DATA-09 | Tập đánh giá OCR: ≥ 200 crop có nhãn chữ (gồm biển phụ) | S | S2–S3 | Approved |
 | FR-DATA-10 | ≥ 2 video đường phố Việt Nam (tự quay/nguồn mở có giấy phép) để demo và đo flicker | S | S3 | Approved |
 | FR-DATA-11 | Tập suy giảm nhân tạo (tối, mờ, nhiễu, mưa) sinh từ test | S | S4 | Approved |
+| FR-DATA-12 | **Dataset v2**: gán nhãn 55 ảnh thiếu nhãn; sửa 23 lỗi nhãn có hệ thống; định nghĩa lại lớp "Biển chỉ dẫn hướng đi" theo QCVN; thêm ảnh nền khó (nhãn rỗng); cập nhật DATA_CARD | M | S3–S4 | Approved |
+| FR-DATA-13 | **Tập test ngoài phân phối (OOD)**: ≥ 300 frame có nhãn từ ≥ 2 video tuyến đường không có trong dataset | M | S4 | Approved |
 
 ### 3.2 FR-TRAIN — Fine-tune (notebook)
 
 | ID | Yêu cầu | Ưu tiên | Sprint | Trạng thái |
 |---|---|---|---|---|
-| FR-TRAIN-01 | 3 notebook `train_local`, `train_colab`, `train_kaggle` sinh tự động từ một template; không sửa tay `.ipynb` | M | S1 | Approved |
+| FR-TRAIN-01 | 3 notebook `train_local`, `train_colab`, `train_kaggle` sinh tự động từ một template; không sửa tay `.ipynb` | M | S1 | Done |
 | FR-TRAIN-02 | Chế độ `SMOKE` chạy hết mọi ô trong ≤ 10 phút trên mỗi nền tảng | M | S1 | Approved |
-| FR-TRAIN-03 | Notebook kiểm tra môi trường (torch/CUDA/GPU) và checksum dữ liệu trước khi train | M | S1 | Approved |
-| FR-TRAIN-04 | **Fine-tune** YOLO11 từ trọng số pretrained COCO hoặc checkpoint của nhóm (`configs/yolo.yaml`: AdamW, lr nhỏ, `fliplr=0`, tuỳ chọn `freeze`); resume được khi mất phiên | M | S1–S2 | Approved |
+| FR-TRAIN-03 | Notebook kiểm tra môi trường (torch/CUDA/GPU) và checksum dữ liệu trước khi train | M | S1 | Done |
+| FR-TRAIN-04 | **Fine-tune** YOLO11 từ trọng số pretrained COCO hoặc checkpoint của nhóm (`configs/yolo.yaml`: AdamW, lr nhỏ, `fliplr=0`, tuỳ chọn `freeze`); resume được khi mất phiên | M | S1–S2 | Done (baseline `20261029-1030_yolo11s_960`) |
 | FR-TRAIN-05 | Sinh tập xác minh từ dự đoán của YOLO đã fine-tune trên val và fit bộ xác minh LightGBM (+ hiệu chỉnh xác suất) | M | S3 | Approved |
 | FR-TRAIN-06 | ~~Fit SVM chữ số trên HOG~~ — VietOCR đọc số (FR-PIPE-07) | — | — | Dropped |
-| FR-TRAIN-07 | Mỗi run sinh `<run_id>/` gồm trọng số + `run_record.json` (cấu hình, metric val, commit, torch/CUDA/GPU, nền tảng) | M | S1 | Approved |
-| FR-TRAIN-08 | `python scripts/import_run.py` nhập run về `models/<run_id>` (+ `models/current` khi promote), ghi `experiments/registry.csv` | M | S1 | Approved |
+| FR-TRAIN-07 | Mỗi run sinh `<run_id>/` gồm trọng số + `run_record.json` (cấu hình, metric val, commit, torch/CUDA/GPU, nền tảng) | M | S1 | Done |
+| FR-TRAIN-08 | `python scripts/import_run.py` nhập run về `models/<run_id>` (+ `models/current` khi promote), ghi `experiments/registry.csv` | M | S1 | Done |
 | FR-TRAIN-09 | Export YOLO sang ONNX để chạy CPU nhanh hơn | C | S5 | Approved |
 | FR-TRAIN-10 | Fine-tune VietOCR trên crop biển báo | C | — | Deferred |
 
@@ -130,12 +140,12 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 
 | ID | Yêu cầu | Ưu tiên | Sprint | Trạng thái |
 |---|---|---|---|---|
-| FR-PIPE-01 | Đánh giá chất lượng frame (độ sáng, tương phản, độ mờ) | M | S2 | Approved |
-| FR-PIPE-02 | Tăng cường thích nghi: gamma tự động, CLAHE, khử nhiễu — chỉ áp dụng khi đánh giá chất lượng yêu cầu | M | S2 | Approved |
-| FR-PIPE-03 | YOLO11 phát hiện + phân loại 27 lớp | M | S1–S2 | Approved |
+| FR-PIPE-01 | Đánh giá chất lượng frame (độ sáng, tương phản, độ mờ) | M | S2 | Done |
+| FR-PIPE-02 | Tăng cường thích nghi: gamma tự động, CLAHE, khử nhiễu — chỉ áp dụng khi đánh giá chất lượng yêu cầu | M | S2 | In Progress (đã có `enhance.py`, chưa nối pipeline) |
+| FR-PIPE-03 | YOLO11 phát hiện + phân loại 27 lớp | M | S1–S2 | Done (`Detector`) |
 | FR-PIPE-04 | Tracking (Kalman + ghép IoU), xác nhận track sau ≥ N frame, bỏ phiếu nhãn có trọng số | M | S2 | Approved |
-| FR-PIPE-05 | Trích đặc trưng vùng CV (tỉ lệ màu, độ tròn, số đỉnh, solidity, Hu moments, HOG-PCA, độ nét) | M | S2–S3 | Approved |
-| FR-PIPE-06 | Bộ xác minh LightGBM: loại dương tính giả, thay độ tin cậy bằng xác suất đã hiệu chỉnh | M | S3 | Approved |
+| FR-PIPE-05 | **[CV truyền thống]** Trích đặc trưng thủ công cho mỗi vùng YOLO: tỉ lệ màu HSV (đỏ/xanh/vàng/trắng, viền vs lõi), độ tròn, số đỉnh, solidity, tỉ lệ khung, Hu moments, HOG 32×32 → PCA, độ nét | M | S3 | Changed |
+| FR-PIPE-06 | Bộ xác minh LightGBM trên đặc trưng FR-PIPE-05 (+ điểm/lớp YOLO): loại dương tính giả, thay độ tin cậy bằng xác suất đã hiệu chỉnh | M | S3–S4 | Changed |
 | FR-PIPE-07 | Đọc số trên biển có `has_value` (tốc độ, chiều cao, trọng lượng): cắt vùng số (CV) + VietOCR; regex trích số, hợp lệ hoá theo tập giá trị cho phép | M | S3 | Changed |
 | FR-PIPE-08 | Chọn frame tốt nhất của track (diện tích × độ nét) cho đọc số/OCR | S | S4 | Approved |
 | FR-PIPE-09 | OCR tiếng Việt chữ trên biển `has_text`: cắt vùng chữ, nắn nghiêng (CV) + VietOCR | S | S4 | Approved |
@@ -150,7 +160,7 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 
 | ID | Yêu cầu | Ưu tiên | Sprint | Trạng thái |
 |---|---|---|---|---|
-| FR-API-01 | `GET /api/v1/health`: trạng thái, phiên bản, mô hình đã nạp, thiết bị (CPU/GPU) | M | S1 | Approved |
+| FR-API-01 | `GET /api/v1/health`: trạng thái, phiên bản, mô hình đã nạp, thiết bị (CPU/GPU) | M | S1 | Done |
 | FR-API-02 | `GET /api/v1/classes`: 27 lớp kèm tên, siêu lớp, ý nghĩa, ảnh minh hoạ | M | S2 | Approved |
 | FR-API-03 | `POST /api/v1/detect/image`: nhận ảnh, trả JSON detection (+ ảnh đã vẽ nếu yêu cầu, + debug) | M | S2 | Approved |
 | FR-API-04 | `POST /api/v1/jobs/video` tạo job xử lý nền; `GET /api/v1/jobs/{id}` trả tiến độ, kết quả, link video đã vẽ, thống kê biển xuất hiện | M | S3 | Approved |
@@ -173,25 +183,27 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 
 | ID | Yêu cầu | Ưu tiên | Sprint | Trạng thái |
 |---|---|---|---|---|
-| FR-DEP-01 | `make up` (hoặc `make up-gpu`) khởi động `api` + `web`; truy cập `http://localhost:${UTCI_WEB_PORT}` (mặc định 18080) | M | S1–S2 | Approved |
+| FR-DEP-01 | `make up` (hoặc `make up-gpu`) khởi động `api` + `web`; truy cập `http://localhost:${UTCI_WEB_PORT}` (mặc định 18080) | M | S1–S2 | Done |
 | FR-DEP-02 | Image `api` mặc định chạy CPU; profile `gpu` dùng GPU NVIDIA qua NVIDIA Container Toolkit | M | S2 / S5 | Approved |
 | FR-DEP-03 | Trọng số mount từ `./models`; cấu hình qua biến môi trường (`.env`) | M | S2 | Approved |
 | FR-DEP-04 | Healthcheck cho container `api` | S | S5 | Approved |
-| FR-DEP-05 | Cổng của mọi tiến trình (API, web, Vite dev/preview, Jupyter) đọc từ `.env`; mặc định 18100 / 18080 / 15173 / 18888 | M | S1 | Approved |
-| FR-DEP-06 | Makefile chỉ cho DevOps: môi trường, CI (`make ci`), Docker (`make help`); việc nghiệp vụ gọi trực tiếp `scripts/` | M | S1 | Approved |
+| FR-DEP-05 | Cổng của mọi tiến trình (API, web, Vite dev/preview, Jupyter) đọc từ `.env`; mặc định 18100 / 18080 / 15173 / 18888 | M | S1 | Done |
+| FR-DEP-06 | Makefile chỉ cho DevOps: môi trường, CI (`make ci`), Docker (`make help`); việc nghiệp vụ gọi trực tiếp `scripts/` | M | S1 | Done |
 
 ### 3.7 FR-EVAL — Đánh giá (chạy local)
 
 | ID | Yêu cầu | Ưu tiên | Sprint | Trạng thái |
 |---|---|---|---|---|
-| FR-EVAL-01 | Đánh giá toàn hệ thống trên test v1: P, R, mAP@50, mAP@50:95, macro-F1, AP theo lớp và theo kích thước (E1) | M | S3 | Approved |
+| FR-EVAL-01 | Đánh giá toàn hệ thống trên test v1 **và tập OOD**: P, R, mAP@50, mAP@50:95, macro-F1, AP theo lớp và theo kích thước; **CI 95% bootstrap theo ảnh**; P/R tại điểm vận hành; theo độ tương đồng với train (E1) — công cụ `scripts/analyze_run.py` | M | S3 | Changed |
 | FR-EVAL-02 | Ablation: YOLO thuần → + tăng cường → + xác minh → + tracking (E2) | M | S5 | Approved |
-| FR-EVAL-03 | So sánh cấu hình YOLO11 n/s, `imgsz` 640/960; bộ xác minh LogReg/RF/LightGBM (E3) | M | S2–S3 | Approved |
+| FR-EVAL-03 | So sánh cấu hình YOLO11: `imgsz` 960 / 1280 / huấn luyện trên ô cắt (± `freeze`); bộ xác minh LogReg/RF/LightGBM và **tập đặc trưng** (màu / +hình học / +HOG / đầy đủ) (E3) | M | S3–S4 | Changed |
 | FR-EVAL-04 | Độ bền trên tập suy giảm ± tăng cường (E4) | S | S4 | Approved |
 | FR-EVAL-05 | Đọc số và chữ: VietOCR (+ regex / từ điển, ± cắt vùng CV) vs EasyOCR: accuracy giá trị, CER, exact match (E5) | S | S4 | Changed |
 | FR-EVAL-06 | Flicker rate trên video ± tracking (E6) | S | S5 | Approved |
-| FR-EVAL-07 | Benchmark FPS/độ trễ: pipeline local (GPU/CPU) và qua API/WebSocket | M | S1, S4, S5 | Approved |
-| FR-EVAL-08 | `experiments/registry.csv` ghi mọi run và mọi lần đánh giá (mã E#, commit, cấu hình, môi trường, metric) | M | S1 | Approved |
+| FR-EVAL-07 | Benchmark FPS/độ trễ: pipeline local (GPU/CPU) và qua API/WebSocket | M | S1, S4, S5 | In Progress (detector: 54,6 FPS) |
+| FR-EVAL-08 | `experiments/registry.csv` ghi mọi run và mọi lần đánh giá (mã E#, commit, cấu hình, môi trường, metric) | M | S1 | Done |
+| FR-EVAL-09 | **So sánh truyền thống vs học sâu (E8)**: phân loại crop biển bằng HOG + SVM, SIFT-BoVW + SVM và YOLO; accuracy / macro-F1 theo nhóm kích thước (< 16, 16–32, 32–64, ≥ 64 px) kèm CI, thời gian / crop | M | S5 | Approved |
+| FR-EVAL-10 | Ma trận nhầm lẫn và P/R theo lớp tính tại điểm vận hành (conf của pipeline); không dùng ma trận mặc định của Ultralytics 8.4 (ghép cả dự đoán conf 0,001) làm bằng chứng | M | S3 | Done (`analyze_run.py`) |
 
 ### 3.8 FR-DOC — Báo cáo & bàn giao
 
@@ -206,15 +218,17 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 
 | ID | Yêu cầu | Mục tiêu ban đầu | Ưu tiên |
 |---|---|---|---|
-| NFR-ACC-01 | Phát hiện + phân loại trên test v1 (hệ thống đầy đủ) | mAP@50 ≥ 0.80; mAP@50:95 ≥ 0.55 | M |
-| NFR-ACC-02 | Precision sau bộ xác minh | ≥ 0.90 (recall giảm không quá 0.03 so với YOLO thuần) | M |
+| NFR-ACC-01 | Phát hiện + phân loại trên test v1 (hệ thống đầy đủ) | mAP@50 ≥ 0.88; mAP@50:95 ≥ 0.68 (baseline YOLO: 0,89–0,91 / 0,68 — không được giảm khi thêm khâu) | M |
+| NFR-ACC-02 | Precision tại điểm vận hành sau bộ xác minh, test v1 | ≥ 0.90 (baseline 0,86), recall giảm không quá 0.03 so với YOLO thuần | M |
+| NFR-ACC-05 | Precision trên tập OOD (hoặc nhóm ảnh test ít giống train nhất khi chưa có OOD) | ≥ 0.85 (baseline 0,75) | S |
+| NFR-ACC-06 | Recall biển < 16 px tại điểm vận hành | ≥ 0.70 (baseline 0,62) | S |
 | NFR-ACC-03 | Đọc đúng giá trị số bằng VietOCR + regex (crop cao ≥ 40 px) | ≥ 85% | M |
 | NFR-ACC-04 | OCR chữ tiếng Việt (crop cao ≥ 60 px) | ≥ 80% exact match sau hậu xử lý | S |
 | NFR-PERF-01 | Webcam qua web, GPU RTX 4060 Laptop, frame 960×540 | ≥ 20 FPS hiển thị, độ trễ p95 ≤ 120 ms | M |
 | NFR-PERF-02 | Ảnh tĩnh qua API, Docker CPU (4 nhân) | ≤ 1,5 s/ảnh (không tính OCR); ≤ 3 s có OCR | M |
 | NFR-PERF-03 | Xử lý video nền, Docker GPU | ≥ 1× thời gian thực với video 720p | S |
 | NFR-PERF-04 | Tác vụ theo track không làm giảm FPS luồng chính quá 10% | ≤ 10% | M |
-| NFR-REP-01 | Mọi số liệu trong báo cáo truy được về registry (run_id, commit, môi trường) | 100% | M |
+| NFR-REP-01 | Mọi số liệu trong báo cáo truy được về registry (run_id, commit, môi trường) và có CI 95% cho chỉ số tổng | 100% | M |
 | NFR-REP-02 | Máy mới: cài môi trường dev theo README (đã có torch) | ≤ 30 phút | M |
 | NFR-REP-03 | Máy mới: chạy demo bằng Docker (đã có Docker + trọng số) | ≤ 15 phút | M |
 | NFR-MNT-01 | Python theo `ruff`; frontend `tsc --noEmit` strict; tham số ở `configs/` | CI xanh | M |
@@ -272,15 +286,15 @@ python -m utci_vision.api --reload                 # dev; web: cd web && npm run
 ## 6. Mô hình dữ liệu
 
 - Nhãn: định dạng YOLO `class cx cy w h` (chuẩn hoá).
-- `processed/v1/manifest.csv`: `image, split, resolution, dup_cluster, n_boxes, classes`.
+- `processed/v1/manifest.csv`: `image, split, resolution, dup_cluster, n_boxes, classes` (id mô hình), `raw_classes` (id gốc), `new_split`.
 - `models/<run_id>/run_record.json`: `run_id, platform, model, config, metrics, commit, torch, cuda, gpu, dataset_version, dataset_sha256, started_at, duration_s`.
 - `experiments/registry.csv`: `run_id, exp, date, author, platform, commit, torch, cuda, gpu, config, dataset_version, metrics_json, notes`.
-- `configs/classes.yaml`: `id, name, name_vi, superclass, qcvn, meaning, has_text, has_value, value_unit`.
+- `configs/classes.yaml`: `id, name, name_vi, superclass (prohibitory|warning|mandatory|info|other), qcvn, meaning, has_text, has_value, value_unit, raw_ids`.
 
 ## 7. Tiêu chí chấp nhận v1.0
 
 1. Mọi yêu cầu `M` ở trạng thái `Done` hoặc `Changed` có chấp thuận của nhóm.
-2. Có bảng E1, E2 và ≥ 3 trong E3–E6, truy vết được về registry.
+2. Có bảng E1 (test v1 + OOD), **E2 (đóng góp của phương pháp truyền thống)**, **E8 (truyền thống vs học sâu)** và ≥ 2 trong E3–E6, truy vết được về registry.
 3. Trên một máy sạch có Docker: `docker compose --profile cpu up` → kịch bản A1–A6 (Phụ lục A) đạt.
 4. Cả 3 notebook chạy `SMOKE` thành công trên nền tảng tương ứng.
 5. Báo cáo, slide, video demo, README hoàn chỉnh.
@@ -291,9 +305,10 @@ python -m utci_vision.api --reload                 # dev; web: cd web && npm run
 |---|---|---|---|
 | ~~TBD-1~~ | Gộp/loại lớp hiếm → **đã chốt 29/10/2026**: gộp 6 lớp vào "Biển báo khác" (ADR-009) | S1 | TV1 + TV5 |
 | TBD-2 | Báo cáo bằng Word hay LaTeX? | Planning S1 | TV4 |
-| TBD-3 | `yolo11n` hay `yolo11s`, `imgsz` 640 hay 960 (theo E3 + ngân sách FPS) | Review S2 | TV3 |
+| TBD-3 | `imgsz` 960 / 1280 / huấn luyện ô cắt cho biển nhỏ (theo E3 + ngân sách FPS). Đã có: `yolo11s` 960 đạt 0,89–0,91 mAP@50, 55 FPS | Review S4 | TV3 |
 | TBD-4 | Tìm biển phụ bằng CV đủ tốt hay phải gán nhãn lớp "biển phụ" cho YOLO? | Review S3 | TV1 + TV2 |
-| TBD-5 | Nền tảng "chính thức" để lấy số liệu báo cáo (máy nào / Kaggle) | Review S2 | TV1 |
+| TBD-5 | Nền tảng "chính thức" để lấy số liệu báo cáo (đề xuất: huấn luyện trên Colab T4 như baseline; đánh giá trên RTX 4060 Laptop) | Review S3 | TV1 |
+| TBD-6 | Tách lớp "Biển chỉ dẫn hướng đi" (bảng chỉ dẫn vs biển tròn xanh) hay chỉ sửa nhãn? | Review S3 | TV5 + TV1 |
 
 ## 9. Quản lý thay đổi yêu cầu
 
@@ -306,6 +321,7 @@ python -m utci_vision.api --reload                 # dev; web: cd web && npm run
 | Phiên bản | Ngày | Người sửa | Thay đổi |
 |---|---|---|---|
 | 0.1.0 | 2026-10-22 | TV1 | Bản nháp đầu (3 chế độ tách rời) |
+| 1.3.0 | 2026-11-11 | TV1 | Theo `04_BAO_CAO_DE_XUAT.md`: nêu rõ **hai phương pháp theo yêu cầu học phần** (§1.1, C-02); thêm FR-DATA-12 (dataset v2), FR-DATA-13 (tập OOD), FR-EVAL-09 (E8 truyền thống vs học sâu), FR-EVAL-10, NFR-ACC-05/06; FR-PIPE-05/06, FR-EVAL-01/03 Changed; nâng NFR-ACC-01/02 theo baseline; cập nhật trạng thái Done của S1–S2; cập nhật TBD-3/5, thêm TBD-6; ma trận truy vết S3–S5 theo kế hoạch mới |
 | 1.2.0 | 2026-10-23 | TV1 | Bỏ SVM chữ số: VietOCR + regex đọc số (FR-PIPE-07, FR-DATA-08, FR-EVAL-05 Changed; FR-TRAIN-06 Dropped) |
 | 1.1.0 | 2026-10-22 | TV1 | Huấn luyện = fine-tune từ pretrained (C-04, FR-TRAIN-04); cổng custom qua `.env` + Makefile (C-07, FR-DEP-05/06, NFR-MNT-04); thêm repo |
 | 1.0.0 | 2026-10-22 | TV1 | Viết lại theo phương án đã duyệt: một pipeline YOLO11 + CV/ML/OCR theo track; web + Docker; OCR tiếng Việt & biển phụ; 3 notebook huấn luyện; chính sách không khoá torch/CUDA |
@@ -328,8 +344,8 @@ python -m utci_vision.api --reload                 # dev; web: cd web && npm run
 |---|---|
 | S1 | FR-DATA-01/02/03/06, FR-TRAIN-01/02/03/04/07/08, FR-PIPE-03, FR-API-01, FR-DEP-01/05/06, FR-EVAL-07/08 |
 | S2 | FR-DATA-04/05/06/07/08/09, FR-PIPE-01/02/04/05/13, FR-API-02/03/07, FR-WEB-01, FR-DEP-02/03, FR-EVAL-03 |
-| S3 | FR-TRAIN-05/06, FR-PIPE-06/07, FR-API-04/06, FR-WEB-02/04/06, FR-EVAL-01/03, FR-DATA-08/09/10 |
-| S4 | FR-PIPE-08/09/10/11/12/14, FR-API-05, FR-WEB-03/05, FR-EVAL-04/05/07, FR-DATA-11 |
-| S5 | FR-TRAIN-09, FR-PIPE-15, FR-DEP-02/04, FR-EVAL-02/06/07, bản nháp báo cáo |
+| S3 | FR-PIPE-02/05, FR-DATA-12, FR-API-03, FR-EVAL-01/03, FR-DATA-08/09/10, FR-PIPE-07 |
+| S4 | FR-TRAIN-05, FR-PIPE-04/06/08/12, FR-DATA-13, FR-API-04/05/06, FR-WEB-01/02/03, FR-EVAL-03/04/07, FR-DATA-11 |
+| S5 | FR-EVAL-02/05/06/07/09, FR-PIPE-09/10/11/14, FR-WEB-04/05/06, FR-TRAIN-09, FR-PIPE-15, FR-DEP-02/04, bản nháp báo cáo |
 | S6 | FR-DOC-02/03/04, ổn định & bàn giao |
 | S1–S6 | FR-DOC-01 |
