@@ -2,9 +2,16 @@
 
 Trọng số **không** commit vào git. Bản đang dùng nằm ở `models/current/` (pipeline, API và Docker đọc thư mục này).
 Mỗi lần fine-tune được nhập bằng `python scripts/import_run.py <thư-mục-run> --promote` (copy vào `models/<run_id>/` và `models/current/`, ghi `experiments/registry.csv`).
+Thư mục run đầy đủ (biểu đồ, `results.csv`, checkpoint) để ở `runs_out/<run_id>/` (cũng không commit).
+
+Máy mới: tải thư mục run từ Drive về `runs_out/` rồi chạy
+`python scripts/import_run.py runs_out/20261029-1030_yolo11s_960 --promote --exp BASELINE`.
+
+Các script đánh giá (`analyze_run.py`, `verifier_feasibility.py`, `compare_traditional_dl.py`, `enhance_robustness.py`)
+mặc định dùng `configs/pipeline.yaml > detector.weights` = `models/current/yolo11.pt`; truyền đường dẫn `.pt` để đánh giá run khác.
 
 | Thành phần | File | run_id | Nền tảng | Metric chính | Link Drive |
 |---|---|---|---|---|---|
-| YOLO11 (fine-tune từ pretrained COCO) | `yolo11.pt` | — | — | — | — |
+| YOLO11s (fine-tune từ pretrained COCO, imgsz 960, 80 epoch) | `yolo11.pt` (19 MB) | `20261029-1030_yolo11s_960` | Colab, Tesla T4 | test mAP@50 0,905 · mAP@50:95 0,684 ([đánh giá](danh_gia/S1_baseline_yolo11s_960.md)) | `MyDrive/UTCI_VISION/runs/20261029-1030_yolo11s_960/` |
 | Bộ xác minh LightGBM | `verifier.joblib` | — | — | — | — |
 | VietOCR (đọc số + chữ) | pretrained `vgg_transformer` | — | — | — | (bản sao dự phòng) |

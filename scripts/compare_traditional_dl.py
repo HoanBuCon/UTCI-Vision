@@ -1,6 +1,6 @@
 """E8 — Phân loại biển: đặc trưng truyền thống + SVM so với học sâu (YOLO11), theo kích thước biển. Phụ trách: TV1, TV2.
 
-    python scripts/compare_traditional_dl.py <yolo11.pt> [--imgsz 960] [--out reports/e8]
+    python scripts/compare_traditional_dl.py [<yolo11.pt>] [--imgsz 960] [--out reports/e8]
 
 Cùng một tập biển thật (GT) của processed/<version>; các phương pháp truyền thống fit trên crop train, chọn C trên val,
 đánh giá trên test:
@@ -187,10 +187,11 @@ def paired_delta(test: pd.DataFrame, a: np.ndarray, b: np.ndarray, n_boot: int =
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("weights", type=Path)
+    parser.add_argument("weights", type=Path, nargs="?", help="mặc định: configs/pipeline.yaml > detector.weights")
     parser.add_argument("--imgsz", type=int, default=960)
     parser.add_argument("--out", type=Path, default=Path("reports/e8"))
     args = parser.parse_args()
+    args.weights = resolve(args.weights or load_config("pipeline")["detector"]["weights"])
     from sklearn.cluster import MiniBatchKMeans
 
     cfg = load_config("verifier")

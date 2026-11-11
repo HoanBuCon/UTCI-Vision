@@ -1,6 +1,6 @@
 """Phân tích một lần fine-tune YOLO11 trên processed/<version> — số liệu cho báo cáo (FR-EVAL). Phụ trách: TV1, TV3.
 
-    python scripts/analyze_run.py <weights.pt> [--imgsz 960] [--boot 500] [--out reports/eval/<tên>]
+    python scripts/analyze_run.py [<yolo11.pt>] [--imgsz 960] [--boot 500] [--out reports/eval/<tên>]
 
 Kết quả (in ra màn hình + CSV trong --out):
 1. ultralytics_val.csv  — P/R/AP50/AP50-95 theo lớp trên val và test (Ultralytics `val`).
@@ -14,6 +14,7 @@ Ma trận nhầm lẫn của Ultralytics 8.4 ghép cả dự đoán conf 0.001 n
 from __future__ import annotations
 
 import argparse
+import json
 from collections import Counter
 from pathlib import Path
 
@@ -193,16 +194,19 @@ def similarity_groups(boxes_test: pd.DataFrame, false_pos_by_image: pd.Series, r
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("weights", type=Path)
+    parser.add_argument("weights", type=Path, nargs="?", help="mặc định: configs/pipeline.yaml > detector.weights")
     parser.add_argument("--imgsz", type=int, default=960)
     parser.add_argument("--boot", type=int, default=500, help="số lần bootstrap (0 = bỏ qua)")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
+    args.weights = resolve(args.weights or load_config("pipeline")["detector"]["weights"])
 
     from ultralytics import YOLO
 
     root = resolve(load_config("data")["processed_dir"])
-    out = resolve(args.out or Path("reports/eval") / args.weights.parent.name)
+    record = args.weights.parent / "run_record.json"  # models/current/ -> đặt tên theo run_id thật
+    run_id = json.loads(record.read_text(encoding="utf-8"))["run_id"] if record.exists() else args.weights.parent.name
+    out = resolve(args.out or Path("reports/eval") / run_id)
     out.mkdir(parents=True, exist_ok=True)
     model = YOLO(str(args.weights))
     pd.set_option("display.width", 200)

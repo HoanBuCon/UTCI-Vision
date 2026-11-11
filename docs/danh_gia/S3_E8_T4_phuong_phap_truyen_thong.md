@@ -1,7 +1,7 @@
 # Phương pháp truyền thống: E8 (đặc trưng thủ công vs học sâu) và T4 (tăng cường ảnh)
 
 - **Ngày:** 11/11/2026 · **Trọng số YOLO:** `20261029-1030_yolo11s_960` (baseline S1) · **Dữ liệu:** `processed/v1` (không chỉnh sửa)
-- **Tái lập:** `python scripts/compare_traditional_dl.py <yolo11.pt>` (E8) · `python scripts/enhance_robustness.py <yolo11.pt>` (T4)
+- **Tái lập:** `python scripts/compare_traditional_dl.py` (E8) · `python scripts/enhance_robustness.py` (T4) — mặc định trọng số `models/current/yolo11.pt`
 - **Bối cảnh:** hướng B sau thử nghiệm [T0/T1](S3_T0_T1_kha_thi_bo_xac_minh.md) — đặt phương pháp truyền thống vào vai trò đo được rõ ràng.
 
 ## Tóm tắt

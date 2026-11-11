@@ -1,6 +1,6 @@
 """T4 — Tăng cường ảnh thích nghi (CV truyền thống) có giữ được hiệu năng YOLO khi ảnh xấu không. Phụ trách: TV2, TV5.
 
-    python scripts/enhance_robustness.py <yolo11.pt> [--imgsz 960] [--boot 1000] [--out reports/t4]
+    python scripts/enhance_robustness.py [<yolo11.pt>] [--imgsz 960] [--boot 1000] [--out reports/t4]
 
 Ảnh test bị làm xấu nhân tạo (utci_vision.evaluation.experiments.DEGRADATIONS + mức tối mạnh hơn), rồi so sánh YOLO @0.25
 trên ảnh (a) không xử lý, (b) qua bước tăng cường thích nghi của pipeline (enhance.assess -> needed_ops -> enhance, ngưỡng
@@ -88,11 +88,12 @@ def paired_ci(a: pd.DataFrame, b: pd.DataFrame, n_boot: int, seed: int = 0) -> t
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("weights", type=Path)
+    parser.add_argument("weights", type=Path, nargs="?", help="mặc định: configs/pipeline.yaml > detector.weights")
     parser.add_argument("--imgsz", type=int, default=960)
     parser.add_argument("--boot", type=int, default=1000)
     parser.add_argument("--out", type=Path, default=Path("reports/t4"))
     args = parser.parse_args()
+    args.weights = resolve(args.weights or load_config("pipeline")["detector"]["weights"])
     from ultralytics import YOLO
 
     pipe = load_config("pipeline")

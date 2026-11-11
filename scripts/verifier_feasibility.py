@@ -1,6 +1,6 @@
 """Thử nghiệm khả thi bộ xác minh đặc trưng thủ công (T0 + T1) với trọng số YOLO hiện có. Phụ trách: TV1, TV2.
 
-    python scripts/verifier_feasibility.py <yolo11.pt> [--imgsz 960] [--boot 1000] [--out reports/feasibility]
+    python scripts/verifier_feasibility.py [<yolo11.pt>] [--imgsz 960] [--boot 1000] [--out reports/feasibility]
 
 T0 — Dư địa: YOLO chạy conf 0.10 trên val/test; mỗi dự đoán được gán đúng (TP) / sai lớp / định vị kém / trùng / nền.
      In thành phần dự đoán sai ở conf 0.25 và 0.10, trần của bộ xác minh chỉ loại bỏ (recall tối đa = recall @0.10),
@@ -273,11 +273,12 @@ def similarity_groups(root: Path) -> pd.Series:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("weights", type=Path)
+    parser.add_argument("weights", type=Path, nargs="?", help="mặc định: configs/pipeline.yaml > detector.weights")
     parser.add_argument("--imgsz", type=int, default=960)
     parser.add_argument("--boot", type=int, default=1000)
     parser.add_argument("--out", type=Path, default=Path("reports/feasibility"))
     args = parser.parse_args()
+    args.weights = resolve(args.weights or load_config("pipeline")["detector"]["weights"])
 
     from ultralytics import YOLO
 
