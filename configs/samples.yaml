@@ -1,0 +1,20 @@
+# Ảnh mẫu cho demo web (GET /api/v1/samples) — ảnh lấy từ test của processed/v1, KHÔNG commit ảnh (C-06).
+# Docker mount thư mục ảnh test chỉ đọc (docker-compose.yml). Chọn bằng thống kê: nhiều biển, biển có số, biển nhỏ, đa dạng siêu lớp, tối.
+images_dir: dataset/processed/v1/test/images
+samples:
+  - {id: nhieu_bien1, file: "4984_png.rf.066407d33f44de48d9c1496be6e8b426.jpg", title: "Nhiều biển 1", group: "Nhiều biển", signs: 16, small: 6, size: "1622x626"}
+  - {id: nhieu_bien2, file: "4522_png_png_png.rf.6da126945a2eb242f62da53707d21894.jpg", title: "Nhiều biển 2", group: "Nhiều biển", signs: 9, small: 6, size: "1622x626"}
+  - {id: nhieu_bien3, file: "7336_png_png_png.rf.de2e600b46a305d0a286ea4c2887712b.jpg", title: "Nhiều biển 3", group: "Nhiều biển", signs: 8, small: 7, size: "1622x626"}
+  - {id: co_so1, file: "1296_jpg.rf.0c595adfaf4173fa5e72d096d5ce9763.jpg", title: "Biển có số 1", group: "Biển có số", signs: 1, small: 0, size: "960x540"}
+  - {id: co_so2, file: "0592_jpg.rf.a2b395e1bf89f124f86f2f080229f985.jpg", title: "Biển có số 2", group: "Biển có số", signs: 4, small: 0, size: "960x540"}
+  - {id: co_so3, file: "2048_jpg.rf.c647f514ef1931ef329a0b3a6da66666.jpg", title: "Biển có số 3", group: "Biển có số", signs: 1, small: 0, size: "960x540"}
+  - {id: bien_nho1, file: "11841_png.rf.e1d1ae2155ce5d3d8a3ef29eabd661ae.jpg", title: "Nhiều biển nhỏ 1", group: "Nhiều biển nhỏ", signs: 8, small: 7, size: "1622x626"}
+  - {id: bien_nho2, file: "0561_jpg.rf.650ece711f1e4cea6f49cbc33d750710.jpg", title: "Nhiều biển nhỏ 2", group: "Nhiều biển nhỏ", signs: 6, small: 6, size: "960x540"}
+  - {id: da_dang1, file: "11831_png.rf.9b8ebc4e08da5cc8c3f6aacac0d5d6fc.jpg", title: "Nhiều loại biển 1", group: "Nhiều loại biển", signs: 3, small: 3, size: "1622x626"}
+  - {id: da_dang2, file: "1057_jpg.rf.91b0ebc70a602d5f53c15f197698feb9.jpg", title: "Nhiều loại biển 2", group: "Nhiều loại biển", signs: 6, small: 2, size: "960x540"}
+  - {id: da_dang3, file: "2498_jpg.rf.92122aefd59e7b25487de9c664ee0aea.jpg", title: "Nhiều loại biển 3", group: "Nhiều loại biển", signs: 5, small: 0, size: "1920x1080"}
+  - {id: chi_dan1, file: "0151_jpg.rf.f52b6cf7fa5f785b8854a9abea694bfd.jpg", title: "Biển chỉ dẫn 1", group: "Biển chỉ dẫn", signs: 1, small: 0, size: "960x540"}
+  - {id: chi_dan2, file: "2779_jpg.rf.62843bc6d1d591fe4ce0ef8270740302.jpg", title: "Biển chỉ dẫn 2", group: "Biển chỉ dẫn", signs: 2, small: 0, size: "1920x1080"}
+  - {id: toi1, file: "10204_png.rf.deecce52bd1b37f55c7ab553b9bf9fda.jpg", title: "Ảnh tối 1", group: "Ảnh tối", signs: 3, small: 3, size: "1622x626"}
+  - {id: toi2, file: "11590_png.rf.d3f0ad6471a70cf0aa9401b4f6551711.jpg", title: "Ảnh tối 2", group: "Ảnh tối", signs: 3, small: 2, size: "1622x626"}
+  - {id: canh_khac1, file: "2717_jpg.rf.3ba252d0c3ec60b53d2c2e081269ea15.jpg", title: "Full HD 1", group: "Full HD", signs: 2, small: 0, size: "1920x1080"}

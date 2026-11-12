@@ -15,7 +15,7 @@ from ..pipeline import Components, Recognizer, load_components, resolve_device
 from .jobs import JobManager
 from .routes import router
 
-STAGES = ("detector", "verifier", "ocr")
+STAGES = ("detector", "verifier", "ocr", "classic")
 
 
 @asynccontextmanager

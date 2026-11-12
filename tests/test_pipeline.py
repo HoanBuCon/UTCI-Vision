@@ -67,7 +67,7 @@ class FakeDetector:
     def __init__(self, boxes):
         self.boxes = boxes
 
-    def detect(self, images, conf=None):
+    def detect(self, images, conf=None, imgsz=None):
         return [[Detection(b, 5, 0.9) for b in self.boxes] for _ in images]
 
 

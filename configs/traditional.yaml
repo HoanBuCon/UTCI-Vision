@@ -1,0 +1,10 @@
+# Pipeline CV truyền thống (src/utci_vision/traditional.py) — đối chứng với YOLO11. Dải màu HSV và HOG dùng chung
+# configs/verifier.yaml > features.
+classifier: models/current/hog_svm.joblib   # scripts/train_hog_svm.py
+detect:
+  morph_kernel: 3            # mở / đóng loại nhiễu nhỏ trên mask màu
+  min_area: 60               # px² — vùng nhỏ hơn không đủ thông tin để phân loại
+  max_area_ratio: 0.25       # bỏ vùng chiếm quá 1/4 ảnh (trời, mái nhà, xe)
+  min_circularity: 0.75      # độ tròn của hình bao lồi để coi là biển tròn
+  approx_eps: 0.04           # approxPolyDP: epsilon = tỉ lệ × chu vi
+  min_confidence: 0.30       # xác suất SVM tối thiểu để hiển thị

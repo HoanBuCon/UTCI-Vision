@@ -14,6 +14,7 @@ x-api: &api
   volumes:
     - ./models:/app/models:ro       # trọng số fine-tune (models/current/), không đóng vào image
     - ./outputs:/app/outputs        # video đã xử lý (tự xoá sau 24 giờ)
+    - ./dataset/processed/v1/test/images:/app/dataset/processed/v1/test/images:ro  # ảnh mẫu demo (configs/samples.yaml)
   restart: unless-stopped
 
 services:

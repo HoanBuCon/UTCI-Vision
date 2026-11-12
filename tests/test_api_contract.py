@@ -19,6 +19,12 @@ PAIRS = [  # (Pydantic, TypeScript)
     ("HealthResponse", "HealthResponse"),
     ("ClassInfoOut", "ClassInfo"),
     ("JobStatus", "JobStatus"),
+    ("SampleOut", "Sample"),
+    ("CandidateOut", "Candidate"),
+    ("TraditionalResponse", "TraditionalResponse"),
+    ("CompareRow", "CompareRow"),
+    ("ComparePart", "ComparePart"),
+    ("CompareResponse", "CompareResponse"),
 ]
 
 
