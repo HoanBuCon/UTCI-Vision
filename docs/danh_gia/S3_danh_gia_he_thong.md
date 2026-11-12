@@ -56,3 +56,19 @@ cao khi người dùng cần (FR-PIPE-15, `Detector.detect_tiled`). Recall biể
 ## Hạn chế
 Một lần chạy; bộ xác minh fit trên val (cùng tập đã dùng chọn epoch YOLO); E2 / E4-ablation đo ở imgsz 960 (trước khi đổi
 mặc định sang 1280), E1 ở 1280; ảnh tối là giả lập.
+
+## Kiểm thử chấp nhận qua Docker (profile CPU, 12/11/2026)
+
+`make up` → web `http://localhost:18080` (Nginx) → API trong container (CPU, imgsz 1280). Mọi kiểm tra đi qua Nginx như người dùng.
+
+| # | Kịch bản | Kết quả |
+|---|---|---|
+| A1 | Khởi động, `/api/v1/health` | `ok`; detector + OCR đã nạp, bộ xác minh tắt theo cấu hình; container healthy; **nạp được khi không có mạng** (11 s) |
+| A2 | Ảnh test có 5 biển | 0,9–1,6 s / ảnh qua HTTP (YOLO ~280 ms, OCR ~570 ms); đủ 5 biển, đọc "40 km/h", "2 m" — đạt NFR-PERF-02 (≤ 3 s có OCR) |
+| A4 | Ảnh làm tối γ 2,5, chế độ giải thích | Đánh giá chất lượng kích hoạt gamma + CLAHE; trả ảnh trung gian |
+| A5 | Job video 30 frame | Xong sau 10 s; video kết quả WebM (VP8) phát được trên trình duyệt; bảng biển có "60 km/h", "40 km/h" |
+| A6 | WebSocket qua Nginx | Chạy đúng, giữ track; **3,5 FPS trên CPU** (YOLO 1280 ~300 ms) — webcam thời gian thực cần profile GPU (NFR-PERF-01), chưa thử |
+| — | Lỗi đầu vào | Sai định dạng → 415; job không tồn tại → 404 |
+
+Sửa trong lần kiểm thử: VietOCR tải 548 MB trọng số ImageNet cho backbone mỗi lần container khởi động (thừa vì bị nạp đè) → tắt
+`cnn.pretrained`. Trong container Linux, OpenCV không ghi được H.264 nên video kết quả là WebM (VP8) — trình duyệt phát bình thường.

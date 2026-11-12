@@ -151,6 +151,7 @@ class TextReader:
             vcfg["weights"] = str(resolve(weights))
         vcfg["device"] = _device(r.get("device", "auto"))
         vcfg["predictor"]["beamsearch"] = False
+        vcfg["cnn"]["pretrained"] = False  # trọng số ImageNet của backbone thừa (bị nạp đè) — tránh tải 548 MB lúc khởi động
         self.predictor = Predictor(vcfg)
 
     def read(self, images_bgr: list[np.ndarray]) -> list[tuple[str, float]]:

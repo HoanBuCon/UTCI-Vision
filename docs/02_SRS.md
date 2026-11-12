@@ -188,10 +188,10 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 
 | ID | Yêu cầu | Ưu tiên | Sprint | Trạng thái |
 |---|---|---|---|---|
-| FR-DEP-01 | `make up` (hoặc `make up-gpu`) khởi động `api` + `web`; truy cập `http://localhost:${UTCI_WEB_PORT}` (mặc định 18080) | M | S1–S2 | Done |
-| FR-DEP-02 | Image `api` mặc định chạy CPU; profile `gpu` dùng GPU NVIDIA qua NVIDIA Container Toolkit | M | S2 / S5 | Approved |
-| FR-DEP-03 | Trọng số mount từ `./models`; cấu hình qua biến môi trường (`.env`) | M | S2 | Approved |
-| FR-DEP-04 | Healthcheck cho container `api` | S | S5 | Approved |
+| FR-DEP-01 | `make up` (hoặc `make up-gpu`) khởi động `api` + `web`; truy cập `http://localhost:${UTCI_WEB_PORT}` (mặc định 18080) | M | S1–S2 | Done (A1) |
+| FR-DEP-02 | Image `api` mặc định chạy CPU; profile `gpu` dùng GPU NVIDIA qua NVIDIA Container Toolkit | M | S2 / S5 | In Progress (CPU Done; profile GPU chưa thử) |
+| FR-DEP-03 | Trọng số mount từ `./models`; cấu hình qua biến môi trường (`.env`) | M | S2 | Done |
+| FR-DEP-04 | Healthcheck cho container `api` | S | S5 | Done |
 | FR-DEP-05 | Cổng của mọi tiến trình (API, web, Vite dev/preview, Jupyter) đọc từ `.env`; mặc định 18100 / 18080 / 15173 / 18888 | M | S1 | Done |
 | FR-DEP-06 | Makefile chỉ cho DevOps: môi trường, CI (`make ci`), Docker (`make help`); việc nghiệp vụ gọi trực tiếp `scripts/` | M | S1 | Done |
 
