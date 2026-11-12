@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Phiên bản | 1.4.1 (dataset đóng băng; phương pháp truyền thống theo kết quả thử nghiệm S3; trạng thái sau triển khai) |
+| Phiên bản | 1.5.0 (Web UI trình bày đồ án: EDA, pipeline, demo CV + DL, so sánh, kết quả) |
 | Ngày | 2026-11-12 |
 | Chủ sở hữu tài liệu | TV1 (Tech Lead) — mọi thành viên đều được đề xuất thay đổi |
 | Trạng thái | Living document — cập nhật cuối mỗi Sprint Review |
@@ -172,6 +172,8 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 | FR-API-05 | `WS /api/v1/stream`: nhận frame JPEG, trả JSON detection; back-pressure (một frame đang xử lý / client) | M | S4 | Done (CPU 9,3 FPS) |
 | FR-API-06 | Giới hạn kích thước upload (ảnh ≤ 10 MB, video ≤ 200 MB, ≤ 3 phút) và báo lỗi rõ ràng | M | S3 | Done |
 | FR-API-07 | Mô hình nạp một lần khi khởi động; thiếu trọng số thì `health` báo rõ, không crash | M | S2 | Done |
+| FR-API-08 | Ảnh mẫu `GET /api/v1/samples` (configs/samples.yaml); `POST /detect/image` nhận `sample`, ghi đè `enhance` / `verifier` / `imgsz` / `tiled` và mô phỏng `degrade` (tối / nhiễu / mờ) cho ablation trực tiếp | S | S4 | Done |
+| FR-API-09 | `POST /api/v1/traditional/analyze` (pipeline CV truyền thống + ảnh trung gian, HOG / SIFT từng ứng viên) và `POST /api/v1/compare` (YOLO vs HOG + màu + SVM trên cùng ảnh, từng biển) | S | S4 | Done |
 
 ### 3.5 FR-WEB — Frontend
 
@@ -183,6 +185,13 @@ Notebook huấn luyện (Local/Colab/Kaggle) ──<run_id>/──► scripts/im
 | FR-WEB-04 | Trang **Thư viện biển báo**: 27 lớp theo siêu lớp, ý nghĩa, ví dụ | S | S3 | Done |
 | FR-WEB-05 | Chế độ **Giải thích**: hiển thị kết quả trung gian từng khâu cho một ảnh | S | S4 | Done |
 | FR-WEB-06 | Giao diện tiếng Việt, dùng được trên màn hình laptop và điện thoại | M | S3 | Done |
+| FR-WEB-07 | Bố cục Application: sidebar trái cao hết màn hình (thu gọn được; dải biểu tượng trên tablet; ngăn kéo trên điện thoại), header (trạng thái API, sáng / tối), footer (phiên bản, mô hình, giấy phép) | M | S4 | Done |
+| FR-WEB-08 | Trang **Mô tả dữ liệu (EDA)**: chia tập, phân bố lớp / siêu lớp, kích thước biển, số biển / ảnh, vị trí, độ phân giải, kiểm tra chất lượng — từ `web/public/data/eda.json` (`scripts/export_web_data.py`) | M | S4 | Done |
+| FR-WEB-09 | Trang **Pipeline**: sơ đồ tương tác hai hệ thống (chính và đối chứng) + chạy một ảnh xem kết quả trung gian (thay chế độ Giải thích FR-WEB-05) | M | S4 | Done |
+| FR-WEB-10 | **Demo học sâu**: ảnh mẫu / upload, bật tắt tăng cường / xác minh / imgsz / cắt ô, mô phỏng điều kiện xấu, so sánh trước / sau tăng cường, lịch sử chạy, xuất JSON / ảnh | M | S4 | Done |
+| FR-WEB-11 | **Demo CV truyền thống**: ảnh từng bước (mask HSV, ứng viên, kết quả), HOG / SIFT và lớp SVM của từng ứng viên | M | S4 | Done |
+| FR-WEB-12 | **So sánh CV ↔ DL**: chạy cả hai trên cùng ảnh + bảng từng biển; biểu đồ E8, chênh lệch ghép cặp, SIFT, T4; tổng hợp định tính | M | S4 | Done |
+| FR-WEB-13 | **Kết quả thực nghiệm**: đường cong huấn luyện, chỉ số + CI95, E1 / E2 / T3, bảng theo lớp sắp xếp được, nhóm tương đồng, sổ đăng ký | M | S4 | Done |
 
 ### 3.6 FR-DEP — Triển khai
 
@@ -329,6 +338,7 @@ python -m utci_vision.api --reload                 # dev; web: cd web && npm run
 | Phiên bản | Ngày | Người sửa | Thay đổi |
 |---|---|---|---|
 | 0.1.0 | 2026-10-22 | TV1 | Bản nháp đầu (3 chế độ tách rời) |
+| 1.5.0 | 2026-11-12 | TV2 | Web UI trình bày đồ án (FR-WEB-07…13), API ảnh mẫu / ablation trực tiếp / CV truyền thống / so sánh (FR-API-08, 09); bộ phân loại HOG + màu + SVM có lớp nền (`scripts/train_hog_svm.py`) |
 | 1.4.1 | 2026-11-12 | TV1 | Cập nhật trạng thái sau khi cài đặt pipeline đầy đủ, API, web, đánh giá E1/E2/E4/T3 (`docs/danh_gia/S3_danh_gia_he_thong.md`) |
 | 1.4.0 | 2026-11-12 | TV1 | Dataset đóng băng (C-08): FR-DATA-08/09/12/13 Dropped, FR-DATA-10 chỉ để demo; theo thử nghiệm S3 (T1, E8, T4): tăng cường thích nghi + tracking là khâu CV truyền thống chính (FR-PIPE-02/04), bộ xác minh thành tuỳ chọn mặc định tắt (FR-PIPE-06, FR-TRAIN-05 → S), E8 Done; NFR-ACC-02/03/04 Dropped, thêm NFR-ACC-07 (ảnh tối) và FR-EVAL-11 (T3); E5 định tính |
 | 1.3.0 | 2026-11-11 | TV1 | Theo `04_BAO_CAO_DE_XUAT.md`: nêu rõ **hai phương pháp theo yêu cầu học phần** (§1.1, C-02); thêm FR-DATA-12 (dataset v2), FR-DATA-13 (tập OOD), FR-EVAL-09 (E8 truyền thống vs học sâu), FR-EVAL-10, NFR-ACC-05/06; FR-PIPE-05/06, FR-EVAL-01/03 Changed; nâng NFR-ACC-01/02 theo baseline; cập nhật trạng thái Done của S1–S2; cập nhật TBD-3/5, thêm TBD-6; ma trận truy vết S3–S5 theo kế hoạch mới |

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import base64
+import copy
+import time
 import uuid
 from typing import Annotated, Any
 
@@ -14,19 +16,25 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import FileResponse
 
 from .. import __version__
-from ..config import load_classes, load_yaml
+from ..config import load_classes, load_config, load_yaml, resolve
 from ..pipeline import DISABLED, FrameResult, Recognizer
 from ..structures import Detection
 from .schemas import (
+    CandidateOut,
     ClassInfoOut,
+    ComparePart,
+    CompareResponse,
+    CompareRow,
     DetectionOut,
     DetectResponse,
     HealthResponse,
     JobCreated,
     JobStatus,
     ModelStatus,
+    SampleOut,
     SignTextOut,
     SignValueOut,
+    TraditionalResponse,
 )
 
 router = APIRouter()
@@ -111,12 +119,57 @@ def _require_detector(request: Request) -> None:
         )
 
 
-@router.post("/detect/image", response_model=DetectResponse)
-async def detect_image(
-    request: Request, file: Annotated[UploadFile, File()], annotate: bool = True, debug: bool = False
-) -> DetectResponse:
-    """Kiểm tra định dạng/kích thước -> decode -> Recognizer(video=False).process -> DetectResponse."""
-    _require_detector(request)
+# ---------------------------------------------------------------- đầu vào: upload hoặc ảnh mẫu, tuỳ chọn làm xấu
+
+
+def _samples() -> dict[str, dict[str, Any]]:
+    cfg = load_config("samples")
+    root = resolve(cfg["images_dir"])
+    return {s["id"]: {**s, "path": root / s["file"]} for s in cfg["samples"]}
+
+
+@router.get("/samples", response_model=list[SampleOut])
+def samples() -> list[SampleOut]:
+    """Ảnh mẫu có sẵn trên máy chủ (configs/samples.yaml) — chỉ liệt kê ảnh thực sự tồn tại."""
+    return [
+        SampleOut(**{k: v for k, v in s.items() if k in SampleOut.model_fields})
+        for s in _samples().values()
+        if s["path"].exists()
+    ]
+
+
+@router.get("/samples/{sample_id}/image")
+def sample_image(sample_id: str) -> FileResponse:
+    s = _samples().get(sample_id)
+    if s is None or not s["path"].exists():
+        raise HTTPException(404, "Không có ảnh mẫu này")
+    return FileResponse(s["path"], media_type="image/jpeg")
+
+
+def _degrade(image: np.ndarray, degrade: str | None, level: float | None) -> np.ndarray:
+    """Mô phỏng điều kiện xấu (trang Demo): dark = gamma (mặc định 2.5), noise = sigma (15), blur = kích thước nhân (9)."""
+    from ..evaluation.experiments import darken, gaussian_noise, motion_blur
+
+    if not degrade:
+        return image
+    if degrade == "dark":
+        return darken(image, level or 2.5)
+    if degrade == "noise":
+        return gaussian_noise(image, level or 15)
+    if degrade == "blur":
+        k = int(level or 9)
+        return motion_blur(image, k + (k + 1) % 2)
+    raise HTTPException(400, f"degrade phải là dark | noise | blur, nhận '{degrade}'")
+
+
+async def _load_input(request: Request, file: UploadFile | None, sample: str | None) -> np.ndarray:
+    if sample:
+        s = _samples().get(sample)
+        if s is None or not s["path"].exists():
+            raise HTTPException(404, f"Không có ảnh mẫu '{sample}'")
+        return cv2.imread(str(s["path"]))
+    if file is None:
+        raise HTTPException(400, "Cần gửi file ảnh hoặc tham số sample")
     limit = request.app.state.api_cfg["limits"]["image_max_mb"] * 1024 * 1024
     if file.content_type not in IMAGE_TYPES:
         raise HTTPException(415, f"Định dạng {file.content_type} không hỗ trợ — dùng JPEG/PNG/BMP/WebP")
@@ -126,9 +179,215 @@ async def detect_image(
     image = cv2.imdecode(np.frombuffer(data, np.uint8), cv2.IMREAD_COLOR)
     if image is None:
         raise HTTPException(400, "Không giải mã được ảnh")
-    rec = Recognizer(request.app.state.pipeline_cfg, request.app.state.components, video=False)
+    return image
+
+
+def _pipeline_cfg(
+    request: Request, enhance: bool | None, verifier: bool | None, imgsz: int | None, tiled: bool, ocr: bool = True
+) -> dict[str, Any]:
+    """Cấu hình pipeline cho một request — ablation trực tiếp trên web (bật/tắt từng khâu)."""
+    cfg = copy.deepcopy(request.app.state.pipeline_cfg)
+    if enhance is not None:
+        cfg["quality"]["enabled"] = cfg["enhance"]["enabled"] = enhance
+    if verifier is not None:
+        if verifier and request.app.state.components.verifier is None:
+            raise HTTPException(409, "Bộ xác minh chưa có trọng số (scripts/fit_verifier.py)")
+        cfg["verifier"]["enabled"] = verifier
+    if imgsz is not None:
+        if not 320 <= imgsz <= 1920:
+            raise HTTPException(400, "imgsz phải trong khoảng 320–1920")
+        cfg["detector"]["imgsz"] = imgsz
+    cfg["detector"]["tiled"] = tiled
+    if not ocr:
+        cfg["ocr"]["enabled"] = False
+    return cfg
+
+
+@router.post("/detect/image", response_model=DetectResponse)
+async def detect_image(
+    request: Request,
+    file: Annotated[UploadFile | None, File()] = None,
+    sample: str | None = None,
+    annotate: bool = True,
+    debug: bool = False,
+    return_input: bool = False,
+    enhance: bool | None = None,
+    verifier: bool | None = None,
+    imgsz: int | None = None,
+    tiled: bool = False,
+    degrade: str | None = None,
+    level: float | None = None,
+) -> DetectResponse:
+    """Ảnh upload hoặc ảnh mẫu -> (làm xấu) -> Recognizer(video=False) với cấu hình ghi đè -> DetectResponse."""
+    _require_detector(request)
+    image = _degrade(await _load_input(request, file, sample), degrade, level)
+    cfg = _pipeline_cfg(request, enhance, verifier, imgsz, tiled)
+    rec = Recognizer(cfg, request.app.state.components, video=False)
     result = await run_in_threadpool(rec.process, image, debug)
-    return await run_in_threadpool(to_response, image, result, annotate, debug)
+    resp = await run_in_threadpool(to_response, image, result, annotate, debug)
+    if return_input:
+        resp.input_image = _b64_jpeg(image)
+    return resp
+
+
+# ---------------------------------------------------------------- CV truyền thống & so sánh với học sâu
+
+
+def _require_classic(request: Request) -> None:
+    if request.app.state.components.classic is None:
+        raise HTTPException(
+            503, f"Chưa có bộ phân loại HOG + SVM: {request.app.state.components.status.get('classic')}"
+        )
+
+
+def _traditional(image: np.ndarray, comps, enhance: bool, details: bool) -> dict[str, Any]:
+    """Chạy pipeline truyền thống: (tăng cường) -> màu + hình dạng -> HOG + màu + SVM."""
+    from .. import traditional as tr
+    from ..enhance import assess, needed_ops
+    from ..enhance import enhance as do_enhance
+
+    pipe = load_config("pipeline")
+    t0 = time.perf_counter()
+    q = assess(image, pipe["quality"]["downscale_width"])
+    ops = needed_ops(q, pipe["quality"]) if enhance else set()
+    work = do_enhance(image, ops, pipe["enhance"]) if ops else image
+    t_enh = (time.perf_counter() - t0) * 1000
+    ver = load_config("verifier")["features"]
+    dets, cands, info = tr.detect(work, comps.classic, ver["color_ranges"], load_config("traditional")["detect"])
+    classes = load_classes()
+    background = len(classes)
+    crops = [tr.padded_crop(work, c.bbox) for c in cands]
+    cls, prob = comps.classic.predict([c for c in crops if c.size]) if cands else ([], [])
+    # ảnh HOG / SIFT cho tối đa 8 ứng viên: ưu tiên vùng SVM nhận là biển, rồi tới vùng lớn
+    shown = set(sorted(range(len(cands)), key=lambda i: (int(cls[i]) == background, i))[:8])
+    out_cands = []
+    for i, (c, k, p) in enumerate(zip(cands, cls, prob)):
+        is_sign = int(k) != background
+        item = CandidateOut(
+            bbox=tuple(round(v, 1) for v in c.bbox),
+            color=c.color,
+            shape=c.shape,
+            class_id=int(k) if is_sign else None,
+            class_name=classes[int(k)].name_vi if is_sign else None,
+            score=round(float(p), 3),
+        )
+        if details and i in shown and crops[i].size:
+            sift_vis, n_kp = tr.sift_keypoints(crops[i])
+            item.crop = _b64_jpeg(cv2.resize(crops[i], (128, 128), interpolation=cv2.INTER_CUBIC))
+            item.hog_image = _b64_jpeg(tr.hog_image(crops[i], ver["hog"]))
+            item.sift_image, item.sift_keypoints = _b64_jpeg(sift_vis), n_kp
+        out_cands.append(item)
+    dets = [d for d in dets if d.class_id != background]
+    return {
+        "work": work,
+        "ops": sorted(ops),
+        "quality": {k: round(v, 4) for k, v in vars(q).items()},
+        "dets": dets,
+        "cands": cands,
+        "candidates": out_cands,
+        "masks": info["masks"],
+        "ms": {"enhance": round(t_enh, 2), **{k: round(v, 2) for k, v in info["ms"].items()}},
+    }
+
+
+@router.post("/traditional/analyze", response_model=TraditionalResponse)
+async def traditional_analyze(
+    request: Request,
+    file: Annotated[UploadFile | None, File()] = None,
+    sample: str | None = None,
+    enhance: bool = True,
+    degrade: str | None = None,
+    level: float | None = None,
+) -> TraditionalResponse:
+    """Demo CV truyền thống: ảnh trung gian từng bước + vùng ứng viên + HOG / SIFT + lớp do SVM dự đoán."""
+    from .. import traditional as tr
+    from ..visualize import draw
+
+    _require_classic(request)
+    image = _degrade(await _load_input(request, file, sample), degrade, level)
+    r = await run_in_threadpool(_traditional, image, request.app.state.components, enhance, True)
+    images = {
+        "input": _b64_jpeg(image),
+        "masks": _b64_jpeg(tr.overlay_masks(r["work"], r["masks"])),
+        "candidates": _b64_jpeg(tr.draw_candidates(r["work"], r["cands"])),
+        "annotated": _b64_jpeg(draw(r["work"], r["dets"])),
+    }
+    if r["ops"]:
+        images["enhanced"] = _b64_jpeg(r["work"])
+    return TraditionalResponse(
+        image_size=(image.shape[1], image.shape[0]),
+        latency_ms=r["ms"],
+        quality=r["quality"],
+        ops=r["ops"],
+        images=images,
+        candidates=r["candidates"],
+        detections=[to_out(d) for d in r["dets"]],
+    )
+
+
+def _compare(image: np.ndarray, request: Request, enhance: bool, imgsz: int | None) -> CompareResponse:
+    from .. import traditional as tr
+    from ..visualize import draw
+
+    comps = request.app.state.components
+    cfg = _pipeline_cfg(request, enhance, None, imgsz, False, ocr=False)
+    deep = Recognizer(cfg, comps, video=False).process(image)
+    trad = _traditional(image, comps, enhance, False)
+    classes, background = load_classes(), len(load_classes())
+    crops = [tr.padded_crop(image, d.bbox) for d in deep.detections]
+    t0 = time.perf_counter()
+    cls, prob = comps.classic.predict([c for c in crops if c.size]) if crops else ([], [])
+    per_box_ms = (time.perf_counter() - t0) * 1000 / max(len(crops), 1)
+    rows = []
+    for d, k, p in zip(deep.detections, cls, prob):
+        k = int(k)
+        rows.append(
+            CompareRow(
+                bbox=tuple(round(v, 1) for v in d.bbox),
+                side_px=round(float(np.sqrt((d.bbox[2] - d.bbox[0]) * (d.bbox[3] - d.bbox[1]))), 1),
+                yolo_class_id=d.class_id,
+                yolo_class_name=classes[d.class_id].name_vi,
+                yolo_score=round(d.score, 3),
+                classic_class_id=k if k != background else None,
+                classic_class_name=classes[k].name_vi if k != background else None,
+                classic_score=round(float(p), 3),
+                agree=k == d.class_id,
+            )
+        )
+    return CompareResponse(
+        image_size=(image.shape[1], image.shape[0]),
+        input_image=_b64_jpeg(image),
+        deep=ComparePart(
+            detections=[to_out(d) for d in deep.detections],
+            latency_ms=deep.latency_ms,
+            annotated_image=_b64_jpeg(draw(image, deep.detections)),
+        ),
+        traditional=ComparePart(
+            detections=[to_out(d) for d in trad["dets"]],
+            latency_ms=trad["ms"],
+            annotated_image=_b64_jpeg(draw(trad["work"], trad["dets"])),
+        ),
+        per_box=rows,
+        classic_ms_per_box=round(per_box_ms, 2),
+    )
+
+
+@router.post("/compare", response_model=CompareResponse)
+async def compare(
+    request: Request,
+    file: Annotated[UploadFile | None, File()] = None,
+    sample: str | None = None,
+    enhance: bool = True,
+    imgsz: int | None = None,
+    degrade: str | None = None,
+    level: float | None = None,
+) -> CompareResponse:
+    """Cùng một ảnh: hệ thống học sâu (YOLO11) và hệ thống truyền thống (màu + hình dạng + HOG + SVM), cộng với
+    so sánh phân loại trên từng biển YOLO tìm thấy (YOLO vs HOG + màu + SVM)."""
+    _require_detector(request)
+    _require_classic(request)
+    image = _degrade(await _load_input(request, file, sample), degrade, level)
+    return await run_in_threadpool(_compare, image, request, enhance, imgsz)
 
 
 @router.post("/jobs/video", response_model=JobCreated)

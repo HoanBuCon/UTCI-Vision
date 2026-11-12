@@ -16,7 +16,7 @@ from utci_vision.structures import Detection  # noqa: E402
 
 
 class FakeDetector:
-    def detect(self, images, conf=None):
+    def detect(self, images, conf=None, imgsz=None):
         return [[Detection((20, 20, 60, 60), 20, 0.9)] for _ in images]
 
 
@@ -98,3 +98,74 @@ def test_websocket_stream_tracks_frames(ready):
             replies.append(ws.receive_json())
     assert replies[0]["detections"] == [] and replies[3]["detections"][0]["track_id"] == 1
     assert replies[3]["frame"] == 3 and replies[3]["annotated_image"] is None
+
+
+# ---------------------------------------------------------------- ảnh mẫu, ghi đè cấu hình, CV truyền thống, so sánh
+
+
+class RecordingDetector(FakeDetector):
+    def __init__(self):
+        self.imgsz = []
+
+    def detect(self, images, conf=None, imgsz=None):
+        self.imgsz.append(imgsz)
+        return super().detect(images, conf, imgsz)
+
+
+class FakeClassic:
+    """Bộ phân loại HOG + SVM giả: mọi vùng là lớp 20 (Giới hạn tốc độ), xác suất 0.8."""
+
+    def predict(self, crops):
+        return np.full(len(crops), 20), np.full(len(crops), 0.8)
+
+
+def _sign_image() -> np.ndarray:
+    img = np.full((200, 240, 3), 90, np.uint8)
+    cv2.circle(img, (60, 60), 30, (30, 30, 220), 6)  # viền đỏ (BGR) -> ứng viên "tròn"
+    return img
+
+
+@pytest.fixture
+def sample(monkeypatch, tmp_path):
+    from utci_vision.api import routes
+
+    path = tmp_path / "s.jpg"
+    cv2.imwrite(str(path), _sign_image())
+    meta = {"id": "s1", "file": "s.jpg", "title": "Mẫu", "group": "Nhóm", "signs": 1, "small": 0, "size": "240x200"}
+    monkeypatch.setattr(routes, "_samples", lambda: {"s1": {**meta, "path": path}})
+    return "s1"
+
+
+def test_samples_list_image_and_detect_with_overrides(ready, sample):
+    assert ready.get("/api/v1/samples").json()[0]["id"] == sample
+    assert ready.get(f"/api/v1/samples/{sample}/image").headers["content-type"] == "image/jpeg"
+    assert ready.get("/api/v1/samples/khong_co/image").status_code == 404
+    det = RecordingDetector()
+    ready.app.state.components.detector = det
+    r = ready.post(f"/api/v1/detect/image?sample={sample}&imgsz=960&return_input=true&degrade=dark&level=3")
+    assert r.status_code == 200 and r.json()["input_image"].startswith("data:image/jpeg")
+    assert det.imgsz[-1] == 960
+    assert ready.post(f"/api/v1/detect/image?sample={sample}&imgsz=99").status_code == 400
+    assert ready.post(f"/api/v1/detect/image?sample={sample}&degrade=fog").status_code == 400
+    assert ready.post(f"/api/v1/detect/image?sample={sample}&verifier=true").status_code == 409  # chưa có trọng số
+    assert ready.post("/api/v1/detect/image").status_code == 400  # thiếu cả file lẫn sample
+
+
+def test_traditional_analyze(ready, sample):
+    assert ready.post(f"/api/v1/traditional/analyze?sample={sample}").status_code == 503  # chưa có HOG + SVM
+    ready.app.state.components.classic = FakeClassic()
+    body = ready.post(f"/api/v1/traditional/analyze?sample={sample}").json()
+    assert {"input", "masks", "candidates", "annotated"} <= set(body["images"])
+    cand = body["candidates"][0]
+    assert cand["color"] == "red" and cand["shape"] == "tròn" and cand["class_name"] == "Giới hạn tốc độ"
+    assert cand["hog_image"].startswith("data:image/jpeg") and cand["sift_keypoints"] is not None
+    assert body["detections"][0]["class_id"] == 20 and "segment" in body["latency_ms"]
+
+
+def test_compare_yolo_vs_classic_per_box(ready, sample):
+    ready.app.state.components.classic = FakeClassic()
+    body = ready.post(f"/api/v1/compare?sample={sample}&imgsz=1280").json()
+    assert body["deep"]["detections"][0]["class_id"] == 20 and body["traditional"]["annotated_image"]
+    row = body["per_box"][0]
+    assert row["agree"] and row["classic_class_name"] == row["yolo_class_name"] == "Giới hạn tốc độ"
+    assert row["side_px"] == 40.0

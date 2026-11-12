@@ -43,6 +43,7 @@ class Components:
     status: dict[str, str] = field(default_factory=dict)  # tên khâu -> "loaded" | lý do chưa nạp (cho /health)
     ocr_cfg: dict[str, Any] = field(default_factory=dict)
     lexicon: list[str] = field(default_factory=list)
+    classic: Any = None  # traditional.ClassicClassifier — pipeline CV truyền thống (trang Demo / So sánh)
 
 
 def resolve_device(cfg_device: Any) -> str | int | None:
@@ -77,11 +78,11 @@ def load_components(cfg: dict[str, Any]) -> Components:
         except Exception as exc:  # noqa: BLE001 — báo qua /health thay vì làm sập API
             comps.status["detector"] = f"lỗi nạp: {exc}"
 
+    # bộ xác minh: nạp khi có trọng số kể cả lúc tắt mặc định — web bật lại theo từng request (ablation trực tiếp);
+    # Recognizer chỉ dùng khi cfg["verifier"]["enabled"]
     v = cfg["verifier"]
-    if not v["enabled"]:
-        comps.status["verifier"] = DISABLED
-    elif not resolve(v["weights"]).exists():
-        comps.status["verifier"] = f"thiếu trọng số {v['weights']}"
+    if not resolve(v["weights"]).exists():
+        comps.status["verifier"] = DISABLED if not v["enabled"] else f"thiếu trọng số {v['weights']}"
     else:
         try:
             from .verifier import Verifier
@@ -90,6 +91,18 @@ def load_components(cfg: dict[str, Any]) -> Components:
             comps.status["verifier"] = "loaded"
         except Exception as exc:  # noqa: BLE001
             comps.status["verifier"] = f"lỗi nạp: {exc}"
+
+    classic = resolve(load_config("traditional")["classifier"])
+    if classic.exists():
+        try:
+            from .traditional import ClassicClassifier
+
+            comps.classic = ClassicClassifier.load(classic)
+            comps.status["classic"] = "loaded"
+        except Exception as exc:  # noqa: BLE001
+            comps.status["classic"] = f"lỗi nạp: {exc}"
+    else:
+        comps.status["classic"] = "thiếu trọng số (scripts/train_hog_svm.py)"
 
     if not cfg["ocr"]["enabled"]:
         comps.status["ocr"] = DISABLED
@@ -167,8 +180,12 @@ class Recognizer:
         t1 = time.perf_counter()
         detections: list[Detection] = []
         if self.components.detector is not None:
-            conf = self.cfg["detector"]["proposal_conf"] if self._verify_on else self.cfg["detector"]["conf"]
-            detections = self.components.detector.detect([image], conf=conf)[0]
+            d = self.cfg["detector"]
+            conf = d["proposal_conf"] if self._verify_on else d["conf"]
+            if d.get("tiled"):
+                detections = self.components.detector.detect_tiled(image, conf=conf)
+            else:
+                detections = self.components.detector.detect([image], conf=conf, imgsz=d["imgsz"])[0]
         lat["detector"] = (time.perf_counter() - t1) * 1000
 
         t2 = time.perf_counter()

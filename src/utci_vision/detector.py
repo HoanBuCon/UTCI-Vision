@@ -89,11 +89,13 @@ class Detector:
         self.half = half and str(device) != "cpu"
         self.detect([np.zeros((imgsz, imgsz, 3), np.uint8)])  # warm-up: lần chạy đầu chậm do khởi tạo CUDA
 
-    def detect(self, images_bgr: list[np.ndarray], conf: float | None = None) -> list[list[Detection]]:
-        """Batch frame BGR -> danh sách Detection mỗi frame (score = điểm YOLO, verified = None)."""
+    def detect(
+        self, images_bgr: list[np.ndarray], conf: float | None = None, imgsz: int | None = None
+    ) -> list[list[Detection]]:
+        """Batch frame BGR -> danh sách Detection mỗi frame (score = điểm YOLO, verified = None); `imgsz` ghi đè."""
         results = self.model.predict(
             images_bgr,
-            imgsz=self.imgsz,
+            imgsz=imgsz or self.imgsz,
             conf=self.conf if conf is None else conf,
             iou=self.iou,
             device=self.device,
