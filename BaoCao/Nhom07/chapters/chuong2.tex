@@ -89,7 +89,7 @@ Quy trình chuẩn bị gồm năm bước (Hình~\ref{fig:data_flow}a):
 \includegraphics[width=\textwidth]{figures/Fig_du_lieu.pdf}
 \caption[Chuẩn bị dữ liệu và vai trò của từng tập]{Chuẩn bị dữ liệu (a) và vai trò của từng tập đối với các mô hình (b)}
 \label{fig:data_flow}
-\fignote{Độ rộng thanh tỉ lệ với số ảnh (Val và Test được nới tối thiểu để đọc được nhãn).}
+\fignote{Độ rộng thanh tỉ lệ với số ảnh (Val và Test được nới tối thiểu để đọc được nhãn). $C$ là tham số điều chuẩn của SVM: $C$ lớn phạt nặng mẫu huấn luyện bị phân loại sai (ranh giới phức tạp, dễ quá khớp), $C$ nhỏ cho phép sai một ít để ranh giới đơn giản hơn; $C\in\{1,10\}$ được chọn trên tập Val.}
 \end{figure}
 
 Bảng~\ref{tab:split} cho số ảnh và số biển sau khi chia. Hình~\ref{fig:data_flow}b cho biết mỗi tập được dùng vào việc gì: tập huấn luyện để học tham số, tập xác thực để chọn epoch của YOLO, chọn tham số $C$ của SVM và học bộ xác minh; tập kiểm thử chỉ dùng cho đánh giá cuối và không tham gia bất kỳ lựa chọn nào.

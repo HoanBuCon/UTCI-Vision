@@ -246,7 +246,7 @@ def fig_data():
         ("Roboflow (CC BY 4.0)", "5 453 ảnh · 13 478 biển<br>32 lớp"),
         ("Kiểm tra", f"loại 12 ảnh lỗi<br>+ 55 ảnh thiếu nhãn"),
         ("Ảnh gần trùng", f"pHash 8×8, Hamming ≤ 6<br>{comma_int(t['clusters'])} cụm cảnh"),
-        ("Gộp lớp hiếm", "6 lớp &lt; 60 cụm cảnh<br>→ “Biển báo khác” (27 lớp)"),
+        ("Gộp lớp hiếm", "6 lớp &lt; 60 cụm cảnh<br>→ “Biển báo khác”"),
         ("Chia theo cụm", "70 / 15 / 15 · phân tầng<br>theo lớp + độ phân giải"),
     ]
     ids = []
@@ -264,11 +264,12 @@ def fig_data():
     widths["train"] = scale
     xs = {"train": X0, "val": X0 + widths["train"] + GAP, "test": X0 + widths["train"] + widths["val"] + 2 * GAP}
     for k, lab in [("train", "Train"), ("val", "Val"), ("test", "Test")]:
-        d.text(xs[k] + widths[k] / 2 - 80, 198, 160, 34,
-               f"<b>{lab}</b><br>{comma_int(s[k]['images'])} ảnh · {comma_int(s[k]['boxes'])} biển", 12)
+        sep = " · " if k == "train" else "<br>"  # Val / Test hẹp: xuống dòng để không chồng chữ
+        d.text(xs[k] + widths[k] / 2 - 80, 192, 160, 48,
+               f"<b>{lab}</b><br>{comma_int(s[k]['images'])} ảnh{sep}{comma_int(s[k]['boxes'])} biển", 12)
     rows = [
         ("YOLO11s", [TRAIN, SELECT, EVAL], "chọn epoch"),
-        ("HOG / SIFT + SVM", [TRAIN, SELECT, EVAL], "chọn C"),
+        ("HOG / SIFT + SVM", [TRAIN, SELECT, EVAL], "chọn tham số C"),
         ("Bộ xác minh LightGBM", ["#ffffff", FIT, EVAL], "fit trên ứng viên YOLO"),
     ]
     for r, (name, cols, note) in enumerate(rows):
