@@ -16,7 +16,7 @@ enhance:                     # [CV] chỉ áp dụng khi quality yêu cầu
 
 detector:                    # [DL] YOLO11 — chạy mỗi frame
   weights: models/current/yolo11.pt   # bản fine-tune đã --promote
-  imgsz: 960
+  imgsz: 1280                # T3: trọng số train ở 960, suy luận 1280 -> recall biển < 16 px 0,634 -> 0,737, precision giữ nguyên
   conf: 0.25                 # ngưỡng hiển thị khi KHÔNG có bộ xác minh
   proposal_conf: 0.10        # ngưỡng thấp khi có bộ xác minh (ưu tiên recall)
   iou: 0.5

@@ -100,11 +100,12 @@ def run_detect(args: argparse.Namespace) -> None:
     if args.degrade:
         degrade = DEGRADATIONS[args.degrade]
         data = [(p, degrade(img), gts) for p, img, gts in data]
-    configs = ABLATIONS if args.ablation else {"full": []}
+    configs = ABLATIONS if args.ablation else {"mac_dinh": []}
     rows = []
     for name, disabled in configs.items():
         cfg = apply_ablation(base, disabled)
-        cfg["verifier"]["enabled"] = "verifier.enabled" not in disabled  # ablation quyết định, không theo mặc định
+        if args.ablation:  # ablation quyết định bật/tắt; không ablation = đúng cấu hình mặc định của pipeline
+            cfg["verifier"]["enabled"] = "verifier.enabled" not in disabled
         if cfg["verifier"]["enabled"] and comps.verifier is None:
             print(f"[bỏ qua {name}] bộ xác minh chưa có trọng số ({comps.status['verifier']})")
             continue
