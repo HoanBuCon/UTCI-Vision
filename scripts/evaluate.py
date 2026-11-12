@@ -104,11 +104,10 @@ def run_detect(args: argparse.Namespace) -> None:
     rows = []
     for name, disabled in configs.items():
         cfg = apply_ablation(base, disabled)
+        cfg["verifier"]["enabled"] = "verifier.enabled" not in disabled  # ablation quyết định, không theo mặc định
         if cfg["verifier"]["enabled"] and comps.verifier is None:
             print(f"[bỏ qua {name}] bộ xác minh chưa có trọng số ({comps.status['verifier']})")
-            cfg["verifier"]["enabled"] = False
-            if name == "+verifier":
-                continue
+            continue
         rec = Recognizer(cfg, comps, video=False)
         preds, ms = [], []
         for _, img, _ in data:
