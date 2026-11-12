@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Xuất sơ đồ draw.io</title>
+<style>
+  body { font: 14px Arial, sans-serif; margin: 12px; background: #fff; color: #1a1a1a; }
+  iframe { width: 100%; height: 70vh; border: 1px solid #ccc; }
+  #log { white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<p>Xuất SVG bằng draw.io (chế độ nhúng). Trạng thái:</p>
+<div id="log"></div>
+<iframe id="f" src="https://embed.diagrams.net/?embed=1&proto=json&spin=0&ui=min&noSaveBtn=1&noExitBtn=1"></iframe>
+<script>
+const log = (s) => { document.getElementById('log').textContent += s + '\n'; };
+const frame = document.getElementById('f');
+let names = [], idx = -1;
+
+function send(msg) { frame.contentWindow.postMessage(JSON.stringify(msg), '*'); }
+
+async function next() {
+  idx += 1;
+  if (idx >= names.length) { log('done'); document.title = 'done'; return; }
+  const xml = await (await fetch('/xml/' + names[idx])).text();
+  log('load ' + names[idx]);
+  send({ action: 'load', xml: xml, autosave: 0 });
+}
+
+window.addEventListener('message', async (ev) => {
+  if (typeof ev.data !== 'string' || !ev.data.startsWith('{')) return;
+  const msg = JSON.parse(ev.data);
+  if (msg.event === 'init') {
+    names = await (await fetch('/list')).json();
+    log('diagrams: ' + names.join(', '));
+    next();
+  } else if (msg.event === 'load') {
+    // đợi ảnh nhúng và phông chữ dựng xong rồi mới xuất
+    setTimeout(() => send({ action: 'export', format: 'svg', embedImages: true, border: 4, background: '#ffffff' }), 1500);
+  } else if (msg.event === 'export') {
+    const r = await fetch('/save/' + names[idx], { method: 'POST', body: msg.data });
+    log('saved ' + names[idx] + ' ' + r.status);
+    next();
+  }
+});
+</script>
+</body>
+</html>

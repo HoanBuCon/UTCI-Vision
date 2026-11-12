@@ -1,0 +1,18 @@
+\unnumberedchapter{MỞ ĐẦU}
+\label{chap:introduction}
+
+Biển báo giao thông cung cấp thông tin về quy định, cảnh báo và hướng đi trên đường. Nhận diện biển báo từ ảnh hoặc video là bài toán tìm vị trí của biển trong cảnh, xác định loại biển và đọc nội dung chữ, số khi có. Kết quả có thể phục vụ tra cứu, kiểm kê biển trên tuyến đường hoặc hỗ trợ quan sát giao thông~\cite{ertler2020mapillary}.
+
+Ảnh ghi ngoài đường có nhiều yếu tố gây khó khăn. Biển ở xa nhỏ và thiếu chi tiết; góc nhìn nghiêng, bóng đổ, ánh sáng yếu, rung máy hoặc vật che khuất làm thay đổi màu sắc và hình dạng quan sát được. Nhiều loại biển chỉ khác nhau ở ký hiệu hoặc chữ số bên trong, trong khi nền đường phố còn có quảng cáo và vật thể cùng màu với biển. Các công trình về biển báo Việt Nam gần đây chủ yếu dùng họ YOLO trên dữ liệu riêng~\cite{tung2024vietnam,cu2024vietnamese}, nhưng ít so sánh trực tiếp với phương pháp xử lý ảnh truyền thống trên cùng tập kiểm thử.
+
+Từ thực tiễn trên, nhóm lựa chọn đề tài ``Hệ thống nhận diện biển báo giao thông'' trong học phần Thị giác máy tính. Theo yêu cầu của học phần, hệ thống kết hợp hai nhóm phương pháp: học sâu (YOLO11 để phát hiện và phân loại, VietOCR để đọc chữ và số) và thị giác máy tính truyền thống (đánh giá chất lượng và tăng cường ảnh thích nghi, theo vết bằng bộ lọc Kalman, đặc trưng thủ công màu, hình dạng, HOG kết hợp SVM). Đề tài đặt ra các mục tiêu sau:
+\begin{itemize}
+ \item \textbf{(M1) Hệ thống hoàn chỉnh:} nhận ảnh, video hoặc webcam và trả về vị trí, tên lớp, điểm tin cậy, giá trị số và ý nghĩa theo QCVN cho 27 lớp biển báo Việt Nam; có giao diện web và đóng gói để chạy trên máy khác.
+ \item \textbf{(M2) Hai phương pháp được đánh giá riêng:} đo đóng góp của từng khâu xử lý ảnh truyền thống trong hệ thống, và so sánh trực tiếp đặc trưng thủ công với học sâu trên cùng tập kiểm thử.
+ \item \textbf{(M3) Biển nhỏ và ảnh xấu:} tăng recall với biển dưới 16 điểm ảnh và với ảnh tối mà không bổ sung dữ liệu.
+ \item \textbf{(M4) Đánh giá đáng tin cậy:} chia dữ liệu theo cụm ảnh gần trùng, báo cáo tại ngưỡng vận hành, theo kích thước và theo lớp, kèm khoảng tin cậy; mọi con số truy được về một lần chạy.
+\end{itemize}
+
+Phạm vi đề tài là 27 lớp trong bộ dữ liệu biển báo Việt Nam đã chọn; bộ dữ liệu được giữ cố định trong suốt quá trình thực hiện. Đề tài không xử lý đèn tín hiệu, vạch kẻ đường hoặc điều khiển phương tiện, và khả năng đọc chữ phụ thuộc vào độ rõ của vùng ảnh.
+
+Báo cáo gồm ba chương. Chương~\ref{chap:cosolythuyet} trình bày cơ sở lý thuyết và các nghiên cứu liên quan. Chương~\ref{chap:chuong2} phát biểu bài toán, mô tả dữ liệu, kiến trúc hệ thống, hai nhóm phương pháp và cách đánh giá. Chương~\ref{chap:chuong3} trình bày kết quả thực nghiệm, chương trình demo và thảo luận. Phần kết luận tổng kết kết quả và hướng phát triển; phụ lục hướng dẫn tái lập.

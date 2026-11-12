@@ -1,0 +1,18 @@
+\begin{table}[H]
+\centering
+\caption[So sánh học máy truyền thống và học sâu]{So sánh học máy truyền thống và học sâu trong xử lý ảnh.}
+\label{tab:mldl}
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\toprule
+\textbf{Tiêu chí} & \textbf{Học máy truyền thống} & \textbf{Học sâu} \\
+\midrule
+Luồng xử lý ảnh & Trích màu, biên, hình dạng hoặc HOG trước; đưa vector đặc trưng vào bộ phân loại. & Mạng nhiều lớp tự học đặc trưng và ánh xạ từ ảnh đến kết quả dự đoán. \\ \hline
+Mô hình tiêu biểu & SVM, Random Forest, LightGBM. & CNN; mạng phát hiện đối tượng như YOLO. \\ \hline
+Dữ liệu huấn luyện & Thường phù hợp với dữ liệu vừa hoặc nhỏ nếu đặc trưng được chọn tốt. & Huấn luyện từ đầu thường cần nhiều dữ liệu; học chuyển giao giúp giảm nhu cầu này. \\ \hline
+Tài nguyên tính toán & Thường nhẹ hơn với vector đặc trưng gọn; nhiều mô hình huấn luyện được trên CPU. & Huấn luyện thường cần GPU; chi phí suy luận phụ thuộc kiến trúc và kích thước ảnh. \\ \hline
+Ưu điểm và hạn chế & Dễ kiểm tra đặc trưng; hiệu quả phụ thuộc bước trích chọn, khó bao quát cảnh phức tạp. & Học được đặc trưng phức tạp; cần kiểm soát quá khớp và khó giải thích hơn. \\ \hline
+Ví dụ ứng dụng & Kiểm tra vùng nghi ngờ bằng màu, hình dạng và các đặc trưng đã trích xuất. & Phát hiện, phân loại biển báo hoặc nhận dạng chữ trong vùng ảnh. \\
+\bottomrule
+\end{tabularx}
+\end{table}

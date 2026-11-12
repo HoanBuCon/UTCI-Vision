@@ -1,0 +1,40 @@
+\unnumberedchapter{PHÂN CÔNG NHIỆM VỤ}
+
+% Vai trò chính theo tệp kế hoạch sprint của hệ thống nhận diện biển báo giao thông;
+% phần cùng thực hiện của Quý được làm rõ theo yêu cầu của nhóm.
+% TV1: Hoàn; TV2: Thịnh; TV3: Minh; TV4: Quý; TV5: Dưỡng.
+% Giữ cấu trúc, độ rộng cột và giãn dòng của báo cáo mẫu.
+\noindent\textbf{Phân công nhiệm vụ theo tiến độ thực hiện:}
+
+\begingroup
+\setstretch{1.15}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1.0cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{4.2cm}|}
+\hline
+\textbf{Stt} & \centering\arraybackslash\textbf{Tên nhiệm vụ} & \centering\arraybackslash\textbf{Người thực hiện} \\ \hline
+1 & Khởi động, thống nhất kiến trúc; audit dữ liệu, fine-tune baseline, kiểm tra notebook và khung web/Docker (Sprint 1) & Hoàn chủ trì; cả nhóm \\ \hline
+2 & Lọc, chia và đóng gói dữ liệu v1; fine-tune YOLO11; tăng cường ảnh, đặc trưng vùng, pipeline và trang Ảnh (Sprint 2) & Dưỡng, Minh, Thịnh; Hoàn đánh giá; Quý cùng rà soát dữ liệu, kiểm thử và viết báo cáo \\ \hline
+3 & Bộ xác minh LightGBM, đọc số, tracking, tích hợp VietOCR và xử lý video; gán nhãn OCR (Sprint 3) & Hoàn, Thịnh, Minh, Dưỡng; Quý cùng gán nhãn OCR, kiểm thử và phân tích lỗi \\ \hline
+4 & Webcam WebSocket, OCR chữ và biển phụ; tác vụ nền theo track; đánh giá độ bền, OCR và hiệu năng (Sprint 4) & Minh, Thịnh, Hoàn, Dưỡng; Quý cùng kiểm thử webcam, OCR và đánh giá kết quả \\ \hline
+5 & Tối ưu hiệu năng, chốt trọng số; ablation, kiểm thử chấp nhận; hoàn thiện bản nháp báo cáo (Sprint 5) & Cả nhóm; Quý cùng chạy đánh giá, kiểm thử và tổng hợp báo cáo \\ \hline
+6 & Sửa lỗi, chốt mã nguồn; kiểm thử hồi quy, báo cáo cuối, slide, video và diễn tập bảo vệ (Sprint 6) & Cả nhóm; Quý cùng kiểm thử, phụ trách báo cáo, slide và video \\ \hline
+\end{tabularx}
+\endgroup
+
+\clearpage
+\noindent\textbf{Phân công nhiệm vụ theo thành viên thực hiện:}
+
+\begingroup
+\setstretch{1.15}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{1.0cm}|>{\raggedright\arraybackslash}p{3.6cm}|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{2.2cm}|}
+\hline
+\textbf{Stt} & \centering\arraybackslash\textbf{Thành viên} & \centering\arraybackslash\textbf{Nhiệm vụ} & \textbf{Chữ ký} \\ \hline
+1 & \memberOne\newline(nhóm trưởng) & - Tech Lead, ML và đánh giá.\newline - Kiến trúc, review; bộ xác minh LightGBM, hậu xử lý OCR; thiết kế và chạy thí nghiệm (T0--T4, E1--E8), phân tích lỗi và phản biện. & \\[1.2cm] \hline
+2 & \memberTwo & - CV, Frontend, hỗ trợ báo cáo.\newline - Tăng cường ảnh, đặc trưng vùng, tracking, cắt vùng OCR; React; kiểm tra độ ổn định video. & \\[1.2cm] \hline
+3 & \memberThree & - Dev chính, DL, Backend, DevOps.\newline - Fine-tune YOLO11; notebook; pipeline, VietOCR, FastAPI, WebSocket; Docker, CI và tối ưu hiệu năng. & \\[1.2cm] \hline
+4 & \memberFour & - Chủ trì báo cáo, slide, video và nội dung biển báo.\newline - Cùng Hoàn chạy đánh giá, phân tích lỗi.\newline - Cùng Thịnh kiểm thử CV và giao diện.\newline - Cùng Minh tích hợp, chạy thử hệ thống.\newline - Cùng Dưỡng rà soát dữ liệu, gán nhãn OCR và kiểm thử. & \\[1.2cm] \hline
+5 & \memberFive & - Dữ liệu và kiểm thử.\newline - Audit, lọc, chia, đóng gói dữ liệu; nhãn OCR, video thử; benchmark, kiểm thử chấp nhận và hồi quy. & \\[1.2cm] \hline
+\end{tabularx}
+\endgroup
+\clearpage

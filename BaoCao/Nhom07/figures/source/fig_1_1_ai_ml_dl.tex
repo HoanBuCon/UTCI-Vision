@@ -1,0 +1,18 @@
+\input{style}
+\begin{document}
+\begin{tikzpicture}
+\draw[draw=AccentBlue,fill=AccentLightBlue!25,line width=1pt] (0,0) ellipse (4.2 and 2.7);
+\draw[draw=AccentBlue,fill=AccentLightBlue!65,line width=1pt] (0,0) ellipse (3.15 and 1.85);
+\draw[draw=AccentBlue,fill=white,line width=1pt] (0,0) ellipse (1.95 and .9);
+\node[heading,text width=3cm] at (0,2.36) {AI};
+\node[text width=3cm] at (0,2.04) {Trí tuệ nhân tạo};
+\node[heading,font=\fontsize{11}{14}\selectfont\bfseries,text width=3.3cm] at (0,1.54) {Machine Learning};
+\node[text width=3cm] at (0,1.2) {Học máy};
+\node[heading,font=\fontsize{11}{14}\selectfont\bfseries,text width=2.5cm] at (0,.22) {Deep Learning};
+\node[text width=2cm] at (0,-.3) {Học sâu};
+\node[block,text width=2.6cm] (cv) at (6.5,0) {Thị giác máy tính};
+\draw[flow,dashed] (cv.north west) -- (3.8,1.08);
+\draw[flow,dashed] (cv.west) -- (2.85,.65);
+\draw[flow,dashed] (cv.south west) -- (1.7,-.3);
+\end{tikzpicture}
+\end{document}
