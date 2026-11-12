@@ -1,0 +1,16 @@
+\begin{table}[H]
+\centering
+\caption[Các hình thức học máy cơ bản]{Các hình thức học máy cơ bản; tổng hợp theo~\cite{google_intro_ml,google_ml_types}.}
+\label{tab:hinhthuchoc}
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\toprule
+\textbf{Hình thức học} & \textbf{Dữ liệu và cách học} & \textbf{Kết quả và ví dụ dễ hình dung} \\
+\midrule
+Học có giám sát & Dữ liệu có nhãn đúng. Mô hình so sánh dự đoán với nhãn để điều chỉnh tham số. & Dự đoán lớp hoặc giá trị: học từ ảnh đã ghi nhãn để phân loại biển cấm, biển nguy hiểm. \\ \hline
+Học không giám sát & Dữ liệu không có nhãn. Mô hình tìm cấu trúc, sự tương đồng hoặc cách biểu diễn gọn hơn. & Phân cụm hoặc giảm chiều: nhóm ảnh biển báo có đặc điểm tương tự để hỗ trợ khám phá dữ liệu. \\ \hline
+Học bán giám sát & Kết hợp dữ liệu có nhãn với dữ liệu chưa gán nhãn; có thể dùng nhãn giả được chọn lọc. & Tận dụng ảnh chưa gán nhãn để hỗ trợ huấn luyện; cần kiểm soát nhãn giả sai. \\ \hline
+Học tăng cường & Tác nhân thực hiện hành động, nhận thưởng hoặc phạt từ môi trường và học qua tương tác. & Học chính sách tối đa hoá tổng phần thưởng, ví dụ điều khiển xe trong mô phỏng. \\
+\bottomrule
+\end{tabularx}
+\end{table}

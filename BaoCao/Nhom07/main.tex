@@ -1,0 +1,57 @@
+% ==============================================================================
+% BÁO CÁO DỰ ÁN - HỌC PHẦN THỊ GIÁC MÁY TÍNH
+% Đề tài: Nhận diện biển báo giao thông Việt Nam
+% Nhóm 7 - Trường ĐH Công nghệ Thông tin và Truyền thông
+% Biên dịch: xelatex -> biber -> xelatex -> xelatex   (hoặc: latexmk -xelatex main)
+% ==============================================================================
+\documentclass{ictureport}
+
+\input{metadata}
+\input{preamble}
+
+\begin{document}
+
+% ------------------------------------------------------------------------------
+% 1. TRANG BÌA (không đánh số trang)
+% ------------------------------------------------------------------------------
+\makecoverpage
+
+% ------------------------------------------------------------------------------
+% 2. PHẦN ĐẦU (đánh số trang La Mã)
+% ------------------------------------------------------------------------------
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\input{frontmatter/loicamon}
+\tableofcontents
+\input{frontmatter/phancong}
+\listoftables
+\listoffigures
+\input{frontmatter/viettat}
+\input{chapters/modau}
+
+% ------------------------------------------------------------------------------
+% 3. NỘI DUNG CHÍNH (đánh số trang Ả Rập)
+% ------------------------------------------------------------------------------
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\input{chapters/chuong1}
+\input{chapters/chuong2}
+\input{chapters/chuong3}
+\input{chapters/ketluan}
+
+% ------------------------------------------------------------------------------
+% 4. TÀI LIỆU THAM KHẢO
+% ------------------------------------------------------------------------------
+\clearpage
+\printbibliography[heading=bibintoc,title={TÀI LIỆU THAM KHẢO}]
+
+% ------------------------------------------------------------------------------
+% 5. PHỤ LỤC
+% ------------------------------------------------------------------------------
+\clearpage
+\input{chapters/phuluc}
+
+\end{document}

@@ -1,0 +1,41 @@
+\input{style}
+\begin{document}
+\begin{tikzpicture}
+% Ảnh đầu vào: một lưới ảnh đơn giản.
+\draw[AccentBlue,fill=white,line width=.8pt] (-.65,-.65) rectangle (.65,.65);
+\foreach \k in {-0.45,-0.25,-0.05,0.15,0.35,0.55}{
+  \draw[AccentBlue!18] (\k,-.65)--(\k,.65);
+  \draw[AccentBlue!18] (-.65,\k)--(.65,\k);
+}
+\draw[AccentBlue,fill=AccentLightBlue] (0,0) circle (.36);
+% Các lớp feature map.
+\foreach \k in {3,2,1,0}{
+  \draw[draw=AccentBlue,fill=AccentLightBlue!60,rounded corners=1pt]
+      (2.1+\k*.13,-.7+\k*.13) rectangle (3+\k*.13,.7+\k*.13);
+}
+\foreach \k in {2,1,0}{
+  \draw[draw=AccentBlue,fill=AccentLightBlue!35,rounded corners=1pt]
+      (4.5+\k*.12,-.43+\k*.12) rectangle (5.1+\k*.12,.43+\k*.12);
+}
+\foreach \k in {4,3,2,1,0}{
+  \draw[draw=AccentBlue,fill=AccentLightBlue!70,rounded corners=1pt]
+      (6.6+\k*.1,-.5+\k*.1) rectangle (7.2+\k*.1,.5+\k*.1);
+}
+% Mạng kết nối đầy đủ và đầu ra.
+\foreach \a in {-.75,0,.75}{
+ \foreach \b in {-.4,.4}{\draw[AccentBlue!40,line width=.45pt] (9.25,\a)--(11.1,\b);}
+}
+\foreach \y in {-.75,0,.75}{\draw[draw=AccentBlue,fill=AccentLightBlue] (9.25,\y) circle (.14);}
+\foreach \y in {-.4,.4}{\draw[draw=AccentBlue,fill=white,line width=.8pt] (11.1,\y) circle (.17);}
+\draw[flow] (.8,0)--(1.85,0);
+\draw[flow] (3.55,.1)--(4.25,.1);
+\draw[flow] (5.5,.1)--(6.35,.1);
+\draw[flow] (7.85,.1)--(8.9,.1);
+\node at (0,-1.35) {Ảnh đầu vào};
+\node at (2.75,-1.35) {Tích chập};
+\node at (4.9,-1.35) {Gộp};
+\node at (7.1,-1.35) {Tích chập};
+\node[text width=2.2cm] at (9.25,-1.48) {Kết nối đầy đủ};
+\node at (11.1,-1.35) {Đầu ra};
+\end{tikzpicture}
+\end{document}

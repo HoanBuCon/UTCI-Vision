@@ -1,0 +1,43 @@
+\unnumberedchapter{KẾT LUẬN}
+\label{chap:conclusion}
+
+\plainheading{1. Kết quả đạt được}
+\label{sec:accomplishments}
+
+Đề tài đã xây dựng hệ thống nhận diện biển báo giao thông Việt Nam chạy được từ đầu đến cuối, kết hợp học sâu với xử lý ảnh truyền thống. Đối chiếu với bốn mục tiêu ở phần Mở đầu:
+\begin{itemize}
+ \item (M1) Hệ thống hoàn chỉnh. Ảnh, video và webcam đi qua đánh giá chất lượng, tăng cường thích nghi, YOLO11s, theo vết và đọc số bằng VietOCR; kết quả kèm tên tiếng Việt và mã QCVN. Hệ thống có API FastAPI, giao diện web trình bày dữ liệu, pipeline, demo hai phương pháp và kết quả thực nghiệm, được đóng gói Docker chạy được khi không có mạng.
+ \item (M2) Hai phương pháp. Trên 2\,017 biển kiểm thử, HOG + màu + SVM phân loại đúng 91,0\% so với 92,4\% của YOLO11s, và ngang YOLO trên biển nhỏ đã được định vị; SIFT-BoVW chỉ đạt 71,1\%. Tăng cường thích nghi tăng recall trên ảnh rất tối từ 0,686 lên 0,822 mà không làm hại ảnh tốt hay ảnh nhiễu. Bộ xác minh bằng đặc trưng thủ công không vượt được điểm tin cậy của YOLO và được báo cáo như một kết quả âm.
+ \item (M3) Biển nhỏ và ảnh xấu. Suy luận ở 1280 px tăng recall biển dưới 16~px từ 0,634 lên 0,737 mà không giảm precision và không cần huấn luyện lại. Hệ thống mặc định đạt precision 0,862, recall 0,917, $F_1$ 0,889 trên tập kiểm thử.
+ \item (M4) Đánh giá. Dữ liệu được chia theo cụm ảnh gần trùng; kết quả được báo cáo tại ngưỡng vận hành, theo kích thước, theo lớp, theo mức tương đồng với tập huấn luyện, kèm khoảng tin cậy bootstrap và Wilson. Mọi lần chạy được ghi vào sổ đăng ký thí nghiệm.
+\end{itemize}
+
+\plainheading{2. Bài học kinh nghiệm}
+\label{sec:lessons}
+
+\begin{enumerate}
+ \item Đo trước khi thêm khâu. Thí nghiệm khả thi T0/T1 cho thấy bộ xác minh không đạt mục tiêu trước khi tích hợp vào hệ thống, giúp nhóm chuyển nỗ lực sang những khâu có tác dụng đo được như tăng cường thích nghi và độ phân giải suy luận.
+ \item Xử lý ảnh truyền thống cần điều kiện áp dụng. Áp CLAHE cho mọi ảnh làm hại ảnh nhiễu; chỉ khi có bước đánh giá chất lượng đứng trước, phép tăng cường mới giúp ảnh tối mà không làm hại các ảnh khác.
+ \item So sánh công bằng phải tách khâu. So toàn hệ thống thì phương pháp truyền thống thua xa; tách riêng khâu phân loại mới thấy đặc trưng thủ công cạnh tranh được và điểm yếu thật nằm ở khâu định vị.
+ \item Con số tổng dễ gây hiểu nhầm. Precision ở ngưỡng tối ưu của thư viện, mAP trên dữ liệu cùng nguồn hay một khâu ``tăng precision'' đều có thể làm kết luận sai nếu không xem kèm ngưỡng vận hành, mức tương đồng và so sánh ở cùng recall.
+\end{enumerate}
+
+\plainheading{3. Tác động dự kiến}
+\label{sec:impact}
+
+\paragraph{Về học thuật và giáo dục.} Bộ thí nghiệm so sánh trực tiếp đặc trưng thủ công với học sâu theo kích thước biển, cùng giao diện cho phép bật/tắt từng khâu và xem kết quả trung gian, có thể dùng làm tài liệu thực hành cho học phần Thị giác máy tính. Mã nguồn, cấu hình, sổ đăng ký thí nghiệm và script sinh hình được tổ chức để tái lập trên một máy cá nhân.
+
+\paragraph{Về ứng dụng.} Hệ thống có thể dùng để kiểm kê biển báo từ video ghi trên tuyến đường hoặc tra cứu biển trong ảnh. Trước khi dùng cho cảnh báo người lái, cần đánh giá trên video đường phố thật ở nhiều điều kiện và cập nhật danh mục theo QCVN~41:2024/BGTVT.
+
+\plainheading{4. Hướng phát triển}
+\label{sec:future}
+
+\begin{enumerate}
+ \item Dữ liệu. Thu tập kiểm thử ngoài phân phối từ tuyến đường mới; gán nhãn chữ để đo CER và tỉ lệ đọc đúng; định nghĩa lại lớp ``Biển chỉ dẫn hướng đi''; bổ sung ảnh nền khó để huấn luyện lại bộ xác minh.
+ \item Biển nhỏ. Huấn luyện YOLO trên ô cắt hoặc ở độ phân giải cao hơn, thêm đầu phát hiện độ phân giải cao như các cải tiến trên TT100K.
+ \item Ảnh xấu. Chọn lại ngưỡng đánh giá chất lượng trên tập xác thực; dùng chỉ báo nhiễu tốt hơn phương sai Laplacian; kiểm chứng bằng ảnh đêm thật.
+ \item Video. Đo độ ổn định nhãn với và không có theo vết trên video thật; đo webcam thời gian thực trên GPU.
+ \item Mô hình. Huấn luyện lặp với nhiều hạt giống; thử các kích cỡ YOLO11 khác và xuất ONNX để chạy nhanh hơn trên CPU.
+\end{enumerate}
+
+Do thời gian có hạn, báo cáo không tránh khỏi thiếu sót; chúng em rất mong nhận được góp ý của thầy cô và các bạn để báo cáo được hoàn thiện hơn.

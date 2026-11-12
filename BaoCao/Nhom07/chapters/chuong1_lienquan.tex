@@ -1,0 +1,69 @@
+% ==============================================================================
+\section{Các nghiên cứu liên quan}
+\label{sec:related_work}
+
+Mục này điểm qua các công trình liên quan đến nhận diện biển báo theo bốn nhóm: bộ dữ liệu và cách đánh giá, phương pháp truyền thống, phương pháp học sâu cho biển nhỏ, theo vết và xác minh trên video. Cuối mục là bảng tổng hợp và những vấn đề mà đề tài hướng tới.
+
+\subsection{Bộ dữ liệu và cách đánh giá}
+\label{sec:rw_data}
+
+Hai bộ dữ liệu của Đức tách bài toán thành hai phần. GTSRB là bài toán phân loại vùng biển đã cắt sẵn với 43 lớp; trong cuộc thi, một tổ hợp mạng tích chập đạt tỉ lệ phân loại đúng cao hơn người tham gia thử nghiệm~\cite{stallkamp2012gtsrb}. GTSDB là bài toán phát hiện trên ảnh đường phố (900 ảnh, 600 để huấn luyện và 300 để đánh giá), đánh giá riêng theo nhóm biển cấm, nguy hiểm và hiệu lệnh~\cite{houben2013gtsdb}. Việc tách hai phần cho thấy độ chính xác phân loại trên vùng đã cắt không thay thế được chỉ số phát hiện trên cả ảnh. Đề tài áp dụng nguyên tắc này khi so sánh phương pháp truyền thống với YOLO (Mục~\ref{sec:e8}).
+
+Tsinghua-Tencent 100K (TT100K) có 100 nghìn ảnh toàn cảnh với khoảng 30 nghìn biển, phần lớn chiếm diện tích rất nhỏ trong ảnh. Các tác giả chỉ ra rằng mạng phát hiện thiết kế cho vật thể lớn hoạt động kém với biển nhỏ~\cite{zhu2016tt100k}. Bộ dữ liệu Mapillary mở rộng phạm vi ra toàn cầu, có lớp \textit{other-sign} cho biển nằm ngoài danh mục và báo cáo kết quả theo kích thước biển~\cite{ertler2020mapillary}. Đây là tiền lệ cho lớp ``Biển báo khác'' và cho cách phân tích theo kích thước của đề tài.
+
+Với biển báo Việt Nam, Zalo AI Challenge 2020 cung cấp ảnh đường phố độ phân giải $1622\times626$ có nhiều biển rất nhỏ~\cite{zalo2020tsd}; ảnh cùng độ phân giải này chiếm 41\% bộ dữ liệu của đề tài. Pham và cộng sự xây dựng mô-đun nhận diện dựa trên YOLOv5, huấn luyện trên dữ liệu tự thu ngoài đường và chạy trên thiết bị Jetson~\cite{tung2024vietnam}. Cu và cộng sự xây dựng bộ dữ liệu biển nguy hiểm và cảnh báo theo QCVN~41:2019 và dùng YOLOv5 để phát hiện~\cite{cu2024vietnamese,qcvn41_2019}. Các công trình này dùng bộ dữ liệu riêng và chưa so sánh với phương pháp truyền thống trên cùng tập kiểm thử.
+
+\subsection{Phương pháp thị giác máy tính truyền thống}
+\label{sec:rw_classic}
+
+Hướng kinh điển gồm hai bước: tìm vùng ứng viên theo màu và hình dạng, sau đó nhận dạng vùng đó. De la Escalera và cộng sự định vị biển bằng ngưỡng màu và hình dạng rồi nhận dạng bằng mạng nơ-ron~\cite{escalera1997road}. Maldonado-Bascón và cộng sự dùng ba giai đoạn: phân đoạn màu, phân loại hình dạng bằng SVM tuyến tính và nhận dạng nội dung bằng SVM nhân Gauss~\cite{maldonado2007svm}. Ưu điểm của hướng này là nhanh và dễ giải thích; nhược điểm là ngưỡng màu thay đổi theo ánh sáng và hình dạng bị biến dạng theo góc nhìn.
+
+HOG mô tả hình dạng bằng histogram hướng gradient trên lưới ô và chuẩn hoá theo khối~\cite{dalal2005hog}. Trên GTSDB, HOG kết hợp bộ phân loại tuyến tính là một trong các phương pháp cơ sở~\cite{houben2013gtsdb}. Vieira so sánh các bước tiền xử lý cho HOG-SVM trên GTSRB: độ chính xác tăng từ 89,65\% lên 91,25\% khi chuyển sang không gian YUV, còn ghép nhiều bước (CLAHE, kênh Hue, YUV) không phải lúc nào cũng tốt hơn~\cite{vieira2025hogsvm}. Đặc trưng điểm khoá như SIFT~\cite{lowe2004sift} kết hợp túi từ thị giác~\cite{csurka2004bovw} hiệu quả với vật thể giàu kết cấu; biển báo lại có ít điểm đặc trưng, nhất là khi biển nhỏ. Đề tài dùng SIFT làm đối chứng âm để kiểm chứng nhận định này (Mục~\ref{sec:e8}).
+
+\subsection{Học sâu và vấn đề biển nhỏ}
+\label{sec:rw_deep}
+
+Bộ phát hiện hai giai đoạn như Faster R-CNN đề xuất vùng rồi phân loại~\cite{ren2015faster}; họ YOLO dự đoán khung và lớp trong một lần truyền, phù hợp xử lý thời gian thực~\cite{redmon2016yolo}. Bài tổng quan của Sapkota và cộng sự hệ thống hoá các phiên bản từ YOLOv1 đến YOLOv12~\cite{sapkota2025yolo}. YOLO11 thay đổi khối trích đặc trưng (C3k2, C2PSA) và có nhiều kích cỡ từ \textit{nano} đến \textit{extra-large}~\cite{khanam2024yolo11,ultralytics_yolo11}. Các mô hình này thường được khởi tạo từ trọng số học trên COCO~\cite{lin2014coco} rồi tinh chỉnh cho bài toán đích.
+
+Biển nhỏ là thách thức chung. Với ảnh độ phân giải cao, SAHI chia ảnh thành các ô chồng lấn, chạy bộ phát hiện trên từng ô rồi gộp kết quả. Chỉ riêng bước suy luận cắt ô đã tăng AP 5,1--6,8 điểm trên VisDrone và xView; khi tinh chỉnh thêm trên ô cắt, mức tăng lên 12,7--14,5 điểm~\cite{akyon2022sahi}. Lời giải của nhiều đội tại Zalo AI 2020 cũng dùng cắt ô vì biển rất nhỏ~\cite{zalo2020tsd}. Đề tài không thể bổ sung dữ liệu, nên chỉ thử những cách không cần huấn luyện lại: tăng độ phân giải suy luận và cắt ô khi suy luận (Mục~\ref{sec:t3}).
+
+\subsection{Theo vết và xác minh trên video}
+\label{sec:rw_video}
+
+SORT kết hợp bộ lọc Kalman~\cite{kalman1960filter} để dự đoán vị trí và thuật toán Hungarian~\cite{kuhn1955hungarian} để ghép phát hiện theo IoU. Phương pháp rất đơn giản nhưng đạt độ chính xác tương đương các bộ theo vết trực tuyến cùng thời và chạy khoảng 260 khung hình mỗi giây; tác giả cũng nhận xét chất lượng theo vết phụ thuộc nhiều vào bộ phát hiện~\cite{bewley2016sort}. Với biển báo, Šegvić và cộng sự xây dựng chuỗi phát hiện nhất quán theo thời gian rồi lọc chuỗi bằng một mô hình phân biệt học riêng~\cite{segvic2014temporal}. Đây là cơ sở cho thiết kế theo vết và bộ xác minh trong hệ thống của nhóm.
+
+\subsection{Tổng hợp và khoảng trống}
+\label{sec:rw_gap}
+
+Bảng~\ref{tab:related_work} tóm tắt các công trình chính và vai trò của chúng trong đề tài.
+
+\begin{table}[H]
+\centering
+\caption{Tóm tắt các nghiên cứu liên quan}
+\label{tab:related_work}
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.3cm}|>{\centering\arraybackslash}p{1.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{4.1cm}|}
+\toprule
+\textbf{Công trình} & \textbf{Năm} & \textbf{Nội dung chính} & \textbf{Vai trò trong đề tài} \\
+\midrule
+De la Escalera và cs.~\cite{escalera1997road} & 1997 & Định vị theo màu + hình dạng, nhận dạng bằng mạng nơ-ron & Cơ sở của pipeline CV đối chứng \\ \hline
+Maldonado-Bascón và cs.~\cite{maldonado2007svm} & 2007 & Phân đoạn màu, SVM cho hình dạng và nội dung & Cơ sở dùng SVM sau ứng viên màu \\ \hline
+Dalal, Triggs~\cite{dalal2005hog} & 2005 & Đặc trưng HOG & Đặc trưng thủ công chính \\ \hline
+GTSRB, GTSDB~\cite{stallkamp2012gtsrb,houben2013gtsdb} & 2012, 2013 & Tách đánh giá phân loại và phát hiện & Thiết kế thí nghiệm E8 \\ \hline
+TT100K~\cite{zhu2016tt100k} & 2016 & Biển nhỏ trong ảnh toàn cảnh & Phân tích theo kích thước \\ \hline
+Mapillary~\cite{ertler2020mapillary} & 2020 & Phạm vi toàn cầu, lớp \textit{other-sign} & Lớp ``Biển báo khác'' \\ \hline
+SAHI~\cite{akyon2022sahi} & 2022 & Suy luận và tinh chỉnh trên ô cắt & Thí nghiệm T3 \\ \hline
+SORT~\cite{bewley2016sort} & 2016 & Kalman + Hungarian theo IoU & Mô-đun theo vết \\ \hline
+Šegvić và cs.~\cite{segvic2014temporal} & 2014 & Chuỗi theo vết + bộ lọc phân biệt & Bộ xác minh \\ \hline
+Vieira~\cite{vieira2025hogsvm} & 2025 & Tiền xử lý cho HOG-SVM & Mốc tham chiếu HOG-SVM \\ \hline
+Pham và cs.~\cite{tung2024vietnam}; Cu và cs.~\cite{cu2024vietnamese} & 2024 & YOLOv5 cho biển báo Việt Nam & Bối cảnh trong nước \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Từ tổng hợp trên, đề tài hướng tới ba vấn đề còn ít được xem xét:
+\begin{enumerate}
+ \item So sánh trực tiếp phương pháp truyền thống và học sâu trên cùng tập kiểm thử biển báo Việt Nam, theo từng nhóm kích thước biển và có khoảng tin cậy.
+ \item Đo đóng góp của từng khâu xử lý ảnh truyền thống trong một hệ thống học sâu, gồm cả những khâu không mang lại cải thiện.
+ \item Cải thiện recall biển nhỏ và độ bền với ảnh tối khi không thể bổ sung dữ liệu: tăng độ phân giải suy luận, cắt ô và tăng cường ảnh thích nghi.
+\end{enumerate}

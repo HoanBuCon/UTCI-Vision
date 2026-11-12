@@ -1,0 +1,44 @@
+% ==============================================================================
+% CẤU HÌNH BỔ SUNG: tài liệu tham khảo, liên kết, macro của đề tài
+% ==============================================================================
+
+% Tài liệu tham khảo dạng [n] (IEEE) qua BibLaTeX/Biber
+\usepackage[
+    backend=biber,
+    style=ieee,
+    sorting=none,
+    doi=true,
+    isbn=false,
+    url=true
+]{biblatex}
+\addbibresource{references.bib}
+\setlength{\bibitemsep}{3pt}
+
+% Liên kết nội bộ (không tô màu, giống bản in Word)
+\usepackage{hyperref}
+\hypersetup{
+    hidelinks,
+    pdfauthor={Nhóm 7 - Trần Trọng Hoàn, Nông Hữu Thịnh, Nguyễn Quang Minh, Vũ Ngọc Quý, Trần Văn Dưỡng},
+    pdftitle={\projectTitle},
+    pdfsubject={Báo cáo dự án học phần \courseName},
+    pdfkeywords={Nhận diện biển báo giao thông, thị giác máy tính, học sâu}
+}
+
+% Macro tiện ích
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\abbr}[2]{\textbf{#1} (#2)}
+
+% ------------------------------------------------------------------------------
+% Bổ sung riêng cho đề tài
+% ------------------------------------------------------------------------------
+\usetikzlibrary{positioning,arrows.meta,fit,calc,shapes.geometric,backgrounds}
+\usepackage{bm}
+\usepackage{float}
+\usepackage{pifont}
+\usepackage{xurl}
+\setcounter{biburlnumpenalty}{100}
+\setcounter{biburllcpenalty}{100}
+\setcounter{biburlucpenalty}{100}
+% Ghi chú ngắn dưới bảng / hình (như báo cáo môn Học sâu)
+\newcommand{\tablenote}[1]{\par\vspace{3pt}{\centering\small #1\par}}
+\newcommand{\fignote}[1]{\par\vspace{2pt}{\centering\small #1\par}}

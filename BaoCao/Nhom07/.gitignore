@@ -1,0 +1,15 @@
+/build/
+*.aux
+*.bcf
+*.blg
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+# Tài liệu bài giảng của học phần (bản quyền của giảng viên) — chỉ lưu trên máy
+/tailieu/
+# Bản nén tạm, ảnh trung gian sinh lại được bằng figures/source/make_qualitative.py (C-06: ảnh lấy từ dataset)
+*.zip
+/figures/qual/
+note.txt

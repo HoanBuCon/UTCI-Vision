@@ -1,0 +1,14 @@
+\input{style}
+\begin{document}
+\begin{tikzpicture}
+\node[block,text width=4.5cm] (root) at (5.55,2) {Các hình thức học máy cơ bản};
+\node[block,text width=2.7cm] (supervised) at (0,0) {Học có\\giám sát};
+\node[block,text width=2.7cm] (unsupervised) at (3.7,0) {Học không\\giám sát};
+\node[block,text width=2.7cm] (semi) at (7.4,0) {Học bán\\giám sát};
+\node[block,text width=2.7cm] (rl) at (11.1,0) {Học tăng cường};
+\draw[flow] (root.south) -- ++(0,-.35) -| (supervised.north);
+\draw[flow] (root.south) -- ++(0,-.35) -| (unsupervised.north);
+\draw[flow] (root.south) -- ++(0,-.35) -| (semi.north);
+\draw[flow] (root.south) -- ++(0,-.35) -| (rl.north);
+\end{tikzpicture}
+\end{document}

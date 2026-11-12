@@ -1,0 +1,14 @@
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds}
+\definecolor{AccentBlue}{HTML}{1F4E79}
+\definecolor{AccentLightBlue}{HTML}{DEEAF6}
+\tikzset{
+  every node/.style={font=\fontsize{11}{14}\selectfont,align=center},
+  block/.style={draw=AccentBlue,fill=AccentLightBlue!45,line width=.8pt,rounded corners=7pt,minimum height=1.1cm,text width=2.6cm,inner sep=5pt},
+  plain/.style={block,fill=white},
+  flow/.style={-{Stealth[length=2.3mm]},draw=AccentBlue,line width=.9pt},
+  note/.style={font=\fontsize{10}{12}\selectfont,text=black!75,align=center},
+  heading/.style={font=\fontsize{12}{15}\selectfont\bfseries,text=AccentBlue}
+}

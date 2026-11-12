@@ -1,0 +1,12 @@
+\input{style}
+\begin{document}
+\begin{tikzpicture}
+\node[plain,text width=1.7cm] (image) at (0,0) {Ảnh đầu vào};
+\node[block,text width=2.4cm] (detect) at (3.3,0) {Phát hiện vùng chữ};
+\node[block,text width=2.4cm] (recognize) at (7,0) {Nhận dạng chữ};
+\node[plain,text width=1.7cm] (text) at (10.3,0) {Văn bản};
+\draw[flow] (image)--(detect);
+\draw[flow] (detect)--(recognize);
+\draw[flow] (recognize)--(text);
+\end{tikzpicture}
+\end{document}
