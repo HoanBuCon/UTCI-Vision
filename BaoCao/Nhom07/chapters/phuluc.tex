@@ -4,7 +4,7 @@
 \label{app:code}
 
 \section{Tổ chức mã nguồn}
-Mã nguồn được công bố tại \url{https://github.com/HoanBuCon/UTCI-Vision}. Thư viện chính \texttt{utci\_vision} chứa từng khâu của pipeline dưới dạng một mô-đun; các script chạy thí nghiệm và công cụ dữ liệu nằm trong \texttt{scripts/} (Bảng~\ref{tab:code_structure}). Dữ liệu, trọng số và video không được đưa vào kho mã; chúng được tạo lại hoặc tải theo hướng dẫn ở Mục~\ref{sec:reproduce}.
+Mã nguồn được công bố tại \url{https://github.com/HoanBuCon/UTCI-Vision}. Thư viện lõi của hệ thống chứa từng khâu của pipeline dưới dạng một mô-đun; các script chạy thí nghiệm và công cụ dữ liệu nằm trong \texttt{scripts/} (Bảng~\ref{tab:code_structure}). Dữ liệu, trọng số và video không được đưa vào kho mã; chúng được tạo lại hoặc tải theo hướng dẫn ở Mục~\ref{sec:reproduce}.
 
 \begin{table}[H]
 \centering
@@ -15,15 +15,15 @@ Mã nguồn được công bố tại \url{https://github.com/HoanBuCon/UTCI-Vis
 \toprule
 \textbf{\normalfont Tệp / thư mục} & \textbf{Chức năng} \\
 \midrule
-src/utci\_vision/enhance.py & [CV] Đánh giá chất lượng; gamma tự động, CLAHE kênh L, lọc song phương \\ \hline
-src/utci\_vision/detector.py & [DL] YOLO11s: suy luận, FP16, cắt ô chồng lấn \\ \hline
-src/utci\_vision/tracking.py & [CV] Kalman + Hungarian theo IoU, bỏ phiếu nhãn theo vết \\ \hline
-src/utci\_vision/verifier.py & [CV + DL] Đặc trưng HSV, hình học, Hu, HOG + ngữ cảnh YOLO $\rightarrow$ LightGBM \\ \hline
-src/utci\_vision/ocr.py & [CV + DL] Cắt vùng số, dòng chữ, biển phụ; VietOCR; regex + từ điển \\ \hline
-src/utci\_vision/traditional.py & [CV] Pipeline đối chứng: HSV $\rightarrow$ hình thái học $\rightarrow$ hình dạng $\rightarrow$ HOG + màu $\rightarrow$ SVM \\ \hline
-src/utci\_vision/pipeline.py & Ghép các khâu theo cấu hình; dùng chung cho API, video, webcam, đánh giá \\ \hline
-src/utci\_vision/api/ & FastAPI: ảnh, video nền, WebSocket, so sánh, ảnh mẫu \\ \hline
-src/utci\_vision/evaluation/ & Ghép dự đoán, mAP, bootstrap, Wilson, ảnh xấu giả lập \\ \hline
+enhance.py & [CV] Đánh giá chất lượng; gamma tự động, CLAHE kênh L, lọc song phương \\ \hline
+detector.py & [DL] YOLO11s: suy luận, FP16, cắt ô chồng lấn \\ \hline
+tracking.py & [CV] Kalman + Hungarian theo IoU, bỏ phiếu nhãn theo vết \\ \hline
+verifier.py & [CV + DL] Đặc trưng HSV, hình học, Hu, HOG + ngữ cảnh YOLO $\rightarrow$ LightGBM \\ \hline
+ocr.py & [CV + DL] Cắt vùng số, dòng chữ, biển phụ; VietOCR; regex + từ điển \\ \hline
+traditional.py & [CV] Pipeline đối chứng: HSV $\rightarrow$ hình thái học $\rightarrow$ hình dạng $\rightarrow$ HOG + màu $\rightarrow$ SVM \\ \hline
+pipeline.py & Ghép các khâu theo cấu hình; dùng chung cho API, video, webcam, đánh giá \\ \hline
+api/ & FastAPI: ảnh, video nền, WebSocket, so sánh, ảnh mẫu \\ \hline
+evaluation/ & Ghép dự đoán, mAP, bootstrap, Wilson, ảnh xấu giả lập \\ \hline
 configs/*.yaml & Cấu hình lớp (QCVN), dữ liệu, YOLO, pipeline, bộ xác minh, OCR, pipeline truyền thống \\ \hline
 scripts/data.py, eda.py & Kiểm tra, tìm ảnh gần trùng, chia theo cụm, đóng gói; phân tích dữ liệu \\ \hline
 scripts/analyze\_run.py & Đánh giá S1: CI bootstrap, theo kích thước, lớp, mức tương đồng \\ \hline
@@ -120,7 +120,7 @@ Bộ dữ liệu gốc \textit{merge\_Real-time Viet Nam Traffic Dtctn 2} (phiê
 \textbf{Bước} & \textbf{Nội dung} \\
 \midrule
 Loại ảnh & 12 ảnh lỗi nội dung và 55 ảnh còn biển chưa gán nhãn (danh sách có lý do) \\ \hline
-Gộp lớp (ADR-009) & Cấm đi thẳng và rẽ phải; Cấm rẽ trái và phải; Cấm rẽ trái và quay đầu xe; Giao nhau với đường sắt có rào chắn; Giới hạn trọng lượng; Kiểm tra $\rightarrow$ ``Biển báo khác'' \\ \hline
+Gộp lớp hiếm & Cấm đi thẳng và rẽ phải; Cấm rẽ trái và phải; Cấm rẽ trái và quay đầu xe; Giao nhau với đường sắt có rào chắn; Giới hạn trọng lượng; Kiểm tra $\rightarrow$ ``Biển báo khác'' \\ \hline
 Chia lại & Bỏ bản chia gốc (4 cụm gần trùng vắt qua nhiều tập, 6/32 lớp không có trong tập kiểm thử); chia lại 70/15/15 theo cụm pHash \\ \hline
 Nhãn & Không sửa nhãn; các lỗi nhãn đã biết được báo cáo như hạn chế \\
 \bottomrule

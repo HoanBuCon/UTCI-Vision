@@ -52,11 +52,11 @@ Gọi $\mathcal{S}_{t-1}$ là trạng thái lưu từ các khung hình trước,
 Ở đây $\theta$ là tham số mô hình phát hiện, $\psi$ là tham số bộ xác minh và $\omega$ là tham số bộ nhận dạng chữ. Với ảnh tĩnh, trạng thái ban đầu rỗng. Ba bộ tham số được học hoặc nạp riêng; biểu thức~\eqref{eq:system_problem} mô tả quan hệ đầu vào--đầu ra, không phải một hàm mất mát chung để huấn luyện toàn hệ thống.
 
 \subsection{Phạm vi và giới hạn xử lý}
-Bộ nhãn có 27 lớp, gồm 26 lớp được giữ riêng và một lớp ``Biển báo khác''. Sáu lớp có ít hơn 60 cụm cảnh độc lập được gộp vào lớp này theo quyết định ADR-009~\cite{utci_nhanlop}; lớp gộp không phải bộ nhận diện mọi biển ngoài dữ liệu và hệ thống không trả tên chi tiết của từng biển trong đó.
+Bộ nhãn có 27 lớp, gồm 26 lớp được giữ riêng và một lớp ``Biển báo khác''. Sáu lớp có ít hơn 60 cụm cảnh độc lập được gộp vào lớp này theo quyết định thiết kế của nhóm~\cite{utci_nhanlop}; lớp gộp không phải bộ nhận diện mọi biển ngoài dữ liệu và hệ thống không trả tên chi tiết của từng biển trong đó.
 
 Chức năng đọc số áp dụng cho biển giới hạn tốc độ (km/h) và giới hạn chiều cao (m). Lớp giới hạn trọng lượng đã được gộp vào ``Biển báo khác'', nên đọc tải trọng không thuộc phạm vi. Biển phụ chưa là một lớp phát hiện độc lập; vùng biển phụ được tìm bằng xử lý ảnh phía dưới biển chính.
 
-Bộ dữ liệu được đóng băng ở phiên bản \texttt{processed/v1}: nhóm không bổ sung ảnh và không gán thêm nhãn. Vì vậy, không có nhãn chữ để đo định lượng khả năng đọc chữ, và không có tập kiểm thử ngoài phân phối. Đề tài không giải quyết nhận diện đèn tín hiệu, vạch kẻ đường hoặc điều khiển phương tiện.
+Bộ dữ liệu được giữ cố định ở phiên bản v1: nhóm không bổ sung ảnh và không gán thêm nhãn. Vì vậy, không có nhãn chữ để đo định lượng khả năng đọc chữ, và không có tập kiểm thử ngoài phân phối. Đề tài không giải quyết nhận diện đèn tín hiệu, vạch kẻ đường hoặc điều khiển phương tiện.
 
 \subsection{Khó khăn trong nhận diện}
 Biển báo có màu, hình dạng và ký hiệu tương đối rõ, nhưng ảnh thu nhận thay đổi theo khoảng cách, góc nhìn và điều kiện ghi hình. Biển ở xa chiếm ít điểm ảnh; trong dữ liệu của đề tài, 53,7\% số biển có cạnh dưới 32~px (Mục~\ref{sec:data_eda}). Góc nghiêng làm thay đổi hình dạng; mưa, bóng đổ, rung máy hoặc che khuất làm mất nét. Các bộ dữ liệu quy mô lớn cũng cho thấy biển nhỏ là thách thức chính~\cite{zhu2016tt100k,ertler2020mapillary}.
@@ -79,15 +79,15 @@ Quy trình chuẩn bị gồm năm bước (Hình~\ref{fig:data_flow}a):
 \begin{enumerate}
  \item Kiểm tra toàn bộ 5\,453 ảnh và 13\,478 nhãn gốc: không có ảnh hỏng định dạng hay khung bao vượt biên; 12 ảnh lỗi nội dung và 55 ảnh còn biển chưa được gán nhãn bị loại (ghi danh sách cùng lý do).
  \item Tìm ảnh gần trùng bằng băm cảm nhận pHash $8\times8$~\cite{imagehash_phash}; hai ảnh có khoảng cách Hamming $\le6$ thuộc cùng một cụm. Kết quả có 3\,889 cụm cảnh.
- \item Gộp sáu lớp có dưới 60 cụm cảnh vào ``Biển báo khác'' (ADR-009), còn 27 lớp.
+ \item Gộp sáu lớp có dưới 60 cụm cảnh vào ``Biển báo khác'', còn 27 lớp.
  \item Chia lại theo cụm với tỉ lệ 70/15/15, phân tầng theo lớp và độ phân giải, hạt giống 42. Mọi ảnh của một cụm nằm trong cùng một tập, nên tập kiểm thử không chứa ảnh gần trùng với tập huấn luyện.
- \item Đóng gói thành \texttt{processed/v1} kèm mã băm SHA-256 và báo cáo chia tập.
+ \item Đóng gói thành phiên bản dữ liệu v1 kèm mã băm và báo cáo chia tập.
 \end{enumerate}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/Fig_du_lieu.pdf}
-\caption[Chuẩn bị dữ liệu và vai trò của từng tập]{Chuẩn bị dữ liệu \texttt{processed/v1} (a) và vai trò của từng tập đối với các mô hình (b)}
+\caption[Chuẩn bị dữ liệu và vai trò của từng tập]{Chuẩn bị dữ liệu (a) và vai trò của từng tập đối với các mô hình (b)}
 \label{fig:data_flow}
 \fignote{Độ rộng thanh tỉ lệ với số ảnh (Val và Test được nới tối thiểu để đọc được nhãn).}
 \end{figure}
@@ -96,7 +96,7 @@ Bảng~\ref{tab:split} cho số ảnh và số biển sau khi chia. Hình~\ref{f
 
 \begin{table}[H]
 \centering
-\caption{Thống kê bộ dữ liệu \texttt{processed/v1} sau khi chia theo cụm}
+\caption{Thống kê bộ dữ liệu sau khi chia theo cụm}
 \label{tab:split}
 \small
 \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{2.2cm}|}
@@ -115,10 +115,10 @@ Tỉ lệ ảnh (\%) & 68,8 & 15,8 & 15,3 & 100 \\
 \label{sec:data_eda}
 Hình~\ref{fig:eda_size} và Hình~\ref{fig:eda_class} tóm tắt các đặc điểm ảnh hưởng trực tiếp đến thiết kế:
 \begin{itemize}
- \item \textbf{Biển rất nhỏ.} Cạnh tương đương trung vị là 30~px; 18,3\% số biển nhỏ hơn 16~px và 53,7\% nhỏ hơn 32~px. Một số lớp có tới 38--48\% số biển dưới 16~px (Cấm đi ngược chiều, Phải đi vòng sang bên phải, Giới hạn chiều cao, Vạch sang đường cho người đi bộ).
- \item \textbf{Bốn độ phân giải.} $960\times540$ (2\,346 ảnh), $1622\times626$ (2\,213 ảnh, nguồn Zalo), $1920\times1080$ (798 ảnh) và $540\times960$ (29 ảnh). Ảnh $1622\times626$ có nhiều biển nhỏ ở xa.
- \item \textbf{Mất cân bằng lớp.} Nhiều nhất là Giới hạn tốc độ (1\,705 biển), ít nhất là Chỗ quay xe (76 biển), chênh 22 lần; trước khi gộp là 55 lần. Biển cấm chiếm 57\% số biển.
- \item \textbf{Nhiều biển trên một ảnh.} Trung bình 2,5 biển mỗi ảnh; 73 ảnh có từ 10 biển trở lên.
+ \item Biển rất nhỏ. Cạnh tương đương trung vị là 30~px; 18,3\% số biển nhỏ hơn 16~px và 53,7\% nhỏ hơn 32~px. Một số lớp có tới 38--48\% số biển dưới 16~px (Cấm đi ngược chiều, Phải đi vòng sang bên phải, Giới hạn chiều cao, Vạch sang đường cho người đi bộ).
+ \item Bốn độ phân giải. $960\times540$ (2\,346 ảnh), $1622\times626$ (2\,213 ảnh, nguồn Zalo), $1920\times1080$ (798 ảnh) và $540\times960$ (29 ảnh). Ảnh $1622\times626$ có nhiều biển nhỏ ở xa.
+ \item Mất cân bằng lớp. Nhiều nhất là Giới hạn tốc độ (1\,705 biển), ít nhất là Chỗ quay xe (76 biển), chênh 22 lần; trước khi gộp là 55 lần. Biển cấm chiếm 57\% số biển.
+ \item Nhiều biển trên một ảnh. Trung bình 2,5 biển mỗi ảnh; 73 ảnh có từ 10 biển trở lên.
 \end{itemize}
 
 \begin{figure}[H]
@@ -142,7 +142,7 @@ Nhãn lớp và khung bao không đủ để đo khả năng đọc nội dung: 
 \section{Kiến trúc tổng thể}
 \label{sec:architecture}
 
-Hình~\ref{fig:system_pipeline} là kiến trúc của hệ thống chính, được dùng chung cho API ảnh, xử lý video nền và webcam~\cite{utci_thietke}. Mỗi khâu được gắn nhãn theo loại phương pháp: \textbf{CV} cho xử lý ảnh và đặc trưng thủ công, \textbf{DL} cho học sâu. Mỗi khâu có cờ bật/tắt trong tệp cấu hình để đo đóng góp riêng.
+Hình~\ref{fig:system_pipeline} là kiến trúc của hệ thống chính, được dùng chung cho API ảnh, xử lý video nền và webcam~\cite{utci_thietke}. Mỗi khâu được gắn nhãn theo loại phương pháp: CV cho xử lý ảnh và đặc trưng thủ công, DL cho học sâu. Mỗi khâu có cờ bật/tắt trong tệp cấu hình để đo đóng góp riêng.
 
 \begin{figure}[H]
 \centering
@@ -154,21 +154,21 @@ Hình~\ref{fig:system_pipeline} là kiến trúc của hệ thống chính, đư
 
 Luồng xử lý một khung hình gồm năm bước:
 \begin{enumerate}
- \item \textbf{Đánh giá chất lượng} [CV]: đo độ sáng, tương phản và độ nét trên ảnh thu nhỏ; chỉ khi các chỉ báo vượt ngưỡng mới tăng cường. Ảnh tốt đi thẳng qua.
- \item \textbf{Phát hiện và phân loại} [DL]: YOLO11s trả khung bao, lớp và điểm tin cậy cho 27 lớp.
- \item \textbf{Xác minh} [CV + DL, tuỳ chọn]: LightGBM trên đặc trưng thủ công và ngữ cảnh YOLO đánh giá lại từng phát hiện. Khâu này tắt mặc định dựa trên kết quả thử nghiệm (Mục~\ref{sec:t1}).
- \item \textbf{Theo vết} [CV]: với video, ghép phát hiện qua các khung hình bằng Kalman và Hungarian, bỏ phiếu nhãn theo vết.
- \item \textbf{Đọc số, chữ} [CV + DL]: cắt vùng chữ bằng xử lý ảnh, đọc bằng VietOCR, kiểm tra bằng biểu thức chính quy và từ điển; ghép với thông tin QCVN của lớp để trả kết quả.
+ \item Đánh giá chất lượng [CV]: đo độ sáng, tương phản và độ nét trên ảnh thu nhỏ; chỉ khi các chỉ báo vượt ngưỡng mới tăng cường. Ảnh tốt đi thẳng qua.
+ \item Phát hiện và phân loại [DL]: YOLO11s trả khung bao, lớp và điểm tin cậy cho 27 lớp.
+ \item Xác minh [CV + DL, tuỳ chọn]: LightGBM trên đặc trưng thủ công và ngữ cảnh YOLO đánh giá lại từng phát hiện. Khâu này tắt mặc định dựa trên kết quả thử nghiệm (Mục~\ref{sec:t1}).
+ \item Theo vết [CV]: với video, ghép phát hiện qua các khung hình bằng Kalman và Hungarian, bỏ phiếu nhãn theo vết.
+ \item Đọc số, chữ [CV + DL]: cắt vùng chữ bằng xử lý ảnh, đọc bằng VietOCR, kiểm tra bằng biểu thức chính quy và từ điển; ghép với thông tin QCVN của lớp để trả kết quả.
 \end{enumerate}
 Với ảnh tĩnh, các khâu chạy tuần tự. Với video, xác minh và đọc chữ chạy nền theo từng vết (khi vết mới xuất hiện hoặc sau mỗi 10 khung hình), nên không chặn luồng phát hiện.
 
-Song song với hệ thống chính, nhóm xây dựng một \textbf{hệ thống đối chứng} chỉ dùng thị giác máy tính truyền thống (Mục~\ref{sec:cv_pipeline}). Hệ thống đối chứng không dùng trong sản phẩm; nó dùng để so sánh hai phương pháp trên cùng ảnh và cùng tập kiểm thử (Chương~\ref{chap:chuong3}).
+Song song với hệ thống chính, nhóm xây dựng một hệ thống đối chứng chỉ dùng thị giác máy tính truyền thống (Mục~\ref{sec:cv_pipeline}). Hệ thống đối chứng không dùng trong sản phẩm; nó dùng để so sánh hai phương pháp trên cùng ảnh và cùng tập kiểm thử (Chương~\ref{chap:chuong3}).
 
 \section{Phương pháp học sâu}
 \label{sec:deep}
 
 \subsection{Mô hình phát hiện YOLO11s}
-Nhóm chọn YOLO11 của Ultralytics~\cite{ultralytics_yolo11,khanam2024yolo11}, biến thể nhỏ \texttt{yolo11s}, khởi tạo từ trọng số học trên COCO~\cite{lin2014coco} rồi tinh chỉnh toàn bộ mạng trên tập huấn luyện. Một mô hình đảm nhiệm cả tìm vị trí và phân loại, nên hệ thống không cần mạng phân loại biển riêng. Bảng~\ref{tab:ch2_detector_config} là cấu hình dùng cho lần huấn luyện được chọn~\cite{utci_cauhinh}.
+Nhóm chọn YOLO11 của Ultralytics~\cite{ultralytics_yolo11,khanam2024yolo11}, biến thể nhỏ YOLO11s, khởi tạo từ trọng số học trên COCO~\cite{lin2014coco} rồi tinh chỉnh toàn bộ mạng trên tập huấn luyện. Một mô hình đảm nhiệm cả tìm vị trí và phân loại, nên hệ thống không cần mạng phân loại biển riêng. Bảng~\ref{tab:ch2_detector_config} là cấu hình dùng cho lần huấn luyện được chọn~\cite{utci_cauhinh}.
 
 \begin{table}[H]
 \centering
@@ -179,12 +179,12 @@ Nhóm chọn YOLO11 của Ultralytics~\cite{ultralytics_yolo11,khanam2024yolo11}
 \toprule
 \textbf{Thành phần} & \textbf{Giá trị} \\
 \midrule
-Trọng số khởi tạo & \texttt{yolo11s.pt}, huấn luyện trước trên COCO \\ \hline
+Trọng số khởi tạo & YOLO11s đã huấn luyện trước trên COCO \\ \hline
 Kích thước ảnh huấn luyện & 960 px (cạnh dài), giữ tỉ lệ và đệm theo thư viện \\ \hline
 Số epoch, kích thước lô & 80 epoch; 8 ảnh mỗi lô \\ \hline
 Tối ưu & AdamW, tốc độ học ban đầu $0{,}001$, lịch cosine, 3 epoch khởi động \\ \hline
 Tăng cường dữ liệu & Mặc định của thư viện; tắt lật ngang (tránh đổi nghĩa biển trái--phải); tắt mosaic ở 15 epoch cuối \\ \hline
-Chọn trọng số & Epoch có chỉ số \textit{fitness} cao nhất trên tập xác thực \\ \hline
+Chọn trọng số & Epoch có mAP@50:95 cao nhất trên tập xác thực \\ \hline
 Môi trường & Google Colab, Tesla T4; Ultralytics 8.4.183; 2 giờ 52 phút \\ \hline
 Suy luận & 1280 px (chọn theo thí nghiệm T3), ngưỡng điểm $0{,}25$, NMS với IoU $0{,}5$, FP16 trên GPU \\
 \bottomrule
@@ -194,7 +194,7 @@ Suy luận & 1280 px (chọn theo thí nghiệm T3), ngưỡng điểm $0{,}25$,
 Mô hình được huấn luyện ở 960 px nhưng suy luận ở 1280 px. Phóng to ảnh khi suy luận làm biển nhỏ chiếm nhiều điểm ảnh hơn trên bản đồ đặc trưng mà không cần huấn luyện lại; thí nghiệm T3 (Mục~\ref{sec:t3}) cho thấy cách này tăng recall biển nhỏ mà không giảm precision. Hệ thống cũng có tuỳ chọn cắt ô $640\times640$ chồng lấn theo ý tưởng SAHI~\cite{akyon2022sahi} cho ảnh độ phân giải cao.
 
 \subsection{Đọc chữ và giá trị số}
-Nhận dạng ký tự quang học (OCR) gồm bước tìm vùng chữ và bước nhận dạng nội dung (Hình~\ref{fig:ocr_basic})~\cite{paddleocr_overview}. Hệ thống tách hai bước theo hai loại phương pháp: vùng chữ được cắt bằng xử lý ảnh [CV], nội dung được đọc bằng VietOCR với cấu hình \texttt{vgg\_transformer} (trích đặc trưng VGG, giải mã Transformer) [DL]~\cite{vietocr_repo}.
+Nhận dạng ký tự quang học (OCR) gồm bước tìm vùng chữ và bước nhận dạng nội dung (Hình~\ref{fig:ocr_basic})~\cite{paddleocr_overview}. Hệ thống tách hai bước theo hai loại phương pháp: vùng chữ được cắt bằng xử lý ảnh [CV], nội dung được đọc bằng VietOCR với cấu hình VGG-Transformer (trích đặc trưng VGG, giải mã Transformer) [DL]~\cite{vietocr_repo}.
 
 \begin{figure}[H]
 \centering
@@ -204,9 +204,9 @@ Nhận dạng ký tự quang học (OCR) gồm bước tìm vùng chữ và bư�
 \end{figure}
 
 \begin{itemize}
- \item \textbf{Biển có giá trị số} (tốc độ, chiều cao): cắt đĩa phía trong viền đỏ (78\% đường kính), phóng to 3 lần, yêu cầu chiều cao vùng tối thiểu 40~px.
- \item \textbf{Dòng chữ và biển phụ}: tìm tấm chữ nhật sáng phía dưới biển chính (vùng tìm cao 1,2 lần biển chính), tách dòng bằng chiếu histogram theo hàng, tăng tương phản bằng CLAHE và chỉnh nghiêng trước khi đọc.
- \item \textbf{Hậu xử lý}: biểu thức chính quy tách số và đơn vị; giá trị tốc độ phải thuộc danh sách hợp lệ (5--120 km/h), chiều cao trong khoảng 1,5--6 m; chữ được so với từ điển bằng độ tương đồng chuỗi (ngưỡng 80/100). Dòng có độ tin cậy VietOCR dưới 0,75 bị bỏ.
+ \item Biển có giá trị số (tốc độ, chiều cao): cắt đĩa phía trong viền đỏ (78\% đường kính), phóng to 3 lần, yêu cầu chiều cao vùng tối thiểu 40~px.
+ \item Dòng chữ và biển phụ: tìm tấm chữ nhật sáng phía dưới biển chính (vùng tìm cao 1,2 lần biển chính), tách dòng bằng chiếu histogram theo hàng, tăng tương phản bằng CLAHE và chỉnh nghiêng trước khi đọc.
+ \item Hậu xử lý: biểu thức chính quy tách số và đơn vị; giá trị tốc độ phải thuộc danh sách hợp lệ (5--120 km/h), chiều cao trong khoảng 1,5--6 m; chữ được so với từ điển bằng độ tương đồng chuỗi (ngưỡng 80/100). Dòng có độ tin cậy VietOCR dưới 0,75 bị bỏ.
 \end{itemize}
 Chuỗi gốc và chuỗi sau xử lý đều được lưu. Quy tắc sửa không được ``đoán'': nếu ảnh chưa phân biệt được 50 và 60, danh sách giá trị hợp lệ không đủ căn cứ để chọn, và kết quả để trống. Với video, vùng đọc được chọn từ khung hình có tích diện tích và độ nét lớn nhất của vết.
 
@@ -315,12 +315,12 @@ mAP@50 dùng ngưỡng IoU $0{,}5$; mAP@50:95 xét các ngưỡng từ $0{,}5$ �
 \subsection{Giao thức đánh giá}
 Để kết quả phản ánh đúng hệ thống khi chạy thật và so sánh được giữa các cấu hình, nhóm cố định giao thức sau:
 \begin{itemize}
- \item \textbf{Điểm vận hành.} Chỉ số chính là P, R, $F_1$ tại ngưỡng hiển thị của hệ thống (điểm $0{,}25$), đúng lớp và IoU $\ge0{,}5$. Precision ở ngưỡng tối ưu theo $F_1$ do thư viện báo cáo không phải điều người dùng nhìn thấy. Ma trận nhầm lẫn mặc định của Ultralytics~8.4 ghép cả dự đoán điểm $0{,}001$ nên không được dùng làm bằng chứng.
- \item \textbf{Theo kích thước và theo lớp.} Recall được tính riêng cho bốn nhóm kích thước và cho từng lớp, vì giá trị trung bình che lấp điểm yếu ở biển nhỏ và lớp hiếm.
- \item \textbf{Khoảng tin cậy.} CI 95\% của chỉ số toàn tập được ước lượng bằng bootstrap theo ảnh~\cite{efron1993bootstrap} (500--2\,000 lần lấy mẫu lặp; ghép cặp khi so hai cấu hình trên cùng ảnh); CI của tỉ lệ theo lớp dùng khoảng Wilson~\cite{wilson1927}. Hai cấu hình chỉ được coi là khác nhau khi CI của hiệu không chứa 0.
- \item \textbf{Mức tương đồng với tập huấn luyện.} Ảnh kiểm thử được chia ba nhóm theo khoảng cách pHash tới ảnh huấn luyện gần nhất ($\le10$, 11--14, $\ge15$ bit). Nhóm ``khác train'' cho ước lượng gần hơn với ảnh mới, thay cho tập ngoài phân phối mà đề tài không có.
- \item \textbf{Ảnh xấu giả lập.} Ảnh tối: $I'=255\,(I/255)^{\gamma}$ với $\gamma=2{,}5$ hoặc $3{,}5$; nhiễu Gauss $\sigma=15$; mờ chuyển động ngang với nhân 9~px.
- \item \textbf{Tốc độ.} Ghi rõ phần cứng, kích thước ảnh và các khâu được tính thời gian.
+ \item Điểm vận hành. Chỉ số chính là P, R, $F_1$ tại ngưỡng hiển thị của hệ thống (điểm $0{,}25$), đúng lớp và IoU $\ge0{,}5$. Precision ở ngưỡng tối ưu theo $F_1$ do thư viện báo cáo không phải điều người dùng nhìn thấy. Ma trận nhầm lẫn mặc định của Ultralytics~8.4 ghép cả dự đoán điểm $0{,}001$ nên không được dùng làm bằng chứng.
+ \item Theo kích thước và theo lớp. Recall được tính riêng cho bốn nhóm kích thước và cho từng lớp, vì giá trị trung bình che lấp điểm yếu ở biển nhỏ và lớp hiếm.
+ \item Khoảng tin cậy. CI 95\% của chỉ số toàn tập được ước lượng bằng bootstrap theo ảnh~\cite{efron1993bootstrap} (500--2\,000 lần lấy mẫu lặp; ghép cặp khi so hai cấu hình trên cùng ảnh); CI của tỉ lệ theo lớp dùng khoảng Wilson~\cite{wilson1927}. Hai cấu hình chỉ được coi là khác nhau khi CI của hiệu không chứa 0.
+ \item Mức tương đồng với tập huấn luyện. Ảnh kiểm thử được chia ba nhóm theo khoảng cách pHash tới ảnh huấn luyện gần nhất ($\le10$, 11--14, $\ge15$ bit). Nhóm ``khác train'' cho ước lượng gần hơn với ảnh mới, thay cho tập ngoài phân phối mà đề tài không có.
+ \item Ảnh xấu giả lập. Ảnh tối: $I'=255\,(I/255)^{\gamma}$ với $\gamma=2{,}5$ hoặc $3{,}5$; nhiễu Gauss $\sigma=15$; mờ chuyển động ngang với nhân 9~px.
+ \item Tốc độ. Ghi rõ phần cứng, kích thước ảnh và các khâu được tính thời gian.
 \end{itemize}
 
 \subsection{Các thí nghiệm}

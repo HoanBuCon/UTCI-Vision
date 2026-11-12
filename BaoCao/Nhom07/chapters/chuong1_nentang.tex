@@ -66,9 +66,9 @@ Quá khớp xảy ra khi mô hình học quá sát các chi tiết riêng của 
 
 \section{Mạng nơ-ron và học sâu}
 \subsection{Mạng nơ-ron nhân tạo và mạng tích chập}
-Một nơ-ron nhân tạo nhận các giá trị đầu vào, tính tổng có trọng số, cộng độ lệch rồi đưa qua hàm kích hoạt. Với đầu vào $\mathbf{x}$, trọng số $\mathbf{w}$ và độ lệch $b$, đầu ra là:
+Một nơ-ron nhân tạo nhận các giá trị đầu vào, tính tổng có trọng số, cộng độ lệch rồi đưa qua hàm kích hoạt. Với đầu vào $x$, trọng số $w$ và độ lệch $b$, đầu ra là:
 \begin{equation}
- y=\phi(\mathbf{w}^{\top}\mathbf{x}+b).
+ y=\phi(w^{\top}x+b).
  \label{eq:neuron}
 \end{equation}
 Hàm $\phi$ tạo tính phi tuyến; ví dụ ReLU có dạng $\phi(z)=\max(0,z)$. Nhiều lớp nơ-ron kết hợp các biểu diễn trung gian để mô tả quan hệ phức tạp hơn giữa đầu vào và đầu ra~\cite{stanford_neuralnets}.
@@ -263,15 +263,15 @@ Có thể hình dung một ví dụ gồm $4\times4$ ô, mỗi ô có 9 khoảng
 \subsection{Phân tích thành phần chính}
 Phân tích thành phần chính (Principal Component Analysis -- PCA) tìm một hệ trục mới để biểu diễn dữ liệu bằng ít chiều hơn. Những chiều ban đầu có thể chứa thông tin liên quan nhau; giữ tất cả làm tăng bộ nhớ và chi phí tính toán. PCA chọn các hướng có phương sai lớn để giữ phần biến thiên chủ yếu của tập dữ liệu~\cite{tailieu_bai8}.
 
-Giả sử có $n$ vector $\mathbf{x}_i\in\mathbb{R}^{d}$. Trước hết tính vector trung bình $\boldsymbol{\mu}$ và ma trận hiệp phương sai $S$:
+Giả sử có $n$ vector $x_i\in\mathbb{R}^{d}$. Trước hết tính vector trung bình $\boldsymbol{\mu}$ và ma trận hiệp phương sai $S$:
 \begin{equation}
- \boldsymbol{\mu}=\frac{1}{n}\sum_{i=1}^{n}\mathbf{x}_i,\qquad
- S=\frac{1}{n-1}\sum_{i=1}^{n}(\mathbf{x}_i-\boldsymbol{\mu})(\mathbf{x}_i-\boldsymbol{\mu})^{\top},
+ \boldsymbol{\mu}=\frac{1}{n}\sum_{i=1}^{n}x_i,\qquad
+ S=\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\boldsymbol{\mu})(x_i-\boldsymbol{\mu})^{\top},
  \label{eq:pca_covariance}
 \end{equation}
 với $n>1$. Các vector riêng trực chuẩn của $S$ xác định những hướng mới; trị riêng cho biết phương sai theo từng hướng. Sau khi sắp theo trị riêng giảm dần, chọn $r<d$ hướng đầu thành các cột của ma trận $U_r\in\mathbb{R}^{d\times r}$. Vector trong không gian giảm chiều là:
 \begin{equation}
- \mathbf{z}_i=U_r^{\top}(\mathbf{x}_i-\boldsymbol{\mu}).
+ z_i=U_r^{\top}(x_i-\boldsymbol{\mu}).
  \label{eq:pca_projection}
 \end{equation}
 Như vậy, $d$ giá trị ban đầu được thay bằng $r$ toạ độ mới; đây là tổ hợp của các đặc trưng cũ, không đơn thuần là xoá một số vị trí trong vector.
@@ -291,9 +291,9 @@ Mã băm cảm nhận tạo một chuỗi bit ngắn mô tả những dấu hi�
 
 Với hai mã $h^{(1)},h^{(2)}$ cùng có $L$ bit, khoảng cách Hamming là số vị trí khác nhau:
 \begin{equation}
- d_H(h^{(1)},h^{(2)})=\sum_{j=1}^{L}\mathbf{1}[h_j^{(1)}\ne h_j^{(2)}].
+ d_H(h^{(1)},h^{(2)})=\sum_{j=1}^{L}1[h_j^{(1)}\ne h_j^{(2)}].
  \label{eq:hamming_hash}
 \end{equation}
-Ký hiệu $\mathbf{1}$ bằng 1 khi điều kiện đúng và bằng 0 khi sai. Khoảng cách nhỏ gợi ý hai biểu diễn giống nhau hơn. Ngưỡng quá rộng có thể gộp nhầm những cảnh khác; ngưỡng quá chặt có thể bỏ qua các bản gần trùng. Ảnh bị cắt nhiều, quay mạnh hoặc có bố cục thay đổi cũng có thể cho mã khác dù cùng nguồn.
+Ký hiệu $1$ bằng 1 khi điều kiện đúng và bằng 0 khi sai. Khoảng cách nhỏ gợi ý hai biểu diễn giống nhau hơn. Ngưỡng quá rộng có thể gộp nhầm những cảnh khác; ngưỡng quá chặt có thể bỏ qua các bản gần trùng. Ảnh bị cắt nhiều, quay mạnh hoặc có bố cục thay đổi cũng có thể cho mã khác dù cùng nguồn.
 
 Kiểm tra gần trùng giúp hạn chế thông tin lặp giữa các tập dữ liệu. Các nhóm nghi ngờ cần được duyệt cùng nguồn ghi hình trước khi chia tập. Trong một cụm ghép nối tiếp, hai ảnh ở hai đầu vẫn có thể khác nhau đáng kể.

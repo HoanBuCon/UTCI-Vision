@@ -240,13 +240,13 @@ def fig_data():
     t, s = EDA["totals"], EDA["splits"]
     d = Diagram("Fig_du_lieu", 900, 470)
     # (a) chuẩn bị
-    d.panel(0, 0, 900, 150, "(a) Chuẩn bị dữ liệu processed/v1")
+    d.panel(0, 0, 900, 150, "(a) Chuẩn bị dữ liệu")
     BW, BH, Y = 150, 72, 50
     steps = [
         ("Roboflow (CC BY 4.0)", "5 453 ảnh · 13 478 biển<br>32 lớp"),
         ("Kiểm tra", f"loại 12 ảnh lỗi<br>+ 55 ảnh thiếu nhãn"),
         ("Ảnh gần trùng", f"pHash 8×8, Hamming ≤ 6<br>{comma_int(t['clusters'])} cụm cảnh"),
-        ("Gộp lớp hiếm", "6 lớp &lt; 60 cụm cảnh<br>→ 27 lớp (ADR-009)"),
+        ("Gộp lớp hiếm", "6 lớp &lt; 60 cụm cảnh<br>→ “Biển báo khác” (27 lớp)"),
         ("Chia theo cụm", "70 / 15 / 15 · phân tầng<br>theo lớp + độ phân giải"),
     ]
     ids = []
