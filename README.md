@@ -29,7 +29,8 @@ Frame ─► [CV] đánh giá chất lượng → tăng cường khi cần
 | [docs/04_BAO_CAO_DE_XUAT.md](docs/04_BAO_CAO_DE_XUAT.md) · [docs/research/](docs/research/README.md) | Báo cáo đề xuất kỹ thuật (2 phương pháp, dữ liệu, thí nghiệm) · nghiên cứu liên quan |
 | [docs/quy_uoc.md](docs/quy_uoc.md) | Quy ước Git: nhánh, commit, Pull Request |
 | [docs/adr/](docs/adr/) · [docs/data/DATA_CARD.md](docs/data/DATA_CARD.md) · [docs/models.md](docs/models.md) | Quyết định kiến trúc · dữ liệu · trọng số |
-| [docs/danh_gia/](docs/danh_gia/) | Đánh giá kết quả huấn luyện (S1: [baseline YOLO11s-960](docs/danh_gia/S1_baseline_yolo11s_960.md)) |
+| [docs/danh_gia/](docs/danh_gia/) | Đánh giá kết quả (S1: [baseline YOLO11s-960](docs/danh_gia/S1_baseline_yolo11s_960.md); S3: [hệ thống](docs/danh_gia/S3_danh_gia_he_thong.md), [E8/T4](docs/danh_gia/S3_E8_T4_phuong_phap_truyen_thong.md), [T0/T1](docs/danh_gia/S3_T0_T1_kha_thi_bo_xac_minh.md)) |
+| [docs/handover/](docs/handover/README.md) | Tài liệu bàn giao theo đợt — mới nhất: [12/11/2026](docs/handover/2026-11-12_ban_giao.md) |
 
 ## Bắt đầu
 
