@@ -5,7 +5,7 @@ Chương này trình bày phương pháp của hệ thống nhận diện biển
 
 \section{Phát biểu bài toán nhận diện biển báo}
 \label{sec:baitoannhandien}
-\subsection{Mô tả bằng lời}
+\subsection{Mô tả bài toán}
 Phát hiện biển báo xác định vị trí của biển trong cảnh bằng khung bao. Phân loại gán tên lớp cho vùng biển đã tìm được. Nhận dạng chữ và số đọc nội dung bên trong vùng ảnh. Hệ thống cần kết hợp ba nhiệm vụ này để trả về thông tin sử dụng được.
 
 Đầu vào là một ảnh màu hoặc một chuỗi khung hình từ video, camera. Trong mỗi ảnh, hệ thống tìm các biển thuộc bộ nhãn đã chọn, xác định vị trí và trả về tên lớp cùng điểm tin cậy. Với biển có chữ hoặc giá trị số, hệ thống đọc thêm nội dung khi vùng ảnh đủ rõ. Với video, các lần quan sát của cùng một biển được gắn cùng mã theo vết để tổng hợp thông tin và hạn chế thông báo lặp.
@@ -19,8 +19,7 @@ Ví dụ, khi gặp biển giới hạn tốc độ, đầu ra cần có khung b
 \label{fig:traffic_sign_tasks}
 \end{figure}
 
-\subsection{Mô tả bằng toán học}
-Gọi ảnh ở thời điểm $t$ là $I_t\in\{0,\ldots,255\}^{H_t\times W_t\times3}$, trong đó $H_t,W_t$ là chiều cao và chiều rộng. Tập nhãn của mô hình là $\mathcal{C}=\{0,1,\ldots,26\}$, theo tệp cấu hình lớp của dự án.
+Để biểu diễn bài toán bằng toán học, gọi ảnh ở thời điểm $t$ là $I_t\in\{0,\ldots,255\}^{H_t\times W_t\times3}$, trong đó $H_t,W_t$ là chiều cao và chiều rộng. Tập nhãn của mô hình là $\mathcal{C}=\{0,1,\ldots,26\}$, theo tệp cấu hình lớp của dự án.
 
 Kết quả tại thời điểm $t$ được mô tả bởi tập:
 \begin{equation}
