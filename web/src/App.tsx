@@ -1,42 +1,41 @@
-import { NavLink, Route, Routes } from "react-router-dom";
-import HealthBadge from "./components/HealthBadge";
-import ExplainPage from "./pages/ExplainPage";
-import ImagePage from "./pages/ImagePage";
-import LibraryPage from "./pages/LibraryPage";
-import VideoPage from "./pages/VideoPage";
-import WebcamPage from "./pages/WebcamPage";
+import { lazy } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import AppShell from "./layout/AppShell";
 
-const NAV = [
-  { to: "/", label: "Ảnh" },
-  { to: "/video", label: "Video" },
-  { to: "/webcam", label: "Webcam" },
-  { to: "/library", label: "Thư viện biển báo" },
-  { to: "/explain", label: "Giải thích" },
-];
+// tách code theo trang: Recharts chỉ tải ở trang có biểu đồ
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const ComparePage = lazy(() => import("./pages/ComparePage"));
+const DashboardPage = lazy(() => import("./pages/DashboardPage"));
+const DataPage = lazy(() => import("./pages/DataPage"));
+const DlDemoPage = lazy(() => import("./pages/DlDemoPage"));
+const LibraryPage = lazy(() => import("./pages/LibraryPage"));
+const PipelinePage = lazy(() => import("./pages/PipelinePage"));
+const ResultsPage = lazy(() => import("./pages/ResultsPage"));
+const TraditionalPage = lazy(() => import("./pages/TraditionalPage"));
+const VideoPage = lazy(() => import("./pages/VideoPage"));
+const WebcamPage = lazy(() => import("./pages/WebcamPage"));
 
 export default function App() {
   return (
-    <div className="app">
-      <header className="topbar">
-        <strong>UTCI-VISION</strong>
-        <nav>
-          {NAV.map((n) => (
-            <NavLink key={n.to} to={n.to} end>
-              {n.label}
-            </NavLink>
-          ))}
-        </nav>
-        <HealthBadge />
-      </header>
-      <main>
-        <Routes>
-          <Route path="/" element={<ImagePage />} />
-          <Route path="/video" element={<VideoPage />} />
-          <Route path="/webcam" element={<WebcamPage />} />
-          <Route path="/library" element={<LibraryPage />} />
-          <Route path="/explain" element={<ExplainPage />} />
-        </Routes>
-      </main>
-    </div>
+    <Routes>
+      <Route element={<AppShell />}>
+        <Route index element={<DashboardPage />} />
+        <Route path="data" element={<DataPage />} />
+        <Route path="library" element={<LibraryPage />} />
+        <Route path="pipeline" element={<PipelinePage />} />
+        <Route path="demo/dl" element={<DlDemoPage />} />
+        <Route path="demo/traditional" element={<TraditionalPage />} />
+        <Route path="demo/video" element={<VideoPage />} />
+        <Route path="demo/webcam" element={<WebcamPage />} />
+        <Route path="compare" element={<ComparePage />} />
+        <Route path="results" element={<ResultsPage />} />
+        <Route path="about" element={<AboutPage />} />
+        {/* đường dẫn cũ */}
+        <Route path="video" element={<Navigate to="/demo/video" replace />} />
+        <Route path="webcam" element={<Navigate to="/demo/webcam" replace />} />
+        <Route path="explain" element={<Navigate to="/pipeline" replace />} />
+        <Route path="*" element={<p className="muted">Không tìm thấy trang.</p>} />
+      </Route>
+    </Routes>
   );
 }

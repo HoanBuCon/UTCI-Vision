@@ -1,36 +1,34 @@
-import { useEffect, useState } from "react";
-import { api } from "../api/client";
-import type { HealthResponse } from "../api/types";
+import { useHealth } from "../api/useHealth";
 
-/** Trạng thái backend + mô hình đã nạp (FR-API-01). Hỏi lại mỗi 10 s (API có thể còn đang nạp mô hình). */
+const NAMES: Record<string, string> = { detector: "YOLO11", verifier: "Bộ xác minh", ocr: "VietOCR", classic: "HOG + SVM" };
+
+/** Trạng thái backend + mô hình đã nạp (FR-API-01). */
 export default function HealthBadge() {
-  const [health, setHealth] = useState<HealthResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const check = () =>
-      api
-        .health()
-        .then((h) => {
-          setHealth(h);
-          setError(null);
-        })
-        .catch((e: Error) => setError(e.message));
-    check();
-    const timer = window.setInterval(check, 10_000);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  if (error) return <span className="badge badge-err" title={error}>API chưa sẵn sàng</span>;
-  if (!health) return <span className="badge">Đang kết nối…</span>;
-  const active = Object.values(health.models).filter((m) => m.loaded || m.detail?.startsWith("tắt"));
+  const { health, error } = useHealth();
+  if (error && !health)
+    return (
+      <span className="badge badge-err" title={error}>
+        <i className="dot" />
+        <span className="health-text">API chưa sẵn sàng</span>
+      </span>
+    );
+  if (!health)
+    return (
+      <span className="badge">
+        <i className="dot" />
+        <span className="health-text">Đang kết nối…</span>
+      </span>
+    );
   const loaded = Object.values(health.models).filter((m) => m.loaded).length;
   const detail = Object.entries(health.models)
-    .map(([k, m]) => `${k}: ${m.loaded ? "đã nạp" : m.detail}`)
+    .map(([k, m]) => `${NAMES[k] ?? k}: ${m.loaded ? "đã nạp" : m.detail}`)
     .join("\n");
   return (
-    <span className={`badge ${health.status === "ok" ? "badge-ok" : "badge-warn"}`} title={detail}>
-      API {health.version} · {health.device} · mô hình {loaded}/{active.length}
+    <span className={`badge ${error ? "badge-err" : health.status === "ok" ? "badge-ok" : "badge-warn"}`} title={detail}>
+      <i className="dot" />
+      <span className="health-text">
+        API {health.version} · {health.device.toUpperCase()} · {loaded}/{Object.keys(health.models).length} mô hình
+      </span>
     </span>
   );
 }

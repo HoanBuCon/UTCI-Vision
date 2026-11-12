@@ -35,6 +35,7 @@ export interface DetectResponse {
   detections: Detection[];
   annotated_image: string | null;
   debug: Record<string, unknown> | null;
+  input_image: string | null;
 }
 
 export interface ModelStatus {
@@ -69,4 +70,63 @@ export interface JobStatus {
   result_video_url: string | null;
   summary: Record<string, unknown>[];
   error: string | null;
+}
+
+export interface Sample {
+  id: string;
+  title: string;
+  group: string;
+  signs: number;
+  small: number;
+  size: string;
+}
+
+export interface Candidate {
+  bbox: BBox;
+  color: string;
+  shape: string;
+  class_id: number | null;
+  class_name: string | null;
+  score: number | null;
+  crop: string | null;
+  hog_image: string | null;
+  sift_image: string | null;
+  sift_keypoints: number | null;
+}
+
+export interface TraditionalResponse {
+  image_size: [number, number];
+  latency_ms: Record<string, number>;
+  quality: Record<string, number>;
+  ops: string[];
+  images: Record<string, string>;
+  candidates: Candidate[];
+  detections: Detection[];
+}
+
+export interface CompareRow {
+  bbox: BBox;
+  side_px: number;
+  yolo_class_id: number;
+  yolo_class_name: string;
+  yolo_score: number;
+  classic_class_id: number | null;
+  classic_class_name: string | null;
+  classic_score: number | null;
+  agree: boolean;
+}
+
+export interface ComparePart {
+  detections: Detection[];
+  latency_ms: Record<string, number>;
+  annotated_image: string | null;
+}
+
+export interface CompareResponse {
+  image_size: [number, number];
+  input_image: string | null;
+  deep: ComparePart;
+  traditional: ComparePart;
+  per_box: CompareRow[];
+  classic_ms_per_box: number;
 }
