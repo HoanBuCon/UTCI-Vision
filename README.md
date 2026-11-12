@@ -22,6 +22,7 @@ Frame ─► [CV] đánh giá chất lượng → tăng cường khi cần
 
 | Tài liệu | Nội dung |
 |---|---|
+| [docs/HUONG_DAN_CHAY_WINDOWS.md](docs/HUONG_DAN_CHAY_WINDOWS.md) | Chạy local trên Windows, nội dung runs_out, cấu hình và các mô hình còn thiếu |
 | [docs/00_PHUONG_AN.md](docs/00_PHUONG_AN.md) | Phương án kỹ thuật đã duyệt |
 | [docs/01_TECHSTACK.md](docs/01_TECHSTACK.md) | Công nghệ, phiên bản, cổng, Makefile, cấu trúc mã nguồn |
 | [docs/02_SRS.md](docs/02_SRS.md) | Đặc tả yêu cầu (living SRS) |
@@ -44,7 +45,16 @@ make ci             # lint + test + notebook khớp template + build web + compo
 make help           # toàn bộ lệnh DevOps
 ```
 
-**Makefile chỉ dùng cho DevOps** (môi trường, CI, Docker); Windows chạy trong Git Bash. Chạy dev trực tiếp — cổng vẫn lấy từ `.env`:
+**Các lệnh khởi động local dưới đây chạy được trong PowerShell hoặc Git Bash.** Các lệnh DevOps cũ dùng tiện ích Unix vẫn cần Git Bash. Cổng lấy từ `.env`:
+
+```bash
+make dev            # API + web trong cùng terminal; Ctrl+C dừng cả hai
+make dev-api        # chỉ chạy API
+make dev-web        # chỉ chạy giao diện
+make dev-status     # kiểm tra cổng local (không kiểm tra mô hình đã nạp xong)
+```
+
+Mở http://localhost:15173 theo `UTCI_DEV_PORT`. Bản Docker dùng `make up` / `make up-gpu` và cổng web 18080. Có thể chạy dev trực tiếp:
 
 ```bash
 python -m utci_vision.api --reload                 # FastAPI :18100

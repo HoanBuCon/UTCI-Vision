@@ -1,5 +1,5 @@
-# UTCI-VISION — Makefile CHỈ dành cho DevOps: môi trường, kiểm tra chất lượng (CI), Docker.
-# Việc dữ liệu / fine-tune / đánh giá / chạy dev dùng trực tiếp scripts/, notebook, npm — xem README.
+# UTCI-VISION — môi trường, kiểm tra chất lượng, Docker và khởi động local.
+# Việc dữ liệu / fine-tune / đánh giá dùng scripts/ và notebook — xem README.
 # Windows: chạy trong Git Bash (GNU Make 4.x). torch/CUDA tự cài trước `make install` (ADR-005).
 
 -include .env
@@ -12,16 +12,21 @@ else
   PY ?= .venv/bin/python
 endif
 COMPOSE := docker compose
+ifeq ($(OS),Windows_NT)
+  NPM := npm.cmd
+else
+  NPM := npm
+endif
 
 .DEFAULT_GOAL := help
-.PHONY: help env venv install check-env freeze lint format test ci build up up-gpu down logs ps clean
+.PHONY: help env venv install check-env freeze lint format test ci build up up-gpu down logs ps clean dev dev-api dev-web dev-status
 
 help: ## Danh sách lệnh
-	@grep -hE '^[a-zA-Z_-]+:.*?## ' Makefile | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
+	@python -c "import re; from pathlib import Path; print('\n'.join('  {:<14} {}'.format(*m.groups()) for m in re.finditer(r'^([\w-]+):[^\n]*?## (.+)$$', Path('Makefile').read_text(encoding='utf-8'), re.M)))"
 
 # ---------------------------------------------------------------- môi trường
 env: ## Tạo .env từ .env.example (cổng custom)
-	@test -f .env || cp .env.example .env && echo ".env: API=$(UTCI_API_PORT) WEB=$(UTCI_WEB_PORT) DEV=$(UTCI_DEV_PORT) JUPYTER=$(UTCI_JUPYTER_PORT)"
+	@python -c "from pathlib import Path; p = Path('.env'); p.exists() or p.write_bytes(Path('.env.example').read_bytes())"
 
 venv: ## Tạo .venv (sau đó TỰ cài torch theo GPU: https://pytorch.org/get-started/locally/)
 	python -m venv .venv && $(PY) -m pip install --upgrade pip
@@ -75,6 +80,19 @@ logs: ## Xem log
 
 ps: ## Trạng thái container
 	$(COMPOSE) --profile cpu --profile gpu ps
+
+# ---------------------------------------------------------------- chạy local
+dev: env ## Chạy API + web local cùng lúc; Ctrl+C để dừng cả hai
+	$(PY) scripts/dev.py
+
+dev-api: env ## Chạy riêng API local; Ctrl+C để dừng
+	$(PY) -m utci_vision.api
+
+dev-web: env ## Chạy riêng giao diện local; Ctrl+C để dừng
+	$(NPM) --prefix web run dev
+
+dev-status: ## Kiểm tra cổng API và web local
+	$(PY) scripts/dev.py --status
 
 clean: ## Xoá cache build/test
 	rm -rf .pytest_cache .ruff_cache web/dist

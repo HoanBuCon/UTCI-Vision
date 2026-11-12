@@ -21,3 +21,7 @@ Lệnh chạy giữa Python, Node, Docker khác nhau, dễ sai thứ tự (ví d
 - (+) Không xung đột cổng mặc định; đổi cổng chỉ sửa `.env`.
 - (+) Người mới chỉ cần `make env venv install ci`; Makefile ngắn, không lẫn nghiệp vụ.
 - (−) Windows cần Git Bash có GNU Make.
+
+## Bổ sung ngày 13/11/2026
+
+Theo yêu cầu bổ sung lệnh khởi động nhanh, Makefile có thêm `dev`, `dev-api`, `dev-web` và `dev-status` cho local. Các lệnh này gọi lại entrypoint API và Vite hiện có, vẫn đọc cổng từ `.env`. `make dev` quản lý hai tiến trình trong cùng terminal; `Ctrl+C` dừng những tiến trình do lệnh đó tạo. Việc dữ liệu, huấn luyện và đánh giá tiếp tục dùng script/notebook như trước. Các lệnh local mới, `env` và `help` chạy được trong PowerShell hoặc Git Bash; các recipe cũ dùng tiện ích Unix vẫn cần Git Bash.
