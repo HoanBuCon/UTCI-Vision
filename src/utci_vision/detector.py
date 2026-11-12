@@ -108,3 +108,40 @@ class Detector:
             score = boxes.conf.cpu().numpy()
             out.append([Detection(tuple(map(float, b)), int(c), float(s)) for b, c, s in zip(xyxy, cls, score)])
         return out
+
+    def detect_tiled(
+        self, image_bgr: np.ndarray, tile: int = 640, overlap: float = 0.25, conf: float | None = None
+    ) -> list[Detection]:
+        """Suy luận cắt lát kiểu SAHI (FR-PIPE-15, T3): ảnh đầy đủ + các ô `tile`×`tile` ở độ phân giải gốc
+        (biển nhỏ to ra so với khi thu cả ảnh về imgsz), gộp bằng NMS theo lớp."""
+        import torch
+        from torchvision.ops import batched_nms
+
+        h, w = image_bgr.shape[:2]
+        step = int(tile * (1 - overlap))
+        xs = list(range(0, max(w - tile, 0) + 1, step)) or [0]
+        ys = list(range(0, max(h - tile, 0) + 1, step)) or [0]
+        if xs[-1] + tile < w:
+            xs.append(w - tile)
+        if ys[-1] + tile < h:
+            ys.append(h - tile)
+        crops = [(x, y, image_bgr[y : y + tile, x : x + tile]) for y in ys for x in xs]
+        full = self.detect([image_bgr], conf)[0]
+        saved = self.imgsz
+        self.imgsz = tile
+        try:
+            tiled = self.detect([c for _, _, c in crops], conf)
+        finally:
+            self.imgsz = saved
+        dets = list(full)
+        for (x, y, _), part in zip(crops, tiled):
+            for d in part:
+                x1, y1, x2, y2 = d.bbox
+                dets.append(Detection((x1 + x, y1 + y, x2 + x, y2 + y), d.class_id, d.score))
+        if not dets:
+            return []
+        boxes = torch.tensor([d.bbox for d in dets], dtype=torch.float32)
+        keep = batched_nms(
+            boxes, torch.tensor([d.score for d in dets]), torch.tensor([d.class_id for d in dets]), self.iou
+        )
+        return [dets[i] for i in keep.tolist()]

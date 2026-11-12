@@ -88,3 +88,55 @@ main {
 .tag-mandatory { color: var(--mandatory); }
 .tag-info { color: var(--info); }
 .tag-other { color: #777; }
+
+/* --- trang chức năng --- */
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.error { color: var(--prohibitory); }
+.warn { color: #b88a00; }
+.dropzone {
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 28px;
+  text-align: center;
+  background: var(--card);
+  cursor: pointer;
+}
+.dropzone.over { border-color: var(--mandatory); background: #eef5ff; }
+.dropzone.disabled { opacity: 0.6; cursor: wait; }
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(260px, 2fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+@media (max-width: 800px) { .split { grid-template-columns: 1fr; } }
+.overlay { position: relative; }
+.overlay img, .preview { width: 100%; display: block; border-radius: 6px; }
+.overlay svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.overlay .box { cursor: pointer; }
+.detections { list-style: none; padding: 0; display: grid; gap: 8px; }
+.detections li { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; cursor: pointer; }
+.detections li.selected { border-color: var(--mandatory); }
+.detections .row { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.detections .score { margin-left: auto; font-variant-numeric: tabular-nums; }
+.detections p { margin: 4px 0 0; }
+.latency { display: flex; flex-wrap: wrap; gap: 12px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-top: 16px; }
+.result-video { width: 100%; margin-top: 12px; border-radius: 6px; background: #000; }
+progress { width: 70%; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 6px; border-bottom: 1px solid var(--border); }
+button { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); cursor: pointer; }
+.webcam { position: relative; }
+.webcam video, .webcam canvas { width: 100%; display: block; border-radius: 6px; }
+.webcam canvas { position: absolute; top: 0; left: 0; pointer-events: none; }
+.seen { list-style: none; padding: 0; display: grid; gap: 6px; }
+.search { width: 100%; max-width: 420px; padding: 8px; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 8px; }
+.stages { list-style: none; padding: 0; display: grid; gap: 16px; }
+.stages > li { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pair img, .crops img { width: 100%; border-radius: 4px; }
+.crops { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+figure { margin: 0; }
+figcaption { text-align: center; }

@@ -29,7 +29,7 @@ def test_apply_ablation_disables_flags_without_mutating():
     cfg = load_config("pipeline")
     out = apply_ablation(cfg, ABLATIONS["yolo_only"])
     assert out["verifier"]["enabled"] is False and out["tracking"]["enabled"] is False
-    assert cfg["verifier"]["enabled"] is True
+    assert cfg["tracking"]["enabled"] is True  # cấu hình gốc không bị sửa
 
 
 def test_ablation_flags_exist_in_pipeline_config():
@@ -76,3 +76,11 @@ def test_iou_matrix_and_wilson_interval():
     )
     lo, hi = wilson_interval(90, 100)
     assert lo < 0.9 < hi and lo > 0 and hi < 1 and np.isnan(wilson_interval(0, 0)[0])
+
+
+def test_flicker_stats_counts_label_changes_and_blinks():
+    from utci_vision.evaluation.experiments import flicker_stats
+
+    frames = [[(1, 5)], [(1, 5)], [(1, 9)], [], [(1, 9)], [(2, 3)]]
+    s = flicker_stats(frames)
+    assert s["flicker_rate"] == pytest.approx(1 / 3) and s["blink_rate"] == pytest.approx(1 / 3) and s["tracks"] == 2

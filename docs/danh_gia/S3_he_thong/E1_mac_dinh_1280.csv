@@ -1,0 +1,2 @@
+cau_hinh,precision,recall,f1,recall_<16px,recall_16-32,recall_32-64,recall_>=64,map50_dau_ra,map50_95_dau_ra,ms_tb
+mac_dinh,0.8617,0.9172,0.8886,0.7341,0.9414,0.9757,0.9583,0.8692,0.6665,22.5348

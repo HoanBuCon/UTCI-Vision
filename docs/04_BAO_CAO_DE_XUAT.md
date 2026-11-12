@@ -2,7 +2,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Phiên bản | 1.0 — 11/11/2026 (giữa Sprint 3) |
+| Phiên bản | 1.1 — 12/11/2026 (cập nhật sau thử nghiệm khả thi; bản 1.0: 11/11/2026) |
 | Học phần | Thị giác máy tính |
 | Nhóm | 5 thành viên (TV1–TV5) — phân vai ở §9 |
 | Liên quan | [00_PHUONG_AN](00_PHUONG_AN.md) · [02_SRS](02_SRS.md) · [03_SPRINT_PLAN](03_SPRINT_PLAN.md) · [danh_gia/S1_baseline](danh_gia/S1_baseline_yolo11s_960.md) · [research/](research/README.md) |
@@ -20,6 +20,23 @@
 Baseline YOLO11s-960 đã đạt **mAP@50 ≈ 0,89–0,91** trên test (CI 95% ±0,025), 55 FPS ở khâu phát hiện. Phân tích cho
 thấy hai điểm yếu có số đo: **biển < 16 px** (recall 0,62) và **cảnh ít giống tập huấn luyện** (precision 0,75). Đề xuất
 này dùng chính hai điểm yếu đó để định vị phương pháp truyền thống (xác minh để tăng precision) và các thí nghiệm còn lại.
+
+## 0. Cập nhật 12/11/2026 — quyết định sau thử nghiệm khả thi
+
+**Ràng buộc mới (C-08):** dataset đóng băng ở `processed/v1` — không bổ sung ảnh, không gán thêm / sửa nhãn. Video chỉ dùng để demo
+và đo độ ổn định nhãn (E6). Mọi cải thiện từ đây đến từ **phương pháp**.
+
+**Kết quả thử nghiệm với trọng số baseline** ([T0/T1](danh_gia/S3_T0_T1_kha_thi_bo_xac_minh.md), [E8/T4](danh_gia/S3_E8_T4_phuong_phap_truyen_thong.md)):
+
+| Thử nghiệm | Kết quả | Hệ quả |
+|---|---|---|
+| T1 — bộ xác minh đặc trưng thủ công + LightGBM | Không vượt điểm YOLO ở cùng recall (ΔP +0,005, CI95 −0,012…+0,022) | Thành khâu **tuỳ chọn, mặc định tắt**; báo cáo như kết quả ablation |
+| T4 — tăng cường thích nghi trên ảnh xấu | Ảnh rất tối: recall 0,686 → **0,822**; không hại ảnh gốc / nhiễu / mờ | **Khâu CV truyền thống chính** trong pipeline |
+| E8 — HOG + màu / SIFT + SVM vs YOLO | HOG + màu 91,0% vs YOLO 92,4%; ngang YOLO trên biển < 16 px đã tìm thấy; SIFT 71,1% | **Chương so sánh** hai phương pháp |
+
+**Phương pháp truyền thống sau cập nhật:** (1) tăng cường ảnh thích nghi, (2) theo vết Kalman + IoU + bỏ phiếu nhãn, (3) HOG / màu /
+SIFT + SVM làm phương pháp phân loại đối chứng (E8), (4) bộ xác minh làm ablation, (5) xử lý vùng cho OCR. Các mục trong báo cáo
+mâu thuẫn với mục này được đánh dấu *(thay bởi §0)*.
 
 ---
 
@@ -112,7 +129,7 @@ nhất. §9 đề xuất sắp xếp lại ưu tiên để đóng lỗ hổng n�
 | Đường bị thu hẹp | nguy hiểm | 79 | 73 | 30 | 10 |
 | Chỗ quay xe | chỉ dẫn | 76 | 63 | 21 | 38 |
 
-### 3.3 Vấn đề còn lại & kế hoạch tinh chỉnh (dataset v2, Sprint 3–4)
+### 3.3 Vấn đề còn lại & kế hoạch tinh chỉnh *(thay bởi §0: không thực hiện — dataset đóng băng, các vấn đề dưới đây được báo cáo như hạn chế)*
 | Vấn đề (có số đo) | Hành động | Phụ trách |
 |---|---|---|
 | 55 ảnh thiếu nhãn đang bị loại | Gán nhãn bổ sung, đưa lại vào dataset | TV5 |
@@ -122,7 +139,7 @@ nhất. §9 đề xuất sắp xếp lại ưu tiên để đóng lỗ hổng n�
 | Test cùng nguồn với train → kết quả lạc quan | Tạo **tập test ngoài phân phối (OOD)**: ≥ 2 video / ≥ 300 frame tuyến đường mới, gán nhãn | TV5 |
 | Lớp hiếm có CI rộng | Thêm **cảnh mới** (không thêm frame trùng) cho Chỗ quay xe, Vạch sang đường, Đường một chiều | TV5 |
 
-Quy tắc giữ lớp sau v2 (chốt trước, tránh chọn theo kết quả): gộp vào "Biển báo khác" nếu một lớp có ≥ 20 biển ≥ 16 px
+*(Không áp dụng — không có v2.)* Quy tắc giữ lớp sau v2 (chốt trước, tránh chọn theo kết quả): gộp vào "Biển báo khác" nếu một lớp có ≥ 20 biển ≥ 16 px
 để đánh giá **và** cận trên CI 95% của recall < 0,75 **và** lỗi không do kích thước / nhãn sai.
 
 ## 4. Tổng quan nghiên cứu liên quan
@@ -171,12 +188,12 @@ Danh mục đầy đủ, link và bản PDF: [research/README.md](research/READM
 | # | Mục tiêu | Chỉ số | Hiện tại (baseline) | Mục tiêu v1.0 |
 |---|---|---|---|---|
 | G1 | Phát hiện + phân loại tốt trên dữ liệu cùng nguồn | mAP@50 / mAP@50:95 test | 0,89–0,91 / 0,68 | ≥ 0,88 / ≥ 0,68 (giữ, không giảm khi thêm khâu) |
-| G2 | **Phương pháp truyền thống tăng precision** | Precision @ điểm vận hành, test | 0,86 | ≥ 0,90, recall giảm ≤ 0,03 |
-| G3 | Bền hơn trên cảnh lạ | Precision trên nhóm "khác train" / tập OOD | 0,75 | ≥ 0,85 |
-| G4 | Biển nhỏ | Recall biển < 16 px (conf 0,25) | 0,62 | ≥ 0,70 |
+| G2 | ~~Phương pháp truyền thống tăng precision~~ *(thay bởi §0: T1 không đạt)* → **Tăng cường giữ recall khi ảnh tối** | Recall test làm tối γ 3,5 | 0,686 (không tăng cường) | ≥ 0,80 (T4: 0,822), ảnh gốc giảm ≤ 0,005 |
+| G3 | Bền hơn trên cảnh lạ | Precision trên nhóm ảnh test "khác train" (không có tập OOD — C-08) | 0,758 | Báo cáo kèm CI |
+| G4 | Biển nhỏ (không train lại: imgsz 1280 / SAHI) | Recall biển < 16 px (conf 0,25) | 0,62 | ≥ 0,70 |
 | G5 | So sánh có căn cứ hai phương pháp | Bảng E8 (truyền thống vs học sâu theo kích thước) | — | Có, kèm CI |
 | G6 | Thời gian thực | FPS web (GPU) / ảnh tĩnh CPU | 55 FPS (chỉ detector) | ≥ 20 FPS end-to-end / ≤ 1,5 s |
-| G7 | Đọc giá trị số | Accuracy (crop cao ≥ 40 px) | — | ≥ 85% |
+| G7 | Đọc giá trị số | Định tính (không có nhãn giá trị — C-08) | — | Ví dụ đúng / sai trong báo cáo |
 | G8 | Tái lập | Số liệu truy về registry + script | `analyze_run.py` | 100% |
 
 ## 6. Phương pháp đề xuất
@@ -203,7 +220,7 @@ Frame ─► [CV]  Đánh giá chất lượng (V, L, Laplacian) ─► gamma + 
 
 ### 6.3 Phương pháp 2 — Thị giác máy tính truyền thống & trích xuất đặc trưng thủ công
 
-**(a) Bộ xác minh dựa trên đặc trưng thủ công — đóng góp chính của phương pháp truyền thống.** Với mỗi hộp YOLO (conf ≥ 0,10),
+**(a) Bộ xác minh dựa trên đặc trưng thủ công** *(thay bởi §0: khâu tuỳ chọn, mặc định tắt — T1 không vượt điểm YOLO)*. Với mỗi hộp YOLO (conf ≥ 0,10),
 cắt vùng (pad 10%) và trích:
 
 | Nhóm | Đặc trưng | Kỹ thuật | Tri thức QCVN mã hoá |
@@ -224,7 +241,7 @@ cắt vùng (pad 10%) và trích:
   [R3, §4.1]. Ngược lại, câu hỏi "vùng này có màu / hình dạng / hoa văn của biển lớp X không?" là việc đặc trưng thủ công
   làm tốt và **bổ trợ** đúng điểm yếu đã đo của YOLO (dương tính giả trên nền lạ).
 
-**(b) Tăng cường ảnh thích nghi** (đã cài): đánh giá chất lượng trên ảnh thu nhỏ; chỉ áp dụng gamma tự động + CLAHE trên
+**(b) Tăng cường ảnh thích nghi — khâu truyền thống chính** (đã cài; T4 xác nhận): đánh giá chất lượng trên ảnh thu nhỏ; chỉ áp dụng gamma tự động + CLAHE trên
 kênh L (LAB) + lọc song phương khi ảnh tối / tương phản thấp / nhiễu (ngưỡng từ thống kê 5 453 ảnh: 1,7% / 1,3% / 0,6% ảnh).
 
 **(c) Theo vết Kalman + IoU** (SORT [R22]): trạng thái [cx, cy, s, r] + vận tốc; ghép Hungarian theo IoU; track xác nhận
@@ -273,6 +290,8 @@ Tiêu chí chấp nhận cho phần phương pháp (bổ sung SRS §7):
 ## 9. Kế hoạch thực hiện (Sprint 3–6, 5 thành viên)
 
 Ưu tiên: **đóng phần CV truyền thống + pipeline trước** (yêu cầu bắt buộc), sau đó realtime, cuối cùng OCR chữ.
+
+*(Cập nhật §0: các việc dữ liệu của TV5 — dataset v2, tập OOD, nhãn OCR — bị bỏ; TV5 chuyển sang video demo, E4/E6/T3 và kiểm thử chấp nhận.)*
 
 | Sprint | TV1 (Lead · ML · Đánh giá) | TV2 (CV · Frontend) | TV3 (DL · Backend · DevOps) | TV4 (Báo cáo) | TV5 (Dữ liệu · Kiểm thử) |
 |---|---|---|---|---|---|
