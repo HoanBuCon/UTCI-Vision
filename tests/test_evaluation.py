@@ -76,3 +76,11 @@ def test_iou_matrix_and_wilson_interval():
     )
     lo, hi = wilson_interval(90, 100)
     assert lo < 0.9 < hi and lo > 0 and hi < 1 and np.isnan(wilson_interval(0, 0)[0])
+
+
+def test_flicker_stats_counts_label_changes_and_blinks():
+    from utci_vision.evaluation.experiments import flicker_stats
+
+    frames = [[(1, 5)], [(1, 5)], [(1, 9)], [], [(1, 9)], [(2, 3)]]
+    s = flicker_stats(frames)
+    assert s["flicker_rate"] == pytest.approx(1 / 3) and s["blink_rate"] == pytest.approx(1 / 3) and s["tracks"] == 2

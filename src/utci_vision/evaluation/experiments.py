@@ -81,3 +81,28 @@ def measure_fps(process: Callable[[np.ndarray], object], frames: Iterable[np.nda
         "ms_p95": float(np.percentile(ms, 95)),
         "frames": len(ms),
     }
+
+
+# ---------------------------------------------------------------- E6: độ ổn định nhãn trên video
+def flicker_stats(frames: list[list[tuple[int, int]]]) -> dict[str, float]:
+    """frames[i] = [(track_id, class_id), ...] hiển thị ở frame i.
+
+    flicker_rate = số lần nhãn của cùng một track bị đổi giữa hai lần xuất hiện liên tiếp / số lần track xuất hiện lại;
+    blink_rate = số lần track biến mất rồi xuất hiện lại / số lần track xuất hiện lại.
+    """
+    last_label: dict[int, int] = {}
+    last_frame: dict[int, int] = {}
+    changes = blinks = reappear = 0
+    for i, dets in enumerate(frames):
+        for tid, cls in dets:
+            if tid in last_label:
+                reappear += 1
+                changes += int(last_label[tid] != cls)
+                blinks += int(last_frame[tid] != i - 1)
+            last_label[tid], last_frame[tid] = cls, i
+    return {
+        "flicker_rate": changes / max(reappear, 1),
+        "blink_rate": blinks / max(reappear, 1),
+        "tracks": float(len(last_label)),
+        "frames": float(len(frames)),
+    }
