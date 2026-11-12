@@ -11,3 +11,17 @@ Xe tải
 Xe khách
 Ô tô
 Xe máy
+ĐIỂM DỪNG XE BUÝT
+BUS STOP
+ĐIỂM DỪNG ĐỖ XE BUÝT
+ĐƯỜNG CẤM
+GIỜ CAO ĐIỂM
+XE CỨU THƯƠNG
+TRẠM KIỂM TRA
+CHÚ Ý
+NGUY HIỂM
+ĐI CHẬM
+TRƯỜNG HỌC
+LÀN XE BUÝT
+XE CON
+XE THÔ SƠ

@@ -29,7 +29,7 @@ def test_apply_ablation_disables_flags_without_mutating():
     cfg = load_config("pipeline")
     out = apply_ablation(cfg, ABLATIONS["yolo_only"])
     assert out["verifier"]["enabled"] is False and out["tracking"]["enabled"] is False
-    assert cfg["verifier"]["enabled"] is True
+    assert cfg["tracking"]["enabled"] is True  # cấu hình gốc không bị sửa
 
 
 def test_ablation_flags_exist_in_pipeline_config():

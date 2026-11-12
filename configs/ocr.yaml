@@ -2,7 +2,7 @@
 reader:
   engine: vietocr            # vietocr | easyocr (chỉ để so sánh E5)
   config_name: vgg_transformer
-  weights: null              # null = tải trọng số pretrained; hoặc đường dẫn bản sao trên Drive/models
+  weights: models/vietocr/vgg_transformer.pth   # bản sao local; không có thì tải pretrained từ vocr.vn
   device: auto
 best_frame:
   score: area_x_sharpness    # chọn frame tốt nhất trong track
@@ -25,5 +25,6 @@ sub_sign:                    # biển phụ: tấm chữ nhật sáng ngay dư�
   min_aspect: 1.2
   min_fill_white: 0.45
 postprocess:
-  lexicon: configs/ocr_lexicon.txt   # TODO(TV4): danh sách chữ hay gặp trên biển/biển phụ
+  lexicon: configs/ocr_lexicon.txt   # danh sách chữ hay gặp trên biển/biển phụ (TV4 bổ sung)
   min_similarity: 80                 # rapidfuzz score (0..100)
+  min_confidence: 0.75               # bỏ dòng VietOCR đọc với xác suất thấp (biển nhỏ / vùng không phải chữ)
