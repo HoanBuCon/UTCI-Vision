@@ -35,8 +35,8 @@ track_tasks:                 # tác vụ theo track, chạy nền (FR-PIPE-12)
   verify: true
   ocr: true
 
-verifier:                    # [CV+ML] xem configs/verifier.yaml
-  enabled: true
+verifier:                    # [CV+ML] xem configs/verifier.yaml — mặc định tắt: T1 không vượt điểm YOLO (docs/danh_gia/S3_T0_T1)
+  enabled: false
   weights: models/current/verifier.joblib
   threshold: 0.5
 
