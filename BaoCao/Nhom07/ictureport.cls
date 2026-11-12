@@ -317,7 +317,7 @@
 \newcommand{\coverrow}[3][c]{%
   \noindent\parbox[t][#2][#1]{\textwidth}{#3}\par\nointerlineskip}
 \newcommand{\coverlabel}[2]{%
-  \noindent\hspace*{3cm}\makebox[4.75cm][l]{#1}#2\par}
+  \noindent\hspace*{2.4cm}\makebox[5.5cm][l]{#1}#2\par}
 
 \newcommand{\makecoverpage}{%
   \begin{titlepage}
@@ -346,7 +346,7 @@
        \coverlabel{}{\memberThree}
        \coverlabel{}{\memberFour}
        \coverlabel{}{\memberFive}}%
-    \coverrow[t]{1.0cm}{\fontsize{14}{21}\selectfont\bfseries\coverlabel{Giáo viên hướng dẫn:}{\instructorName}}%
+    \coverrow[t]{1.0cm}{\fontsize{14}{21}\selectfont\bfseries\coverlabel{Giảng viên hướng dẫn:}{\instructorName}}%
     \vfill
     {\centering\fontsize{14}{17}\selectfont\bfseries THÁI NGUYÊN, THÁNG \reportMonth\ NĂM \reportYear\par}
     \vspace*{0.3cm}
