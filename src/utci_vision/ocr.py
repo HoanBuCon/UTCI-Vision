@@ -139,7 +139,13 @@ class TextReader:
 
         self.cfg = cfg
         r = cfg["reader"]
-        vcfg = Cfg.load_config_from_name(r["config_name"])
+        local_cfg = resolve(r["config_file"]) if r.get("config_file") else None
+        if local_cfg is not None and local_cfg.exists():  # chạy offline (Docker, máy demo không có mạng)
+            vcfg = Cfg.load_config_from_file(str(local_cfg))
+        else:
+            vcfg = Cfg.load_config_from_name(r["config_name"])  # tải base.yml + cấu hình mô hình từ vocr.vn
+            if local_cfg is not None and local_cfg.parent.exists():
+                vcfg.save(str(local_cfg))
         weights = r.get("weights")
         if weights and resolve(weights).exists():
             vcfg["weights"] = str(resolve(weights))
