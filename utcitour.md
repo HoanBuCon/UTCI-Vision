@@ -7,7 +7,9 @@
 > **Tiêu chí của tài liệu này:** đọc xong, **cả 5 thành viên biết và hiểu như nhau**, nói cùng một con số, cùng một cách giải thích,
 > cùng một giới hạn. Ai cũng phải trả lời được mọi câu hỏi, không chỉ phần mình làm.
 
-Đây là tài liệu học nội bộ để trên máy (đã thêm vào `.gitignore`), **không phải** một chương báo cáo và **không thay** `BaoCao/Nhom07/guide.md`.
+Đây là tài liệu học nội bộ, **không phải** một chương báo cáo và **không thay** `BaoCao/Nhom07/guide.md`.
+**Lưu ý:** file này **được giữ trong git có chủ đích** (từ commit `2aae7e6`, PR #22) để cả nhóm cùng cập nhật một bản; ai có quyền xem repo đều đọc được.
+`.gitignore` chỉ còn chặn tên cũ `/TONG_HOP_DU_AN.md`.
 `guide.md` vẫn là tài liệu đi sâu cho bài kiểm tra 2 (từng công thức, từng tiêu chí); file này là bản **tổng hợp toàn dự án + bảo vệ cuối kỳ**.
 Mọi con số dưới đây lấy từ báo cáo LaTeX `BaoCao/Nhom07` và các hồ sơ `docs/danh_gia/*`; không có số nào được chạy mới.
 
@@ -79,7 +81,8 @@ Không khẳng định OCR/tracking đã được đo định lượng. Chỗ n�
 ghi mức chắc chắn, đề xuất cách nói an toàn. Văn phong tiếng Việt dễ hiểu, từng bước.
 ```
 
-Phần còn lại là kết quả thực hiện meta-prompt này.
+Phần còn lại là kết quả thực hiện meta-prompt này. (File sau đó được đổi tên từ `TONG_HOP_DU_AN.md` thành `utcitour.md`;
+§9.6, §12 #17 và câu trả lời mẫu ở §15.3 được bổ sung ngày 20/11/2026 sau khi đối chiếu trực tiếp với mã nguồn.)
 
 ---
 
@@ -386,7 +389,8 @@ HỆ THỐNG ĐỐI CHỨNG (chỉ CV truyền thống + ML, không dùng mạng
 | Kích thước ảnh | 960 px (cạnh dài), giữ tỉ lệ, đệm |
 | Epoch / batch | 80 / 8 |
 | Tối ưu | AdamW, lr 0,001, cosine, 3 epoch warm-up |
-| Tăng cường dữ liệu | Mặc định thư viện; **tắt lật ngang** (biển trái/phải đổi nghĩa); **tắt mosaic 15 epoch cuối** |
+| Tăng cường dữ liệu | Báo cáo ghi "mặc định thư viện"; **thực tế** `configs/yolo.yaml` tại commit huấn luyện `4182dbb`: mosaic 1,0, **mixup 0,1, copy-paste 0,1** (thư viện mặc định là 0), HSV (h 0,015 / s 0,7 / v 0,4), scale 0,5; **tắt lật ngang** (biển trái/phải đổi nghĩa); **tắt mosaic 15 epoch cuối** — xem §12 #17 |
+| Dừng sớm | `patience 25` (không kích hoạt: chạy đủ 80 epoch) |
 | Chọn trọng số | Epoch có mAP@50:95 cao nhất trên **val** |
 | Môi trường | Colab Tesla T4, Ultralytics 8.4.183, 2 giờ 52 phút; một lần chạy, seed 42 |
 | Suy luận | 1280 px, ngưỡng 0,25, NMS IoU 0,5, FP16 |
@@ -751,6 +755,76 @@ Hướng dẫn chi tiết Windows: `docs/HUONG_DAN_CHAY_WINDOWS.md`.
 
 Mã dự án Apache-2.0; **Ultralytics YOLO11 là AGPL-3.0** (đồ án học thuật chỉ cần ghi nguồn; phát hành sản phẩm/dịch vụ phải tuân AGPL); dữ liệu CC BY 4.0 (phải ghi nguồn — báo cáo đã ghi); VietOCR mã nguồn mở.
 
+### 9.6. Đi theo mã nguồn — khi giảng viên bảo "mở code chỗ X"
+
+Mở file đúng chỗ, nói theo thứ tự dưới đây. Số dòng tính theo commit `2aae7e6`, nếu mã đổi thì tìm theo **tên hàm**.
+
+**(a) API khởi động — `src/utci_vision/api/main.py`**
+- `lifespan()` chạy **một lần** khi bật server: đọc `configs/pipeline.yaml`, `api.yaml` → `load_components()` nạp 4 mô hình vào `app.state.components` → tạo `JobManager` cho video.
+- `create_app()` gắn router vào tiền tố `/api/v1`. Mô hình được **dùng chung** cho mọi request, mỗi request chỉ tạo một `Recognizer` nhẹ.
+
+**(b) Nạp mô hình — `pipeline.py: load_components()`**
+- Lần lượt: Detector (YOLO) → Verifier (LightGBM, **nạp cả khi tắt** để web bật lại theo request) → ClassicClassifier (HOG-SVM) → TextReader (VietOCR).
+- Thiếu trọng số hoặc lỗi nạp **không làm sập API**: lỗi được ghi vào `status` và hiện ở `GET /health`. Đây là lý do `/health` phải báo 4/4 trước khi demo.
+
+**(c) Xử lý một khung — `pipeline.py: Recognizer.process()`** (hàm quan trọng nhất, nên đọc thuộc)
+```text
+t0 ─ assess(frame, 320)                       # enhance.py: μV, σL, phương sai Laplacian
+     ops = needed_ops(q, cfg)                 # tập con của {"gamma", "clahe", "denoise"}; tối → {gamma, clahe}; rỗng = giữ nguyên
+     if ops: image = enhance(frame, ops, cfg) # chỉ khi cần
+t1 ─ conf = proposal_conf (0,10) nếu bật xác minh, ngược lại conf (0,25)
+     detections = detector.detect([image], conf, imgsz=1280)   # hoặc detect_tiled() nếu tiled
+t2 ─ nếu video:  _update_tracks()            # theo vết + đẩy tác vụ nền
+     nếu ảnh:    _run_tasks_sync()           # xác minh rồi OCR tuần tự
+     → FrameResult(detections, latency_ms từng khâu: enhance / detector / tracking|tasks / total)
+```
+- Mỗi khâu được bấm giờ riêng (`lat[...]`) → đây là nguồn của các con số ms trong E1/T3. Con số 22,5 ms là `enhance + detector`, không gồm `tasks` (OCR).
+- `debug=True` trả thêm ảnh trung gian (ảnh tăng cường, vùng cắt OCR) — trang `/pipeline` dùng chế độ này.
+
+**(d) Ảnh tĩnh — `_run_tasks_sync()`**
+- Nếu bật xác minh: giữ phát hiện có `verified=True`. Rồi với từng biển: tra `classes.yaml` xem lớp có `has_value` / `has_text` không → gọi `ocr.read_sign()`.
+- Lớp không có số/chữ thì **bỏ qua OCR** (tiết kiệm thời gian), trừ khi bật tìm biển phụ.
+
+**(e) Video/webcam — `_update_tracks()` + `_track_task()`**
+1. `tracker.update(dets)` trả các vết đã xác nhận (≥ 3 lần thấy, không mất dấu ở khung này).
+2. Với mỗi vết: cắt vùng ngữ cảnh quanh biển (`_context_region`: rộng thêm 0,6 lần mỗi bên, **thêm 1,5 lần phía dưới** để có chỗ tìm biển phụ); chấm `frame_score` (diện tích × độ nét); giữ vùng tốt nhất của vết.
+3. Nếu vết mới hoặc đã qua 10 khung **và** không có tác vụ nào đang chạy cho vết đó → `executor.submit(_track_task)` vào `ThreadPoolExecutor(2)`.
+4. `_track_task` chạy **nền** trên vùng tốt nhất: xác minh (nếu bật) → `read_sign` → kết quả đọc được **bỏ phiếu** (`ocr.vote`) qua nhiều lần đọc rồi gắn vào vết.
+5. Khung hiện tại **không chờ** tác vụ nền: kết quả OCR hiện ra ở các khung sau. Vết bị xác minh bác (`verified=False`) thì ẩn.
+- Câu nói: "*Luồng phát hiện không bao giờ bị OCR chặn; OCR chỉ chạy lại tối đa mỗi 10 khung cho mỗi biển, trên khung rõ nhất của biển đó.*"
+
+**(f) Theo vết — `tracking.py`**
+- `_new_kalman()`: `cv2.KalmanFilter(8, 4)`; trạng thái `[cx, cy, w, h, vcx, vcy, vw, vh]`, đo `[cx, cy, w, h]`; ma trận chuyển trạng thái = vận tốc không đổi (vị trí mới = vị trí + vận tốc, đơn vị 1 khung).
+- `Tracker.update()`: dự đoán mọi vết → `_associate()` dùng `scipy.optimize.linear_sum_assignment(-IoU)` (Hungarian, lấy **âm** IoU vì hàm tìm tổng **nhỏ nhất**) → bỏ cặp IoU < 0,3 → cập nhật vết khớp, tăng `misses` vết không khớp, tạo vết mới cho phát hiện thừa → xóa vết `misses > 15`.
+- `voted_class()`: tổng điểm theo lớp trong `deque(maxlen=10)` → lớp lớn nhất.
+
+**(g) Detector — `detector.py`**
+- `Detector.detect()`: gọi `model.predict(imgsz, conf, iou, quantize=16)` của Ultralytics (bản 8.4 dùng `quantize=16` thay cho `half=True` để chạy FP16), đổi kết quả thành danh sách `Detection(bbox, class_id, score)`.
+- `detect_tiled()`: ảnh đầy đủ **cộng** các ô 640×640 chồng nhau 25 % (thêm ô sát mép phải/dưới để phủ hết ảnh) → dời tọa độ ô về ảnh gốc → `batched_nms` theo từng lớp gộp trùng.
+- `finetune()` / `validate()` cũng ở file này — notebook gọi `detector.finetune(...)`.
+
+**(h) API ảnh — `api/routes.py: detect_image()`**
+- Nhận file **hoặc** `sample=<id>` → (`degrade` = dark/noise/blur nếu mô phỏng ảnh xấu) → `_pipeline_cfg()` chép cấu hình mặc định rồi **ghi đè** `enhance`, `verifier`, `imgsz`, `tiled` theo request → `Recognizer(video=False).process()` chạy trong `run_in_threadpool` (không chặn vòng lặp async) → `to_response()` vẽ khung, trả JSON.
+- Đây là cơ chế cho phép trang `/demo/dl` bật/tắt từng khâu → ablation trực tiếp trên giao diện.
+
+**(i) Webcam — `api/routes.py: stream()` (`WS /api/v1/stream`)**
+- Mỗi kết nối một `Recognizer(video=True)` (tracker riêng), dùng chung mô hình.
+- Vòng lặp: nhận JPEG → `cv2.imdecode` → thu nhỏ nếu rộng > 960 px (`api.yaml: stream.max_width`) → `asyncio.to_thread(rec.process)` → gửi JSON.
+- **Back-pressure một khung:** trang webcam (dùng `streamUrl()` trong `web/src/api/client.ts`) **chỉ gửi khung tiếp theo sau khi nhận kết quả** khung trước. Nên khi máy chậm, FPS tự giảm chứ không dồn hàng đợi và trễ tăng dần. Đây là lý do webcam CPU 1280 px chỉ 3,5 FPS mà vẫn không trễ cộng dồn.
+- Ngắt kết nối → `rec.close()` hủy tác vụ nền.
+
+**(j) Video nền — `api/jobs.py: JobManager`**
+- `POST /jobs/video` lưu file → `submit()` vào `ThreadPoolExecutor(1)` → `_run()` đọc từng khung, từ chối video > 180 s, chạy `Recognizer(video=True)`, ghi video kết quả bằng `cv2.VideoWriter` (thử lần lượt các codec trong `CODECS`), cập nhật tiến độ → web hỏi `GET /jobs/{id}`. Mỗi lần tạo job mới, kết quả cũ hơn 24 giờ bị dọn (`jobs.cleanup`, `api.yaml: outputs_ttl_hours`).
+
+**(k) Notebook fine-tune — `notebooks/train/_template.py` → 3 notebook**
+- Một template, các ô gắn thẻ `[local]` / `[colab]` / `[kaggle]`; `scripts/build_notebooks.py` sinh 3 notebook (CI kiểm notebook khớp template).
+- Các bước: chuẩn bị môi trường theo nền tảng → giải nén dữ liệu v1 và **kiểm SHA-256** (`training.verify_checksum`) → tạo `RUN_ID` → `detector.finetune()` đọc `configs/yolo.yaml` + ghi đè `IMGSZ, EPOCHS, BATCH, FREEZE` → (tùy chọn) `verifier.build_dataset()` trên **val** rồi `verifier.train()` → ghi `run_record.json`.
+- `SMOKE=True`: 1 epoch, 320 px, 1 % dữ liệu — để kiểm quy trình trước khi chạy thật.
+- Sau khi chạy: `python scripts/import_run.py <run> --promote` → chép trọng số vào `models/current/` và thêm dòng vào `experiments/registry.csv` (dòng `20261029-1030_yolo11s_960`, commit `4182dbb`, Colab Tesla T4).
+
+**(l) Cấu hình là "nguồn sự thật"**
+Mọi ngưỡng nói trong bảo vệ đều nằm trong `configs/*.yaml` kèm chú thích lý do: `pipeline.yaml` (§6.2), `yolo.yaml` (§6.4), `ocr.yaml` (§6.7), `traditional.yaml` (§6.8), `verifier.yaml` (§6.5). Bị hỏi "số này lấy ở đâu?" → mở đúng file cấu hình.
+
 ---
 
 ## 10. Báo cáo LaTeX: cấu trúc và cách biên dịch
@@ -826,8 +900,8 @@ Khi đọc đối chiếu toàn bộ thư mục, có các chỗ chưa khớp. **
 | 2 | Nhãn "[CV + DL]" cho bộ xác minh LightGBM | `chuong2.tex` (kiến trúc, E2), phụ lục; `pipeline.yaml` ghi `[CV+ML]` | Nói "CV + ML, có ngữ cảnh YOLO" | Chắc chắn |
 | 3 | Hình kiến trúc đặt xác minh **trước** theo vết; mã chạy video theo vết trước, xác minh/OCR chạy nền theo vết | `fig:system_pipeline` vs `pipeline.py` | Giải thích hình là sơ đồ chức năng; tách luồng ảnh tĩnh / video như §6.1 | Chắc chắn |
 | 4 | README ghi đọc số "km/h, m, T" | `README.md` vs `chuong2.tex` §Phạm vi | Chỉ km/h và m; T thuộc lớp gộp, không trong phạm vi | Chắc chắn |
-| 5 | 9.450 biển train vs 9.449 vùng huấn luyện E8 | `tab:split` vs §E8 | Chưa xác nhận nguyên nhân chênh 1 mẫu; không tự giải thích | Chưa rõ |
-| 6 | Test 826 ảnh nhưng nhóm tương đồng cộng lại 779 ảnh (243 + 271 + 265); số biển 667 + 746 + 604 = 2.017 đủ | `fig:similarity`, `similarity.csv` | Khả năng 47 ảnh còn lại là ảnh nền không có biển (53 ảnh nền ở toàn bộ dữ liệu) — **chưa xác minh**; nói "phân tích trên toàn bộ 2.017 biển" | Chưa rõ |
+| 5 | 9.450 biển train vs 9.449 vùng huấn luyện E8 | `tab:split` vs §E8 | `scripts/compare_traditional_dl.py` (dòng ~43) **bỏ qua vùng cắt rỗng** (`crop.size == 0`, khung suy biến sau khi làm tròn tọa độ). Nói: "*một khung quá nhỏ cho vùng cắt rỗng nên bị bỏ khi trích đặc trưng*". Chưa chỉ ra được đúng khung nào vì máy này không có dữ liệu | Gần chắc (theo mã) |
+| 6 | Test 826 ảnh nhưng nhóm tương đồng cộng lại 779 ảnh (243 + 271 + 265); số biển 667 + 746 + 604 = 2.017 đủ | `fig:similarity`, `similarity.csv` | **Đã giải thích theo mã:** `scripts/analyze_run.py: similarity_groups()` đếm `anh = nunique(image)` trên **bảng biển thật**, nên ảnh không có biển không được đếm → 826 − 779 = **47 ảnh nền trong test** (trong 53 ảnh nền toàn bộ). FP trên ảnh nền vẫn được tính vào precision | Chắc chắn (theo mã) |
 | 7 | Chênh lệch biển lớn E8: báo cáo −10,4 điểm, bàn giao 12/11 ghi −10,5 | `chuong3.tex` vs `docs/handover/2026-11-12` | Dùng số trong báo cáo (−10,4) | Làm tròn khác nhau |
 | 8 | Recall nhóm tương đồng "trung bình" (0,875) chỉ có ở bàn giao, báo cáo chỉ nêu hai đầu | handover §4.5 | Chỉ nói hai đầu 0,978 → 0,805 trừ khi đã mở hình | — |
 | 9 | Phân công ghi "gán nhãn OCR" nhưng báo cáo nói không có nhãn chữ | `phancong.tex` vs `chuong2.tex` | Phân biệt nhiệm vụ kế hoạch với sản phẩm thực tế; không nói đã có tập nhãn OCR | Chắc chắn |
@@ -839,7 +913,9 @@ Khi đọc đối chiếu toàn bộ thư mục, có các chỗ chưa khớp. **
 | 15 | Lời cảm ơn còn để trống "ngày …… tháng ……"; bảng phân công có cột chữ ký | `frontmatter/loicamon.tex`, `phancong.tex` | Điền ngày và ký trên bản in trước khi nộp | Chắc chắn |
 | 16 | Hình CNN (Hình 1.3) lấy từ web (nguồn InterData) | `chuong1_nentang.tex` | Nếu bị hỏi: hình minh họa có ghi nguồn, không phải hình nhóm vẽ | Chắc chắn |
 
-**Ai chốt:** Hoàn (TV1) chốt cách nói cho #1, #2, #3; Quý (TV4) quyết định có sửa báo cáo cho #4, #9, #12, #14, #15; Dưỡng (TV5) kiểm #5, #6; Minh (TV3) kiểm #10 và README.
+| 17 | Báo cáo ghi tăng cường dữ liệu "mặc định của thư viện", nhưng `configs/yolo.yaml` tại commit huấn luyện `4182dbb` đặt **mixup 0,1, copy-paste 0,1** (Ultralytics mặc định 0) | `chuong2.tex` Bảng 2.2 vs `git show 4182dbb:configs/yolo.yaml` | Nói đúng cấu hình đã chạy: "*mặc định thư viện cho HSV, scale, mosaic; thêm mixup và copy-paste 0,1; tắt lật ngang; tắt mosaic 15 epoch cuối*". Nên sửa Bảng 2.2 | Chắc chắn |
+
+**Ai chốt:** Hoàn (TV1) chốt cách nói cho #1, #2, #3; Quý (TV4) quyết định có sửa báo cáo cho #4, #9, #12, #14, #15, #17; Dưỡng (TV5) xác nhận lại #5 trên dữ liệu thật; Minh (TV3) kiểm #10, #17 và README.
 
 ---
 
@@ -1055,6 +1131,14 @@ Nói rõ "đây là video quay từ hệ thống" — không trình bày video n
 
 Sau đó mỗi người nói thêm **một câu nối phần mình với phần của người khác** (ví dụ Dưỡng: "chia theo cụm là lý do nhóm có thể tin con số E1 của Hoàn").
 
+**Câu trả lời mẫu ≈ 1 phút** (giữ ý và số kèm điều kiện, không cần thuộc chữ; mỗi bản theo khung *việc → quyết định có lý do → bằng chứng → giới hạn → nối sang phần khác*):
+
+- **Hoàn (TV1):** "Em thiết kế giao thức đánh giá chung cho mọi thí nghiệm: chấm ở ngưỡng hiển thị 0,25, đúng lớp, IoU ≥ 0,5, tách theo kích thước biển, có khoảng tin cậy bootstrap. Trên giao thức đó em làm T0/T1 cho bộ xác minh LightGBM. T0 cho thấy 68–71 % phát hiện sai là vùng nền, nghe thì có nhiều chỗ để sửa, nhưng điểm của YOLO đã đạt AUC 0,941. Ở cùng recall, bộ xác minh chỉ hơn +0,005 precision, CI từ −0,012 đến +0,022 chứa 0, nên nhóm tắt mặc định và ghi là kết quả âm. Em cũng thiết kế E8 sao cho so công bằng: phương pháp truyền thống được cho sẵn vị trí, nên phải so thêm trên 1.956 biển YOLO tìm thấy. Giới hạn: chỉ một lần huấn luyện, CI chưa phản ánh biến động giữa các seed. Phần của em dựa trên việc chia cụm của Dưỡng; không có nó thì mọi CI đều quá lạc quan."
+- **Thịnh (TV2):** "Em làm khâu đánh giá chất lượng và tăng cường thích nghi: đo độ sáng kênh V, tương phản kênh L, phương sai Laplacian trên ảnh thu nhỏ 320 px, chỉ khi ảnh tối mới áp Gamma + CLAHE. T4 cho thấy recall ảnh rất tối tăng 0,686 → 0,822, còn nếu luôn áp CLAHE thì recall ảnh nhiễu tụt 0,799 → 0,706, vì vậy phải có bước đánh giá trước. Em làm pipeline đối chứng HSV, hình thái học, contour và lọc hình dạng; tracking Kalman + Hungarian; cắt vùng số/chữ cho OCR; và các trang React. Giới hạn: ảnh tối là giả lập, lọc song phương chưa có bằng chứng, tracking chưa đo trên video thật. Khâu cắt vùng của em chính là thứ quyết định VietOCR mà Minh tích hợp có đọc được hay không."
+- **Minh (TV3):** "Em viết một template notebook, sinh ra ba bản local/Colab/Kaggle, có kiểm SHA-256 dữ liệu và tự ghi vào sổ thí nghiệm. Em fine-tune YOLO11s từ COCO ở 960 px, 80 epoch, AdamW lr 0,001, tắt lật ngang vì biển trái/phải đổi nghĩa, tắt mosaic 15 epoch cuối. Kết quả mAP@50 khoảng 0,89–0,91 trên test. S1 cho thấy lỗi chính là bỏ sót biển dưới 16 px, nên em làm T3: cùng trọng số, suy luận 1280 px đưa recall nhóm này từ 0,634 lên 0,737, precision giữ 0,861, chậm thêm khoảng 15 %. Em ghép các khâu vào `Recognizer.process()`, dùng chung cho API ảnh, video và webcam. Với video, OCR chạy nền theo từng vết để không chặn phát hiện; WebSocket có back-pressure một khung. Em đóng gói Docker chạy offline. Giới hạn: một seed, webcam GPU qua web chưa đo, OCR chưa có số định lượng. Các khâu CV của Thịnh đều có công tắc trong pipeline, nhờ vậy đo được E2."
+- **Quý (TV4):** "Em chủ trì báo cáo LaTeX: bố cục ba chương, mọi bảng/hình sinh từ cùng tệp kết quả bằng script để không chép tay số. Em phụ trách nội dung biển báo: ánh xạ 27 lớp sang tên và ý nghĩa QCVN 41:2019, đồng thời ghi rõ quy chuẩn đã được thay bằng 41:2024 nên cần rà lại. Em làm slide, video demo và cùng kiểm thử. Em cũng giữ cho câu chữ khớp với số đo, ví dụ ghi OCR là định tính vì không có nhãn chữ. Phần nội dung QCVN của em là thứ API trả ra cạnh mỗi phát hiện."
+- **Dưỡng (TV5):** "Em kiểm tra toàn bộ 5.453 ảnh, loại 67 ảnh có lý do; gom ảnh gần trùng bằng pHash 64 bit, Hamming ≤ 6, được 3.889 cụm; chia 70/15/15 **theo cụm**, phân tầng theo lớp và độ phân giải, seed 42, đóng gói v1 kèm SHA-256. Lý do bỏ bản chia gốc: có cụm gần trùng vắt qua các tập và 6 lớp vắng trong test. EDA của em chỉ ra 53,7 % biển dưới 32 px, từ đó nhóm phân tích theo kích thước và làm T3. Giới hạn: pHash không bắt hết ảnh cùng tuyến đường, nên còn phân tích theo mức tương đồng. Ở nhóm khác train nhất, recall 0,805. Em cũng làm benchmark tốc độ và kiểm thử chấp nhận cho hệ thống của Minh."
+
 ---
 
 ## 16. Lịch luyện tập và phiếu tự kiểm tra
@@ -1064,7 +1148,7 @@ Sau đó mỗi người nói thêm **một câu nối phần mình với phần 
 | Ngày | Việc | Ai |
 |---|---|---|
 | 20–21/11 | Mỗi người đọc file này; ghi câu chưa hiểu vào nhóm chat | Cả nhóm |
-| 22/11 | **Buổi 1:** mỗi người tự vẽ pipeline, nói 2 phút; chốt 14 điểm ở §12 | Cả nhóm, Hoàn chủ trì |
+| 22/11 | **Buổi 1:** mỗi người tự vẽ pipeline, nói 2 phút; chốt 17 điểm ở §12 | Cả nhóm, Hoàn chủ trì |
 | 23–24/11 | Quý làm slide theo §14.2; mỗi người viết ghi chú nói cho slide mình | Quý + từng người |
 | 25/11 | **Buổi 2:** tính tay ví dụ P/R/F1, IoU, HOG 324; đọc 4 bảng (T3, T4, E8, T1) có điều kiện | Cả nhóm |
 | 26/11 | Minh + Dưỡng kiểm máy demo (§14.5); Thịnh + Minh quay video demo dự phòng | Minh, Dưỡng, Thịnh |
@@ -1093,6 +1177,8 @@ Sau đó mỗi người nói thêm **một câu nối phần mình với phần 
 - [ ] Nêu được ít nhất 4 hạn chế và 3 hướng phát triển.
 - [ ] Biết cách nói an toàn cho các điểm ở §12.
 - [ ] Chạy được demo bước 1–5 hoặc thuyết minh được khi người khác thao tác.
+- [ ] Mở được `Recognizer.process()` và kể lại luồng ảnh tĩnh / video theo §9.6 (c)–(e); giải thích được back-pressure WebSocket.
+- [ ] Nói được câu trả lời mẫu 1 phút của mình (§15.3) và tóm được phần của ít nhất 2 người khác.
 - [ ] Trả lời được ít nhất 60/74 câu ở §15 (gồm nhóm D lý thuyết) không nhìn tài liệu.
 - [ ] Khi giảng viên chỉ một số hình/bảng bất kỳ (ví dụ "Hình 3.8"), nói được hình đó trình bày gì và kết luận gì (§20).
 
